@@ -1,0 +1,74 @@
+# Build script for Travis CI
+#
+
+# use fast-boot container-based hosts
+sudo: false 
+dist: trusty
+
+# no need to check for oracle's java
+language: java
+jdk: openjdk8
+
+# speed up builds by caching maven local repository
+cache:
+  directories:
+  - "$HOME/.m2/repository"
+
+# as agreed in our SOP
+branches:
+  only:
+  - master
+  - development
+
+# added to make logs look cleaner, crisper, certified fresh
+before_install: unset _JAVA_OPTIONS 
+
+# speed up builds by telling Travis that we don't need any special "installation"
+install: true
+
+# as agreed in our SOP, build everything (don't deploy, just try to 'mvn install' locally, which covers all phases)
+script: mvn --quiet --activate-profiles !development-build,!release-build --settings .travis.settings.xml clean cobertura:cobertura install
+# upload code coverage report, generate maven site (javadocs, documentation, static code analysis, etc.)
+after_success: 
+- bash <(curl -s https://codecov.io/bash)
+- mvn --quiet --activate-profiles !development-build,!release-build --settings .travis.settings.xml site
+
+# upload to maven
+deploy:
+  # as agreed in our SOP, builds on development branch will deploy to our maven repository after validating
+  # the artifact has a proper SNAPSHOT version
+  # artifact will be installed in our testing instance if it is a .war file
+- skip_cleanup: true
+  provider: script
+  script: mvn --quiet --activate-profiles development-build,!release-build --settings .travis.settings.xml deploy
+  on:
+    branch: development
+    condition: '"$TRAVIS_EVENT_TYPE" = "push"'
+  # as agreed in our SOP, tagging a commit on the master branch will upload to our maven repository
+  # after validating the artifact has a proper release version
+  # artifact will be installed in our testing instance if it is a .war file
+- skip_cleanup: true
+  provider: script
+  script: mvn --quiet --activate-profiles !development-build,release-build --settings .travis.settings.xml deploy
+  on:
+    branch: master
+    tags: true
+
+# change according to your needs, but we recommend to deactivate email notifications
+# for now, we configured Travis to send a notification to the #travis-ci channel 
+notifications:
+  email:
+    on_success: never
+    on_failure: never
+  slack: 
+    on_success: never
+    on_failure: always
+    # edit the following section if you want to get slack notifications
+    rooms:
+      - secure: "***"
+#
+# encrypted deploying credentials
+env:
+  global:
+    - secure: "Yd1readFWFHCdpWS/+r+UfQ1a2r/myHStVYnMhqsi4bbo/cvTdMutSyEZvkZ5WMBncUx7LM4Y0uhm/Eg3UnrWe/dwM51NzJRk+46iH5QoIsvaJXV0VBXhcrdeSTQMTdeXEHab/UXUNUPb6cZIXUq7fmBuUN+reYGpYj3w3WGBzkmQWwW7adkxr+VJyDp0nt+Qxewbp+/s3miI1FgR/SsGXoi6SGGZKqmUs/chc8grpEEVKJ8B8Gk+EJSFy1D5PLGXS3HrGKFFCWEYm2bah9z1KATWUJkbCnEAFS2beEKajDjryN/iqnxA6+i1PPqxuPr/nOzBohToBiZ0vEfAZSHpGiHqZ/bVqmYidJtbtJ1HkTOVGVyS8NpfImTSp4Ch3xqGmEbFy1m4semlwb+NQTGYDdq/PfiQl91X14omtLjvJrjlbrkqVhr4lcZf2mV5uINNwyZJkXEu3Xoivlaem56DopZr/F+bdzXCc0LkklKgr1LmlsdrXZM1Rzg0U5mu35G7LdbmTdaxRA3WggylWtKviGd6Q+6+SEIvR5/hEmWibxxHXuFZZYwmuefCMCypHTr+4VZzAEje0fMceAa9Nxz8LCSN3FEcWWIm2QjOZCFb3pd8UBGOTetLIyK33mODEjymE0wx+anqdunfjCFKl3aRxmijzObGmIXNh/AChMQnVM="
+    - secure: "Pgbh5KRNjEB3XC51aJ2gl0JP5HZ5/vHKcf6/wCJ5uBdCFZFJMvItuUJGrMs1N6bASeCnw3fLf6UbAkAPLn8TyzHj28A0XdABSZJjFDjZgzn65gmtUfO3bU04k106pOmQnZvqr2YBr+BnKkSY57tzJDXXbqZYwI25x8pQciWZ9e2veuL2nNtK7/SzmES+z8FeC/0lbrnYJseS35vKaBbmeW50zsp6HXBeIcJoazIjuxXP5qVhdV5NlMseCow96hhhAc92yVHumazQ92iYf0/2TXp7+r+uaZ0L+ryFYm0y/8K+Fbn3b7eQwBsMZKuhz8LLmGVYvpAPisa7z86z9+oyyOz/3gWUFN9bxbnHr9EiPKvv5Fd27mglBBVGBshr8OGOBSTM+S9eGRxvXQ3GcRciDZYIy/P1a+PZ+Rh3s1PDGuYWXyhU+D2qXs/4tzo4mveHm2EtmS8F98pUnJjd6I5UlAOZio6/ByUg3ARN/e8cvPIRsjcV8zlT9hchWxH6T9Rp05bXcz8r+uBx84h0GE5P7qXBangJ0XbzFkGY1PcD+QgHqzMAdQfqEMQl6fLHuZjEkbH4lZ4FVoNQFSgG7uPa8M3/GhBcA7Jqm4UEUbGP0MlTlLyqP5cmXedNPRL7cKAuIBQd0TUnAqcmEee3w557KXUlAa0LjUWENsCSAO5TbRw="
