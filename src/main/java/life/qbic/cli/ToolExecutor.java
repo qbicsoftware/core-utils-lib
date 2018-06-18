@@ -3,6 +3,9 @@ package life.qbic.cli;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import life.qbic.exceptions.ApplicationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
@@ -29,12 +32,16 @@ public class ToolExecutor<T extends AbstractCommand> {
      * Invokes the given tool.
      */
     public void invoke(final Tool<T> tool, final T command) {
-        Validate.notNull(tool, "tool is required and cannot be null");
-        Validate.notNull(command, "command is required and cannot be null");
+        Validate.notNull(tool, "parameter tool is required and cannot be null");
+        Validate.notNull(command, "parameter command is required and cannot be null");
 
         final Properties properties = new Properties();
         try (final InputStream inputStream = ToolExecutor.class.getClassLoader().getResourceAsStream(TOOL_PROPERTIES_PATH)) {
-            properties.load(inputStream);
+            if (inputStream == null) {
+                LOG.warn("Missing tool descriptor file. Make sure the file {} is located in the classpath", TOOL_PROPERTIES_PATH);
+            } else {
+                properties.load(inputStream);
+            }
         } catch (final IOException e) {
             throw new ApplicationException("Could not load required file tool.properties. Make sure tool.properties can be found in the classpath.", e);
         }
@@ -56,15 +63,16 @@ public class ToolExecutor<T extends AbstractCommand> {
             return;
         }
 
-        startTool(tool, command);
+        startTool(tool);
     }
 
-    private void startTool(final Tool<T> tool, final T command) {
+    private void startTool(final Tool<T> tool) {
+        final Lock shutdownAccessLock = new ReentrantLock();
+        final AtomicBoolean cleanShutdown = new AtomicBoolean(false);
         // this is where the "strategy" design pattern pays off; Tool developers need only to implement two methods: execute and shutdown
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
-                LOG.debug("Shutting down");
-                tool.shutdown(command);
+                shutdownTool(tool, shutdownAccessLock, cleanShutdown);
             } catch (final Exception e) {
                 logException(e);
                 // calling System.exit while processing shutdown hooks should not be done,
@@ -74,12 +82,32 @@ public class ToolExecutor<T extends AbstractCommand> {
 
         LOG.debug("Starting execution");
         try {
-            tool.execute(command);
+            tool.execute();
         } catch (final Exception e) {
             logException(e);
+            shutdownTool(tool, shutdownAccessLock, cleanShutdown);
             System.exit(1);
         }
+        // do not invoke System.exit
         // let the JVM handle exiting normally, the tool could be a daemon
+    }
+
+    private void shutdownTool(final Tool<T> tool, final Lock shutdownAccessLock, final AtomicBoolean cleanShutdown) {
+        shutdownAccessLock.lock();
+        try {
+            if (!cleanShutdown.get()) {
+                LOG.debug("Shutting down");
+                tool.shutdown();
+                cleanShutdown.set(true);
+            } else {
+                LOG.debug("Tool has already been shutdown, ignoring request.");
+            }
+        } catch (final Exception e) {
+            // we are shutting down, just log the exceptions
+            logException(e);
+        } finally {
+            shutdownAccessLock.unlock();
+        }
     }
 
     private static void logException(final Exception e) {

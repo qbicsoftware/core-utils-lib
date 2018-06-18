@@ -7,13 +7,13 @@ package life.qbic.cli;
  * available <i>strategies</i> (i.e., command-line tools and services).
  *
  * @see {@link ToolExecutor}
+ * @see {@link AbstractCommand}
+ * @see {@link AbstractTool}
  */
 public interface Tool<T extends AbstractCommand> {
 
     /**
      * Implementations should use this method as the "main" method.
-     *
-     * @return the return code of the operation.
      */
     void execute();
 
