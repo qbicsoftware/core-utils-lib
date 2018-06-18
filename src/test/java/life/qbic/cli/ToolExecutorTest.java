@@ -28,6 +28,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.powermock.reflect.Whitebox;
+import picocli.CommandLine.Command;
 
 /**
  * Tests for ToolExecutor.
@@ -271,6 +272,9 @@ public class ToolExecutorTest {
     }
 
     // ========== support methods/classes ============
+    @Command(
+        name = "ToolExecutorTest",
+        description = "Something something agile.")
     private static class CommandMock extends AbstractCommand {
 
     }
