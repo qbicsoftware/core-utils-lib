@@ -20,4 +20,9 @@ public abstract class AbstractTool<T extends AbstractCommand> implements Tool<T>
         Validate.notNull(command, "command is required and cannot be null");
         this.command = command;
     }
+
+    @Override
+    public void shutdown() {
+        // provides a default implementation
+    }
 }

@@ -248,7 +248,7 @@ public class ToolExecutorTest {
         assertFalse(tool.shutdownInvoked);
     }
 
-    @Ignore(value = "Ignoring testFaultyShutdown. There doesn't seem to be a simple and reasonable way to test shutdown hooks.")
+    @Ignore(value = "Ignoring testFaultyShutdown. There doesn't seem to be a simple and reasonable way to test shutdown hooks, for now.")
     @Test
     public void testFaultyShutdown() throws IOException, URISyntaxException {
         copyPropertiesFrom("tool.properties_fine");
