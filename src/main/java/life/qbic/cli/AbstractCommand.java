@@ -8,12 +8,14 @@ import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
 /**
- * Abstract class that encapsulates all common command-line arguments (i.e., a <i>command</i>).
+ * Abstract class that encapsulates all common command-line arguments using {@code picocli} annotations.
  *
- * Because we want to avoid using verbose getter/setter methods for a data structure that only hold incoming command-line arguments, we cannot use interfaces,
- * so the second-best approach is to use an abstract class from which all commands should derive.
+ * Because we want to avoid using verbose getter/setter methods for a data structure that only hold incoming command-line arguments, we cannot use interfaces.
  *
- * Command-classes are used as a simple way to bridge argument parsing from concrete implementations.
+ * The second-best approach is to use an abstract class from which all commands should derive. Command-classes are used as a simple way to bridge argument
+ * parsing from concrete implementations.
+ *
+ * All classes extending this class must contain a public constructor that takes no arguments.
  */
 public abstract class AbstractCommand {
 
@@ -29,7 +31,7 @@ public abstract class AbstractCommand {
     public volatile boolean printHelp;
 
     /**
-     * Parses the given command-line arguments as a command using the {@link CommandLine#populateCommand(Object, String...)} method.
+     * Utility method to parse the given command-line arguments as a command using the {@link CommandLine#populateCommand(Object, String...)} method.
      *
      * @param commandClass the class of the desired command.
      * @param args the command-line arguments

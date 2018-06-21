@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 import picocli.CommandLine;
 
 /**
- * Class that coordinates execution of generic command-line tools.
+ * Class that coordinates execution of generic command-line {@link QBiCTool}s and {@link QBiCApplication}s.
  *
  * In order to be able to write "generic" code that can run "any" tool, we have decided to use the Strategy design pattern. This class represents the
  * <i>Context</i> (i.e., command-line tools and services).
@@ -33,7 +33,11 @@ public class ToolExecutor {
     static final String DEFAULT_NAME = "QBiC toolset";
 
     /**
-     * Invokes the given tool.
+     * Invokes the given {@link QBiCTool}.
+     *
+     * @param toolClass the class of the tool to invoke.
+     * @param commandClass the class of the commands that the tool is able to understand.
+     * @param args the provided command-line arguments.
      */
     public <T extends AbstractCommand> void invoke(final Class<? extends QBiCTool<T>> toolClass, final Class<T> commandClass, final String[] args) {
         final AbstractCommand command = validateParametersAndParseCommandlineArguments(toolClass, commandClass, args);
@@ -46,9 +50,10 @@ public class ToolExecutor {
     }
 
     /**
-     * Invokes a JavaFX application.
+     * Invokes a {@link QBiCApplication}.
      *
-     * @param applicationClass the class of the JavaFX application.
+     * @param applicationClass the class of the application to launch.
+     * @param commandClass the class of the commands that the application is able to understand.
      * @param args the command-line arguments.
      */
     public void invokeAsJavaFX(final Class<? extends QBiCApplication> applicationClass, final Class<? extends AbstractCommand> commandClass,

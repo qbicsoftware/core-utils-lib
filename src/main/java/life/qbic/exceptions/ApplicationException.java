@@ -1,15 +1,22 @@
 package life.qbic.exceptions;
 
 /**
- * Handy runtime exception to avoid.
+ * Handy all-encompassing runtime exception.
  */
 public class ApplicationException extends RuntimeException {
 
-  public ApplicationException(final String message) {
-    super(message);
-  }
+    /**
+     * @param message a message.
+     */
+    public ApplicationException(final String message) {
+        super(message);
+    }
 
-  public ApplicationException(final String message, final Throwable cause) {
-    super(message, cause);
-  }
+    /**
+     * @param message a message.
+     * @param cause the origin of the problem.
+     */
+    public ApplicationException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 }

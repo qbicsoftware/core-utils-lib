@@ -1,6 +1,5 @@
 package life.qbic.javafx;
 
-
 import javafx.application.Application;
 import life.qbic.cli.AbstractCommand;
 

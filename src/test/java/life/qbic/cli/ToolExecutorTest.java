@@ -38,7 +38,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * Tests for ToolExecutor using QBiCTool instances.
+ * Tests for ToolExecutor using {@link QBiCTool} instances.
  */
 public class ToolExecutorTest {
 
