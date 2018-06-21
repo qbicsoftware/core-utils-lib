@@ -8,9 +8,9 @@ package life.qbic.cli;
  *
  * @see {@link ToolExecutor}
  * @see {@link AbstractCommand}
- * @see {@link AbstractTool}
+ * @see {@link QBiCTool}
  */
-public interface Tool<T extends AbstractCommand> {
+public interface Tool {
 
     /**
      * Implementations should use this method as the "main" method.

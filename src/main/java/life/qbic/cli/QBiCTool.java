@@ -7,22 +7,29 @@ import org.apache.commons.lang3.Validate;
  *
  * @param <T> The command class used by tool implementations to represent the already parsed command-line arguments.
  */
-public abstract class AbstractTool<T extends AbstractCommand> implements Tool<T> {
+public abstract class QBiCTool<T extends AbstractCommand> implements Tool {
 
-    protected final T command;
+    private final T command;
 
     /**
      * Constructor.
      *
      * @param command The command representing the given command-line arguments.
      */
-    public AbstractTool(final T command) {
+    public QBiCTool(final T command) {
         Validate.notNull(command, "command is required and cannot be null");
         this.command = command;
     }
 
     @Override
     public void shutdown() {
-        // provides a default implementation
+        // default shutdown implementation
+    }
+
+    /**
+     * @return a copy of the parsed command-line argument provided when creating this instance.
+     */
+    protected final T getCommand() {
+        return command;
     }
 }
