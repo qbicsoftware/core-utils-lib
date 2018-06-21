@@ -5,9 +5,9 @@
 sudo: false 
 dist: trusty
 
-# no need to check for oracle's java
+# JavaFX works out of the box in oracle's jdk
 language: java
-jdk: openjdk8
+jdk: oraclejdk8
 
 # speed up builds by caching maven local repository
 cache:
@@ -23,11 +23,8 @@ branches:
 # added to make logs look cleaner, crisper, certified fresh
 before_install: unset _JAVA_OPTIONS 
 
-# JavaFX is needed
-install:
-  - sudo apt-get -qq update
-  - sudo apt-get -qq install build-dep libopenjfx-java
-  - sudo apt-get --compile source libopenjfx-java
+# speed up builds by telling Travis that we don't need any special "installation"
+install: true
 
 # as agreed in our SOP, build everything (don't deploy, just try to 'mvn install' locally, which covers all phases)
 script: mvn --quiet --activate-profiles !development-build,!release-build --settings .travis.settings.xml clean cobertura:cobertura install
