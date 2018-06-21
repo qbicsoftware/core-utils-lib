@@ -22,11 +22,7 @@ import life.qbic.javafx.QBiCApplication;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.Logger;
 import org.hamcrest.CoreMatchers;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.rules.ExpectedException;
 import org.mockito.ArgumentMatchers;
@@ -111,6 +107,7 @@ public class ToolExecutorJavaFXTest {
         toolExecutor.invokeAsJavaFX(MockApplication.class, MockCommand.class, null);
     }
 
+    @Ignore(value = "https://github.com/qbicsoftware/core-utils-lib/issues/3")
     @Test
     public void testWithEmptyToolProperties() throws IOException, URISyntaxException {
         copyPropertiesFrom("tool.properties_empty");
