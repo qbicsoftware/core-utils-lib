@@ -6,11 +6,14 @@ package life.qbic.cli;
  * In order to be able to write "generic" code that can run "any" tool, we have decided to use the Strategy design pattern. This interface represents all
  * available <i>strategies</i> (i.e., command-line tools and services).
  *
+ * JavaFX provides a framework to start JavaFX applications (i.e., {@link javafx.application.Application#launch(String...)}) and are not "generic" tools.
+ *
  * @see {@link ToolExecutor}
  * @see {@link AbstractCommand}
- * @see {@link AbstractTool}
+ * @see {@link QBiCTool}
+ * @see {@link life.qbic.javafx.QBiCApplication}
  */
-public interface Tool<T extends AbstractCommand> {
+public interface Tool {
 
     /**
      * Implementations should use this method as the "main" method.
