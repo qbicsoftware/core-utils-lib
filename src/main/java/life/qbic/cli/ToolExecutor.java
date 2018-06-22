@@ -8,9 +8,7 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import javafx.application.Application;
 import life.qbic.exceptions.ApplicationException;
-import life.qbic.javafx.QBiCApplication;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
@@ -26,11 +24,11 @@ import picocli.CommandLine;
 public class ToolExecutor {
 
     private static final Logger LOG = LogManager.getLogger(ToolExecutor.class);
-    // package access for testing purposes
-    static final String TOOL_PROPERTIES_PATH = "tool.properties";
-    static final String DEFAULT_VERSION = "1.0.0-SNAPSHOT";
-    static final String DEFAULT_REPO = "http://github.com/qbicsoftware";
-    static final String DEFAULT_NAME = "QBiC toolset";
+
+    public static final String TOOL_PROPERTIES_PATH = "tool.properties";
+    public static final String DEFAULT_VERSION = "1.0.0-SNAPSHOT";
+    public static final String DEFAULT_REPO = "http://github.com/qbicsoftware";
+    public static final String DEFAULT_NAME = "QBiC toolset";
 
     /**
      * Invokes the given {@link QBiCTool}.
@@ -50,24 +48,13 @@ public class ToolExecutor {
     }
 
     /**
-     * Invokes a {@link QBiCApplication}.
-     *
-     * @param applicationClass the class of the application to launch.
-     * @param commandClass the class of the commands that the application is able to understand.
+     * Validates that the passed parameters are not null and parses the given {@code args} as a command of the class {@code commandClass}.
+     * @param toolClass the class of the tool that will be executed.
+     * @param commandClass the class of the commands that will be parsed.
      * @param args the command-line arguments.
+     * @return the parsed command.
      */
-    public void invokeAsJavaFX(final Class<? extends QBiCApplication> applicationClass, final Class<? extends AbstractCommand> commandClass,
-        final String[] args) {
-        final AbstractCommand command = validateParametersAndParseCommandlineArguments(applicationClass, commandClass, args);
-
-        if (handleCommonParameters(extractToolMetadata(), command)) {
-            return;
-        }
-
-        Application.launch(applicationClass, args);
-    }
-
-    private AbstractCommand validateParametersAndParseCommandlineArguments(final Class<?> toolClass, final Class<? extends AbstractCommand> commandClass,
+    protected AbstractCommand validateParametersAndParseCommandlineArguments(final Class<?> toolClass, final Class<? extends AbstractCommand> commandClass,
         final String[] args) {
         Validate.notNull(toolClass, "toolClass is required and cannot be null");
         Validate.notNull(commandClass, "commandClass is required and cannot be null");
@@ -97,13 +84,19 @@ public class ToolExecutor {
         return tool;
     }
 
-    // returns true if the common parameters were handled, meaning that
-    private boolean handleCommonParameters(final ToolMetadata toolMetadata, final AbstractCommand command) {
+    /**
+     * Handles the standard {@ code --help} and {@code --version} parameters which all {@link QBiCTool} are able to handle.
+     *
+     * @param toolMetadata the metadata of the tool.
+     * @param command the command.
+     * @return {@code true} if either help or version (or both!) were requested, {@code false} otherwise.
+     */
+    protected boolean handleCommonParameters(final ToolMetadata toolMetadata, final AbstractCommand command) {
         // this is the only thing that is the same across all tools: --help and --version
         if (command.printVersion || command.printHelp) {
             if (command.printVersion) {
                 LOG.debug("Version requested.");
-                LOG.info("{}, version {} ({})", toolMetadata.toolName, toolMetadata.toolVersion, toolMetadata.toolRepoUrl);
+                LOG.info("{}, version {} ({})", toolMetadata.getToolName(), toolMetadata.getToolVersion(), toolMetadata.getToolRepoUrl());
             }
             if (command.printHelp) {
                 LOG.debug("Help requested.");
@@ -114,7 +107,18 @@ public class ToolExecutor {
         return false;
     }
 
-    private ToolMetadata extractToolMetadata() {
+    /**
+     * Extracts tool name, version and repository URL from {@link #TOOL_PROPERTIES_PATH}. If the file does not exist, is corrupt or properties are missing,
+     * this method will only generate warnings in the log file and use the following default values:
+     * <ul>
+     *     <li>Default name if property {@code tool.name} is missing: {@link #DEFAULT_NAME}</li>
+     *     <li>Default version if property {@code tool.version} is missing: {@link #DEFAULT_VERSION}</li>
+     *     <li>Default repository URL if property {@code tool.repo.url} is missing: {@link #DEFAULT_REPO}</li>
+     * </ul>
+     *
+     * @return the parsed {@link ToolMetadata}.
+     */
+    protected ToolMetadata extractToolMetadata() {
         final Properties properties = new Properties();
         try (final InputStream inputStream = ToolExecutor.class.getClassLoader().getResourceAsStream(TOOL_PROPERTIES_PATH)) {
             if (inputStream == null) {
@@ -194,16 +198,4 @@ public class ToolExecutor {
         return value;
     }
 
-    private class ToolMetadata {
-
-        final String toolName;
-        final String toolVersion;
-        final String toolRepoUrl;
-
-        ToolMetadata(final String toolName, final String toolVersion, final String toolRepoUrl) {
-            this.toolName = toolName;
-            this.toolVersion = toolVersion;
-            this.toolRepoUrl = toolRepoUrl;
-        }
-    }
 }
