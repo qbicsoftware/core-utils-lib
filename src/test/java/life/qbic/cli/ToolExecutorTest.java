@@ -1,10 +1,12 @@
 package life.qbic.cli;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -351,13 +353,24 @@ public class ToolExecutorTest {
         System.exit(0);
     }
 
-    // ========== support methods/classes ============
+    @Test
+    public void testWithPrivateMembersInCommand() throws IOException, URISyntaxException {
+        // I was curious about how picocli implements it and kind of lost in the code, so adding this test
+        copyPropertiesFrom("tool.properties_fine");
+
+        toolExecutor.invoke(MockTool.class, MockCommand.class, generateArguments("-p", "1234"));
+
+        assertEquals(1234, toolStatus.command.privateParameter);
+    }
+
+    // ========== support methods/classes ===========
     public static class ToolStatus {
 
         private final int key;
         private volatile boolean completed;
         private volatile boolean active;
         private volatile boolean shutdownInvoked;
+        private volatile MockCommand command;
 
         public ToolStatus(final int key) {
             this.key = key;
@@ -393,6 +406,9 @@ public class ToolExecutorTest {
         public volatile boolean faultyShutdown;
         @Option(names = {"-k"}, description = "Key.", required = true)
         public volatile int key;
+
+        @Option(names = {"-p", "--parameter"})
+        private int privateParameter;
 
     }
 
@@ -439,6 +455,7 @@ public class ToolExecutorTest {
             toolStatus = TOOL_STATUS_MAP.get(command.key);
             Validate.notNull(toolStatus,
                 "It seems that this unit test was not set-up properly. A toolStatus is needed in TOOL_STATUS_MAP before executing each tool.");
+            toolStatus.command = command;
         }
 
         @Override
@@ -532,7 +549,6 @@ public class ToolExecutorTest {
 
         }
     }
-
 
     private void copyPropertiesFrom(final String propertiesFilePath)
         throws URISyntaxException, IOException {
