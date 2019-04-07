@@ -1,0 +1,458 @@
+<?xml version="1.0"?>
+<!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
+
+<coverage line-rate="0.9327731092436975" branch-rate="0.95" lines-covered="111" lines-valid="119" branches-covered="19" branches-valid="20" complexity="1.3076923076923077" version="2.1.1" timestamp="1554625258126">
+	<sources>
+		<source>/home/travis/build/qbicsoftware/core-utils-lib/src/main/java</source>
+		<source>--source</source>
+		<source>/home/travis/build/qbicsoftware/core-utils-lib/target/generated-sources/annotations</source>
+	</sources>
+	<packages>
+		<package name="life.qbic.cli" line-rate="0.9304347826086956" branch-rate="0.95" complexity="1.3636363636363635">
+			<classes>
+				<class name="life.qbic.cli.AbstractCommand" filename="life/qbic/cli/AbstractCommand.java" line-rate="1.0" branch-rate="1.0" complexity="3.0">
+					<methods>
+						<method name="&lt;init&gt;" signature="()V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="20" hits="20" branch="false"/>
+							</lines>
+						</method>
+						<method name="createDummyCommand" signature="(Ljava/lang/Class;)Llife/qbic/cli/AbstractCommand;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="57" hits="22" branch="false"/>
+								<line number="58" hits="2" branch="false"/>
+								<line number="59" hits="2" branch="false"/>
+								<line number="60" hits="2" branch="false"/>
+								<line number="62" hits="20" branch="false"/>
+								<line number="66" hits="20" branch="false"/>
+								<line number="67" hits="1" branch="false"/>
+								<line number="68" hits="1" branch="false"/>
+								<line number="69" hits="1" branch="false"/>
+								<line number="70" hits="19" branch="false"/>
+								<line number="72" hits="19" branch="false"/>
+							</lines>
+						</method>
+						<method name="parseArguments" signature="(Ljava/lang/Class;[Ljava/lang/String;)Llife/qbic/cli/AbstractCommand;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="42" hits="22" branch="false"/>
+								<line number="43" hits="22" branch="false"/>
+								<line number="45" hits="22" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="20" hits="20" branch="false"/>
+						<line number="42" hits="22" branch="false"/>
+						<line number="43" hits="22" branch="false"/>
+						<line number="45" hits="22" branch="false"/>
+						<line number="57" hits="22" branch="false"/>
+						<line number="58" hits="2" branch="false"/>
+						<line number="59" hits="2" branch="false"/>
+						<line number="60" hits="2" branch="false"/>
+						<line number="62" hits="20" branch="false"/>
+						<line number="66" hits="20" branch="false"/>
+						<line number="67" hits="1" branch="false"/>
+						<line number="68" hits="1" branch="false"/>
+						<line number="69" hits="1" branch="false"/>
+						<line number="70" hits="19" branch="false"/>
+						<line number="72" hits="19" branch="false"/>
+					</lines>
+				</class>
+				<class name="life.qbic.cli.QBiCTool" filename="life/qbic/cli/QBiCTool.java" line-rate="0.8333333333333334" branch-rate="1.0" complexity="1.0">
+					<methods>
+						<method name="&lt;init&gt;" signature="(Llife/qbic/cli/AbstractCommand;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="19" hits="12" branch="false"/>
+								<line number="20" hits="12" branch="false"/>
+								<line number="21" hits="12" branch="false"/>
+								<line number="22" hits="12" branch="false"/>
+							</lines>
+						</method>
+						<method name="getCommand" signature="()Llife/qbic/cli/AbstractCommand;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="33" hits="23" branch="false"/>
+							</lines>
+						</method>
+						<method name="shutdown" signature="()V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="27" hits="0" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="19" hits="12" branch="false"/>
+						<line number="20" hits="12" branch="false"/>
+						<line number="21" hits="12" branch="false"/>
+						<line number="22" hits="12" branch="false"/>
+						<line number="27" hits="0" branch="false"/>
+						<line number="33" hits="23" branch="false"/>
+					</lines>
+				</class>
+				<class name="life.qbic.cli.Tool" filename="life/qbic/cli/Tool.java" line-rate="1.0" branch-rate="1.0" complexity="1.0">
+					<methods>
+					</methods>
+					<lines>
+					</lines>
+				</class>
+				<class name="life.qbic.cli.ToolExecutor" filename="life/qbic/cli/ToolExecutor.java" line-rate="0.9156626506024096" branch-rate="0.95" complexity="0.0">
+					<methods>
+						<method name="&lt;clinit&gt;" signature="()V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="27" hits="1" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="()V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="25" hits="25" branch="false"/>
+							</lines>
+						</method>
+						<method name="extractAndWarnIfMissing" signature="(Ljava/util/Properties;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="203" hits="57" branch="false"/>
+								<line number="204" hits="57" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="205" hits="15" branch="false"/>
+								<line number="206" hits="15" branch="false"/>
+								<line number="208" hits="57" branch="false"/>
+							</lines>
+						</method>
+						<method name="extractToolMetadata" signature="()Llife/qbic/cli/ToolMetadata;" line-rate="0.9166666666666666" branch-rate="0.8333333333333334" complexity="0">
+							<lines>
+								<line number="132" hits="19" branch="false"/>
+								<line number="133" hits="19" branch="false"/>
+								<line number="134" hits="19" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="135" hits="2" branch="false"/>
+								<line number="137" hits="17" branch="false"/>
+								<line number="139" hits="19" branch="true" condition-coverage="75% (3/4)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+										<condition number="1" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="140" hits="0" branch="false"/>
+								<line number="142" hits="19" branch="false"/>
+								<line number="144" hits="19" branch="false"/>
+								<line number="145" hits="19" branch="false"/>
+								<line number="146" hits="19" branch="false"/>
+								<line number="148" hits="19" branch="false"/>
+							</lines>
+						</method>
+						<method name="handleCommonParameters" signature="(Llife/qbic/cli/ToolMetadata;Llife/qbic/cli/AbstractCommand;)Z" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="106" hits="19" branch="true" condition-coverage="100% (4/4)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+										<condition number="1" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="107" hits="5" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="108" hits="3" branch="false"/>
+								<line number="109" hits="3" branch="false"/>
+								<line number="111" hits="5" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="112" hits="3" branch="false"/>
+								<line number="113" hits="3" branch="false"/>
+								<line number="115" hits="5" branch="false"/>
+								<line number="117" hits="14" branch="false"/>
+							</lines>
+						</method>
+						<method name="instantiateTool" signature="(Ljava/lang/Class;Llife/qbic/cli/AbstractCommand;)Llife/qbic/cli/Tool;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="81" hits="14" branch="false"/>
+								<line number="82" hits="2" branch="false"/>
+								<line number="83" hits="2" branch="false"/>
+								<line number="84" hits="2" branch="false"/>
+								<line number="86" hits="12" branch="false"/>
+								<line number="89" hits="12" branch="false"/>
+								<line number="90" hits="1" branch="false"/>
+								<line number="91" hits="1" branch="false"/>
+								<line number="92" hits="11" branch="false"/>
+								<line number="94" hits="11" branch="false"/>
+							</lines>
+						</method>
+						<method name="invoke" signature="(Ljava/lang/Class;Ljava/lang/Class;[Ljava/lang/String;)V" line-rate="0.6" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="45" hits="25" branch="false"/>
+								<line number="46" hits="0" branch="false"/>
+								<line number="47" hits="0" branch="false"/>
+								<line number="48" hits="0" branch="false"/>
+								<line number="49" hits="0" branch="false"/>
+								<line number="50" hits="19" branch="false"/>
+								<line number="52" hits="19" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="53" hits="5" branch="false"/>
+								<line number="56" hits="14" branch="false"/>
+								<line number="57" hits="9" branch="false"/>
+							</lines>
+						</method>
+						<method name="lambda$startQBiCTool$0" signature="(Llife/qbic/cli/Tool;Ljava/util/concurrent/locks/Lock;Ljava/util/concurrent/atomic/AtomicBoolean;)V" line-rate="0.6" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="157" hits="11" branch="false"/>
+								<line number="158" hits="0" branch="false"/>
+								<line number="159" hits="0" branch="false"/>
+								<line number="162" hits="11" branch="false"/>
+								<line number="163" hits="11" branch="false"/>
+							</lines>
+						</method>
+						<method name="logException" signature="(Ljava/lang/Exception;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="196" hits="4" branch="false"/>
+								<line number="197" hits="4" branch="false"/>
+								<line number="198" hits="4" branch="false"/>
+								<line number="199" hits="4" branch="false"/>
+							</lines>
+						</method>
+						<method name="shutdownHook" signature="(Llife/qbic/cli/Tool;Ljava/util/concurrent/locks/Lock;Ljava/util/concurrent/atomic/AtomicBoolean;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="178" hits="13" branch="false"/>
+								<line number="180" hits="13" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="181" hits="12" branch="false"/>
+								<line number="182" hits="12" branch="false"/>
+								<line number="183" hits="10" branch="false"/>
+								<line number="185" hits="1" branch="false"/>
+								<line number="187" hits="2" branch="false"/>
+								<line number="189" hits="2" branch="false"/>
+								<line number="191" hits="13" branch="false"/>
+								<line number="192" hits="13" branch="false"/>
+								<line number="193" hits="13" branch="false"/>
+							</lines>
+						</method>
+						<method name="startQBiCTool" signature="(Llife/qbic/cli/Tool;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="152" hits="11" branch="false"/>
+								<line number="153" hits="11" branch="false"/>
+								<line number="155" hits="11" branch="false"/>
+								<line number="165" hits="11" branch="false"/>
+								<line number="167" hits="11" branch="false"/>
+								<line number="168" hits="2" branch="false"/>
+								<line number="169" hits="2" branch="false"/>
+								<line number="170" hits="2" branch="false"/>
+								<line number="171" hits="2" branch="false"/>
+								<line number="172" hits="9" branch="false"/>
+								<line number="175" hits="9" branch="false"/>
+							</lines>
+						</method>
+						<method name="validateParametersAndParseCommandlineArguments" signature="(Ljava/lang/Class;Ljava/lang/Class;[Ljava/lang/String;)Llife/qbic/cli/AbstractCommand;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="69" hits="25" branch="false"/>
+								<line number="70" hits="24" branch="false"/>
+								<line number="71" hits="23" branch="false"/>
+								<line number="73" hits="22" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="25" hits="25" branch="false"/>
+						<line number="27" hits="1" branch="false"/>
+						<line number="45" hits="25" branch="false"/>
+						<line number="46" hits="0" branch="false"/>
+						<line number="47" hits="0" branch="false"/>
+						<line number="48" hits="0" branch="false"/>
+						<line number="49" hits="0" branch="false"/>
+						<line number="50" hits="19" branch="false"/>
+						<line number="52" hits="19" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="53" hits="5" branch="false"/>
+						<line number="56" hits="14" branch="false"/>
+						<line number="57" hits="9" branch="false"/>
+						<line number="69" hits="25" branch="false"/>
+						<line number="70" hits="24" branch="false"/>
+						<line number="71" hits="23" branch="false"/>
+						<line number="73" hits="22" branch="false"/>
+						<line number="81" hits="14" branch="false"/>
+						<line number="82" hits="2" branch="false"/>
+						<line number="83" hits="2" branch="false"/>
+						<line number="84" hits="2" branch="false"/>
+						<line number="86" hits="12" branch="false"/>
+						<line number="89" hits="12" branch="false"/>
+						<line number="90" hits="1" branch="false"/>
+						<line number="91" hits="1" branch="false"/>
+						<line number="92" hits="11" branch="false"/>
+						<line number="94" hits="11" branch="false"/>
+						<line number="106" hits="19" branch="true" condition-coverage="100% (4/4)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+								<condition number="1" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="107" hits="5" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="108" hits="3" branch="false"/>
+						<line number="109" hits="3" branch="false"/>
+						<line number="111" hits="5" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="112" hits="3" branch="false"/>
+						<line number="113" hits="3" branch="false"/>
+						<line number="115" hits="5" branch="false"/>
+						<line number="117" hits="14" branch="false"/>
+						<line number="132" hits="19" branch="false"/>
+						<line number="133" hits="19" branch="false"/>
+						<line number="134" hits="19" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="135" hits="2" branch="false"/>
+						<line number="137" hits="17" branch="false"/>
+						<line number="139" hits="19" branch="true" condition-coverage="75% (3/4)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+								<condition number="1" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="140" hits="0" branch="false"/>
+						<line number="142" hits="19" branch="false"/>
+						<line number="144" hits="19" branch="false"/>
+						<line number="145" hits="19" branch="false"/>
+						<line number="146" hits="19" branch="false"/>
+						<line number="148" hits="19" branch="false"/>
+						<line number="152" hits="11" branch="false"/>
+						<line number="153" hits="11" branch="false"/>
+						<line number="155" hits="11" branch="false"/>
+						<line number="157" hits="11" branch="false"/>
+						<line number="158" hits="0" branch="false"/>
+						<line number="159" hits="0" branch="false"/>
+						<line number="162" hits="11" branch="false"/>
+						<line number="163" hits="11" branch="false"/>
+						<line number="165" hits="11" branch="false"/>
+						<line number="167" hits="11" branch="false"/>
+						<line number="168" hits="2" branch="false"/>
+						<line number="169" hits="2" branch="false"/>
+						<line number="170" hits="2" branch="false"/>
+						<line number="171" hits="2" branch="false"/>
+						<line number="172" hits="9" branch="false"/>
+						<line number="175" hits="9" branch="false"/>
+						<line number="178" hits="13" branch="false"/>
+						<line number="180" hits="13" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="181" hits="12" branch="false"/>
+						<line number="182" hits="12" branch="false"/>
+						<line number="183" hits="10" branch="false"/>
+						<line number="185" hits="1" branch="false"/>
+						<line number="187" hits="2" branch="false"/>
+						<line number="189" hits="2" branch="false"/>
+						<line number="191" hits="13" branch="false"/>
+						<line number="192" hits="13" branch="false"/>
+						<line number="193" hits="13" branch="false"/>
+						<line number="196" hits="4" branch="false"/>
+						<line number="197" hits="4" branch="false"/>
+						<line number="198" hits="4" branch="false"/>
+						<line number="199" hits="4" branch="false"/>
+						<line number="203" hits="57" branch="false"/>
+						<line number="204" hits="57" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="205" hits="15" branch="false"/>
+						<line number="206" hits="15" branch="false"/>
+						<line number="208" hits="57" branch="false"/>
+					</lines>
+				</class>
+				<class name="life.qbic.cli.ToolMetadata" filename="life/qbic/cli/ToolMetadata.java" line-rate="1.0" branch-rate="1.0" complexity="1.0">
+					<methods>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="19" hits="19" branch="false"/>
+								<line number="20" hits="19" branch="false"/>
+								<line number="21" hits="19" branch="false"/>
+								<line number="22" hits="19" branch="false"/>
+								<line number="23" hits="19" branch="false"/>
+								<line number="24" hits="19" branch="false"/>
+								<line number="25" hits="19" branch="false"/>
+								<line number="26" hits="19" branch="false"/>
+							</lines>
+						</method>
+						<method name="getToolName" signature="()Ljava/lang/String;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="32" hits="3" branch="false"/>
+							</lines>
+						</method>
+						<method name="getToolRepoUrl" signature="()Ljava/lang/String;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="46" hits="3" branch="false"/>
+							</lines>
+						</method>
+						<method name="getToolVersion" signature="()Ljava/lang/String;" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="39" hits="3" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="19" hits="19" branch="false"/>
+						<line number="20" hits="19" branch="false"/>
+						<line number="21" hits="19" branch="false"/>
+						<line number="22" hits="19" branch="false"/>
+						<line number="23" hits="19" branch="false"/>
+						<line number="24" hits="19" branch="false"/>
+						<line number="25" hits="19" branch="false"/>
+						<line number="26" hits="19" branch="false"/>
+						<line number="32" hits="3" branch="false"/>
+						<line number="39" hits="3" branch="false"/>
+						<line number="46" hits="3" branch="false"/>
+					</lines>
+				</class>
+			</classes>
+		</package>
+		<package name="life.qbic.exceptions" line-rate="1.0" branch-rate="1.0" complexity="1.0">
+			<classes>
+				<class name="life.qbic.exceptions.ApplicationException" filename="life/qbic/exceptions/ApplicationException.java" line-rate="1.0" branch-rate="1.0" complexity="1.0">
+					<methods>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="12" hits="6" branch="false"/>
+								<line number="13" hits="6" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/Throwable;)V" line-rate="1.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="20" hits="6" branch="false"/>
+								<line number="21" hits="6" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="12" hits="6" branch="false"/>
+						<line number="13" hits="6" branch="false"/>
+						<line number="20" hits="6" branch="false"/>
+						<line number="21" hits="6" branch="false"/>
+					</lines>
+				</class>
+			</classes>
+		</package>
+	</packages>
+</coverage>
