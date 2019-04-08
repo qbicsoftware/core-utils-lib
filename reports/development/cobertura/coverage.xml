@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 
-<coverage line-rate="0.9327731092436975" branch-rate="0.95" lines-covered="111" lines-valid="119" branches-covered="19" branches-valid="20" complexity="1.3076923076923077" version="2.1.1" timestamp="1554625258126">
+<coverage line-rate="0.9327731092436975" branch-rate="0.95" lines-covered="111" lines-valid="119" branches-covered="19" branches-valid="20" complexity="1.3076923076923077" version="2.1.1" timestamp="1554700375034">
 	<sources>
 		<source>/home/travis/build/qbicsoftware/core-utils-lib/src/main/java</source>
 		<source>--source</source>
