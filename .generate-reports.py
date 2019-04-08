@@ -52,7 +52,6 @@ MAVEN_SITE_DIR = os.path.join('target', 'site')
 # base directory where reports will be copied to
 BASE_REPORT_DIR = 'reports'
 # credentials are given via environment variables
-USERNAME_ENV_VARIABLE_NAME = 'REPORTS_GITHUB_USERNAME'
 TOKEN_ENV_VARIABLE_NAME = 'REPORTS_GITHUB_ACCESS_TOKEN'
 # compiled regex to match files that should not be deleted when cleaning the working folder (in gh-pages)
 UNTOUCHABLE_FILES_MATCHER = re.compile('^\.git.*')
@@ -64,13 +63,11 @@ REPORTS_VERSION_REGEX = '^(development|[vV]?\d+\.\d+\.\d+)$'
 def main():
     parser = argparse.ArgumentParser(description='QBiC Javadoc Generator.', prog='generate-javadocs.py', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-s', '--site-dir', default=MAVEN_SITE_DIR,
-        help='Directory where Maven generates reports after executing "mvn site".')
+        help='Directory where Maven reports are found (output of running \'mvn site\').')
     parser.add_argument('-b', '--base-output-dir', default=BASE_REPORT_DIR,
         help='Base directory where the reports will be copied.')    
     parser.add_argument('-p', '--pages-branch', default="gh-pages",
         help='Name of the git branch on which the reports will be pushed.')
-    parser.add_argument('-u', '--username-var-name', default=USERNAME_ENV_VARIABLE_NAME,
-        help='Name of the environment variable holding the GitHub username used to push changes in reports.')
     parser.add_argument('-a', '--access-token-var-name', default=TOKEN_ENV_VARIABLE_NAME,
         help='Name of the environment variable holding the GitHub personal access token used to push changes in reports.')
     parser.add_argument('-r', '--validation-regex', default=REPORTS_VERSION_REGEX,
@@ -94,17 +91,13 @@ def main():
         print('Error: {}'.format(str(e)), file=sys.stderr)
         exit(1)
 
-    # generate the reports using maven
-    generateMavenSite(args)
-
     # since this will run on Travis, we cannot assume that we can change the current local repo without breaking anything
     # the safest way would be to clone this same repository on a temporary folder and leave the current local repo alone
     working_dir = tempfile.mkdtemp()
-    custom_remote = build_remote(args)
-    clone_repo(args, working_dir, custom_remote)
+    clone_self(working_dir, args)
     
     # reports are available only in a specific branch
-    checkout_pages_branch(working_dir, args)
+    force_checkout_pages_branch(working_dir, args)
 
     # since new branches have a parent commit, we have to remove everything but:
     #  * important files (e.g., .git) 
@@ -115,9 +108,6 @@ def main():
 
     # move rports to their place
     prepare_report_dir(working_dir, args)
-
-    # TODO: do we really need this if we are cloning the repo with credentials?    
-    configure_custom_remote(working_dir, custom_remote)
 
     # add, commit, push
     push_to_pages_branch(working_dir, args)
@@ -133,7 +123,7 @@ def main():
 # Sanity check
 def validateArguments(args):
     # check that the required environment variables are present
-    if not args.username_var_name in os.environ or not args.access_token_var_name in os.environ:
+    if not args.access_token_var_name in os.environ:
         raise Exception('At least one of the required environment variables is missing. See comments on .generate-reports.py for further information.')
     
     # check if the name of the output_dir matches the regex
@@ -141,24 +131,20 @@ def validateArguments(args):
     if not regex.match(args.output_dir):
         raise Exception('The provided output directory for the reports, {}, is not valid. It must match the regex {}'.format(args.output_dir, args.validation_regex))
 
-
-# Generates the reports by executing "mvn site"
-def generateMavenSite(args):    
-    print('Generating reports using "mvn site"')
-    execute(['mvn', 'site'], 'Could not generate reports')
     # check that the reports are where they should be (you never know!)
     if not os.path.exists(args.site_dir) or not os.path.isdir(args.site_dir):
         raise Exception('Maven site folder {} does not exist or is not a directory.'.format(args.site_dir))
 
 
-# Clones the given remote repository into the working directory
-def clone_repo(args, working_dir, custom_remote):
-    print('Cloning {} into temporary folder {}'.format(args.repo_slug, working_dir))    
-    execute(['git', 'clone', custom_remote, working_dir], 'Could not clone {} in directory {}'.format(args.repo_slug, working_dir))
+# Clones this repo into the passed working directory, credentials are used because OAuth has a bigger quota
+# plus, we will be pushing changes to gh-pages branch
+def clone_self(working_dir, args, exit_if_fail=True):
+    execute(['git', 'clone', 'https://{}:x-oauth-basic@github.com/{}'.format(os.environ[args.access_token_var_name], args.repo_slug), working_dir], 
+        'Could not clone {} in directory {}'.format(args.repo_slug, working_dir), exit_if_fail)
 
 
 # Checks out the branch where reports reside (gh-pages)
-def checkout_pages_branch(working_dir, args):
+def force_checkout_pages_branch(working_dir, args):
     # we need to add the gh-pages branch if it doesn't exist (git checkout -b gh-pages),
     # but if gh-pages already exists, we need to checkout (git checkout gh-pages), luckily, 
     # "git checkout branch" fails if branch doesn't exist
@@ -208,15 +194,6 @@ def prepare_report_dir(working_dir, args):
         shutil.move(os.path.join(args.site_dir, f), report_output_dir)
 
 
-# Configures a remote using credentials found as environment variables
-def configure_custom_remote(working_dir, custom_remote):
-    # make sure to add a remote with the credentials provided via environment variables
-    print('Configuring remote using provided credentials')
-    execute(['git', '-C', working_dir, 'remote', 'rm', 'origin'], 'Could not remove "origin" remote.')
-    execute(['git', '-C', working_dir, 'remote', 'add', 'origin', custom_remote], 
-             'Could not add "origin" remote with custom credentials')
-
-
 # Adds, commits and pushes changes
 def push_to_pages_branch(working_dir, args):
     if args.dry_run:
@@ -241,11 +218,6 @@ def push_to_pages_branch(working_dir, args):
 # or the base output directory
 def should_delete(path, args):
     return not UNTOUCHABLE_FILES_MATCHER.match(path) and path != args.base_output_dir
-
-
-# Builds a git remote using environment variables for credentials and the repo slug
-def build_remote(args):
-    return 'https://{}:{}@github.com/{}'.format(os.environ[args.username_var_name], os.environ[args.access_token_var_name], args.repo_slug)
 
 
 # Forcefully deletes recursively the passed file/folder using OS calls
