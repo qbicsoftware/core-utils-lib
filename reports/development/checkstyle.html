@@ -25,7 +25,7 @@ Core Utilities Library
     <div id="breadcrumbs">
       <div class="xleft">
         <span id="publishDate">Last Published: 2019-05-10</span>
-          &nbsp;| <span id="projectVersion">Version: 1.1.0-SNAPSHOT</span>
+          &nbsp;| <span id="projectVersion">Version: 1.2.0-SNAPSHOT</span>
       </div>
       <div class="xright"><a href="./" title="Core Utilities Library">Core Utilities Library</a>      </div>
       <div class="clear">
@@ -139,15 +139,16 @@ Core Utilities Library
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td></tr>
 <tr class="a">
 <td>javadoc</td>
-<td><a class="externalLink" href="http://checkstyle.sourceforge.net/config_javadoc.html#JavadocParagraph">JavadocParagraph</a></td>
-<td>6</td>
+<td><a class="externalLink" href="http://checkstyle.sourceforge.net/config_javadoc.html#AtclauseOrder">AtclauseOrder</a>
+<ul>
+<li>tagOrder: <tt>&quot;@param, @return, @throws, @deprecated&quot;</tt></li>
+<li>target: <tt>&quot;CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF&quot;</tt></li></ul></td>
+<td>1</td>
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td></tr>
 <tr class="b">
 <td></td>
-<td><a class="externalLink" href="http://checkstyle.sourceforge.net/config_javadoc.html#SingleLineJavadoc">SingleLineJavadoc</a>
-<ul>
-<li>ignoreInlineTags: <tt>&quot;false&quot;</tt></li></ul></td>
-<td>1</td>
+<td><a class="externalLink" href="http://checkstyle.sourceforge.net/config_javadoc.html#JavadocParagraph">JavadocParagraph</a></td>
+<td>6</td>
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td></tr>
 <tr class="a">
 <td></td>
@@ -537,7 +538,7 @@ Core Utilities Library
 <tr class="b">
 <td><img src="images/icon_warning_sml.gif" alt="" />&#160;Warning</td>
 <td>javadoc</td>
-<td>SingleLineJavadoc</td>
+<td>AtclauseOrder</td>
 <td>Javadoc comment at column 27 has parse error. Details: no viable alternative at input '@' while parsing JAVADOC_INLINE_TAG</td>
 <td><a href="./xref/life/qbic/cli/ToolExecutor.html#L98">98</a></td></tr>
 <tr class="a">
