@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
 
-<coverage line-rate="0.9327731092436975" branch-rate="0.95" lines-covered="111" lines-valid="119" branches-covered="19" branches-valid="20" complexity="1.3076923076923077" version="2.1.1" timestamp="1554700375034">
+<coverage line-rate="0.9098360655737705" branch-rate="0.95" lines-covered="111" lines-valid="122" branches-covered="19" branches-valid="20" complexity="1.2857142857142858" version="2.1.1" timestamp="1557493526042">
 	<sources>
 		<source>/home/travis/build/qbicsoftware/core-utils-lib/src/main/java</source>
 		<source>--source</source>
@@ -450,6 +450,30 @@
 						<line number="13" hits="6" branch="false"/>
 						<line number="20" hits="6" branch="false"/>
 						<line number="21" hits="6" branch="false"/>
+					</lines>
+				</class>
+			</classes>
+		</package>
+		<package name="life.qbic.utils" line-rate="0.0" branch-rate="1.0" complexity="1.0">
+			<classes>
+				<class name="life.qbic.utils.TimeUtils" filename="life/qbic/utils/TimeUtils.java" line-rate="0.0" branch-rate="1.0" complexity="1.0">
+					<methods>
+						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="7" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="getCurrentTimestampString" signature="()Ljava/lang/String;" line-rate="0.0" branch-rate="1.0" complexity="0">
+							<lines>
+								<line number="10" hits="0" branch="false"/>
+								<line number="11" hits="0" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="7" hits="0" branch="false"/>
+						<line number="10" hits="0" branch="false"/>
+						<line number="11" hits="0" branch="false"/>
 					</lines>
 				</class>
 			</classes>
