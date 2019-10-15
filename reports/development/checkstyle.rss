@@ -27,7 +27,7 @@ under the License.
     <item>
       <title>File: 7,
              Errors: 0,
-             Warnings: 103,
+             Warnings: 106,
              Infos: 0
       </title>
             <link>http://github.com/qbicsoftware/core-utils-lib/checkstyle.html</link>
@@ -66,7 +66,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  0
+                  3
                 </td>
                 <td>
                   0
