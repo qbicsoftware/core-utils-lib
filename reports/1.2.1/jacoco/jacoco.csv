@@ -1,0 +1,7 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+Core Utilities Library,life.qbic.cli,ToolExecutor,22,273,0,16,9,73,0,20,0,12
+Core Utilities Library,life.qbic.cli,ToolMetadata,0,39,0,0,0,11,0,4,0,4
+Core Utilities Library,life.qbic.cli,QBiCTool,1,15,0,0,1,5,1,2,1,2
+Core Utilities Library,life.qbic.cli,AbstractCommand,0,64,0,0,0,15,0,3,0,3
+Core Utilities Library,life.qbic.exceptions,ApplicationException,0,9,0,0,0,4,0,2,0,2
+Core Utilities Library,life.qbic.utils,TimeUtils,29,0,0,0,8,0,4,0,4,0
