@@ -16,10 +16,10 @@
 'UTF-8'
 -Xdoclint:all
 -doctitle
-'Core Utilities Library 1.2.0-SNAPSHOT API'
+'Core Utilities Library 1.3.0-SNAPSHOT API'
 -linkoffline
 'https://docs.oracle.com/javase/8/docs/api' '/home/travis/build/qbicsoftware/core-utils-lib/target/javadoc-bundle-options'
 -use
 -version
 -windowtitle
-'Core Utilities Library 1.2.0-SNAPSHOT API'
+'Core Utilities Library 1.3.0-SNAPSHOT API'
