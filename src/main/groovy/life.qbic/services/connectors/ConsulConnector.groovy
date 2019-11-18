@@ -8,7 +8,6 @@ import life.qbic.services.Service
 import life.qbic.services.ServiceConnector
 import life.qbic.services.ServiceType
 
-@CompileStatic
 class ConsulConnector implements ServiceConnector, AutoCloseable {
 
     URL registryUrl
