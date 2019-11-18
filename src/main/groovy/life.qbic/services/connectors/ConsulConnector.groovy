@@ -32,7 +32,7 @@ class ConsulConnector implements ServiceConnector, AutoCloseable {
     }
 
     private Map queryRegistryForService(String name) {
-        String uri = UriBuilder.of("/catalog/service/{name}")
+        String uri = UriBuilder.of("${registryUrl.toExternalForm()}/catalog/service/{name}")
                                .expand(Collections.singletonMap("name", name))
                                .toString()
         def result = this.httpClient.toBlocking().retrieve(uri)
