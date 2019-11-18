@@ -9,6 +9,7 @@
     <version>2.1.0</version>
   </parent>
   <artifactId>core-utils-lib</artifactId>
+
   <version>1.3.0-SNAPSHOT</version>
   <name>Core Utilities Library</name>
   <url>http://github.com/qbicsoftware/core-utils-lib</url>
