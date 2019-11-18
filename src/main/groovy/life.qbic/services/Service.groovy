@@ -1,5 +1,8 @@
 package life.qbic.services
 
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class Service {
 
     ServiceType type
