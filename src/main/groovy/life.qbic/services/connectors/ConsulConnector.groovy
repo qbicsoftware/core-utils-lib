@@ -24,6 +24,7 @@ class ConsulConnector implements ServiceConnector, AutoCloseable {
         def serviceNames = new ServiceNames()
         def serviceList = []
         def registryServiceResponse = queryRegistryForService(serviceNames.serviceNameForType.get(type))
+        println registryServiceResponse
         registryServiceResponse.each { response ->
             def service = new Service(type, response.ServiceAddress)
             serviceList << service
