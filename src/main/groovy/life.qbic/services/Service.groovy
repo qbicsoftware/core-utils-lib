@@ -1,12 +1,20 @@
 package life.qbic.services
 
-interface Service {
+class Service {
 
-    URL getRootUrl()
+    ServiceType type
 
-    URL getHealtEndpoint()
+    URL rootUrl
 
-    URL getRoutesEndpoint()
+    URL healthEndpoint
 
-    boolean isAlive()
+    URL routesEndpoint
+
+    Service(ServiceType type, URL rootUrl) {
+        this.type = type
+        this.rootUrl = rootUrl
+        this.healthEndpoint = new URL(this.rootUrl.toExternalForm() + '/health')
+        this.routesEndpoint = new URL(this.rootUrl.toExternalForm() + '/routes')
+    }
+
 }

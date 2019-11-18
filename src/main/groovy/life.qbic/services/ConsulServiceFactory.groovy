@@ -2,14 +2,15 @@ package life.qbic.services
 
 class ConsulServiceFactory {
 
-    private final URL registry
+    private final ServiceConnector connector
 
-    ConsulServiceFactory(URL registry){
-        this.registry = registry
+    ConsulServiceFactory(ServiceConnector connector){
+        this.connector = connector
     }
 
     Service getServiceOfType(ServiceType type) {
-        return new SampleTrackingService()
+        return new Service()
     }
+
 
 }
