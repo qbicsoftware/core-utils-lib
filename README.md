@@ -19,3 +19,19 @@ This is a library and the most common way to use this library in particular is b
   <version>X.Y.Z</version>
 </dependency>
 ```
+
+## Features
+
+### Find QBiC services
+
+Finding QBiC service instances from within an application is as easy as this:
+
+```Groovy
+// Example in Groovy
+def serviceRegistryUrl = new Url("https://host-name-of-registry:<port>/v1")
+def connector = new ConsulConnector(serviceRegistryUrl)
+connector.withCloseable {
+    ConsulServiceFactory factory = new ConsulServiceFactory(it)
+    serviceList.addAll(factory.getServicesOfType(ServiceType.SAMPLE_TRACKING))
+}
+```
