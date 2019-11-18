@@ -8,8 +8,9 @@ class ConsulServiceFactory {
         this.connector = connector
     }
 
-    Service getServiceOfType(ServiceType type) {
-        return new Service()
+    List<Service> getServicesOfType(ServiceType type) {
+        def services = connector.searchServicesForType(type)
+        return services
     }
 
 
