@@ -1,7 +1,6 @@
 package life.qbic.services.connectors
 
 import groovy.json.JsonSlurper
-import groovy.transform.CompileStatic
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.uri.UriBuilder
 import life.qbic.services.Service
