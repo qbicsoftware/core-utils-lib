@@ -28,10 +28,22 @@ Finding QBiC service instances from within an application is as easy as this:
 
 ```Groovy
 // Example in Groovy
+def serviceList = []
 def serviceRegistryUrl = new Url("https://host-name-of-registry:<port>/v1")
 def connector = new ConsulConnector(serviceRegistryUrl)
 connector.withCloseable {
     ConsulServiceFactory factory = new ConsulServiceFactory(it)
+    serviceList.addAll(factory.getServicesOfType(ServiceType.SAMPLE_TRACKING))
+}
+```
+
+
+```Java
+// Example in Java
+List serviceList = new ArrayList<>()
+Url serviceRegistryUrl = new Url("https://host-name-of-registry:<port>/v1")
+try (ServiceConnector connector = new ConsulConnector(serviceRegistryUrl)) {
+    ConsulServiceFactory factory = new ConsulServiceFactory(connector)
     serviceList.addAll(factory.getServicesOfType(ServiceType.SAMPLE_TRACKING))
 }
 ```
