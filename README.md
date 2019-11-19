@@ -41,8 +41,8 @@ connector.withCloseable {
 ```Java
 // Example in Java
 List serviceList = new ArrayList<>()
-Url serviceRegistryUrl = new Url("https://host-name-of-registry:<port>/v1")
-try (ServiceConnector connector = new ConsulConnector(serviceRegistryUrl)) {
+Url serviceRegistryUrl = new URL("https://host-name-of-registry:<port>/v1")
+try (ConsulConnector connector = new ConsulConnector(serviceRegistryUrl)) {
     ConsulServiceFactory factory = new ConsulServiceFactory(connector)
     serviceList.addAll(factory.getServicesOfType(ServiceType.SAMPLE_TRACKING))
 }
