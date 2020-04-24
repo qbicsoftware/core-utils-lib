@@ -7,7 +7,7 @@ import java.nio.file.NotDirectoryException
 
 class NanoporeParser {
 
-    private LinkedHashMap fileTreeMap
+    private Map fileTree
     private JsonOutput fileTreeJson
 
 
@@ -143,5 +143,4 @@ class NanoporeParser {
         nanoporeParser.runParser()
     }
 }
-
 
