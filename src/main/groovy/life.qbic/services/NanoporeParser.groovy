@@ -18,7 +18,7 @@ class NanoporeParser {
     /**
      * @return Linked HashMap of FileTree as Json File
      */
-    void runParser(String filePath = null) {
+    Map parseAsMap(Path nanoporeDataDirectory) {
 
         String originDirPath = checkFilePath(filePath)
         File dirNameFile = new File(originDirPath)
@@ -143,6 +143,5 @@ class NanoporeParser {
         nanoporeParser.runParser()
     }
 }
-
 
 
