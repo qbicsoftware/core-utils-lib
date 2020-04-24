@@ -1,98 +1,57 @@
-package life.qbic.services
-
+import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonOutput
 
-import java.nio.file.FileAlreadyExistsException
-import java.nio.file.NotDirectoryException
+import java.nio.file.Path
+import java.nio.file.Paths
 
-class NanoporeParser {
+class Test {
 
-    private Map fileTree
-    private JsonOutput fileTreeJson
+    Map<Object, Object> fileMap = new HashMap<>()
 
-
-    NanoporeParser() {
-
+    class NanoporeDirectory {
+        Object children
+        Path dirPath
+        String dirName
     }
 
-    /**
-     * @return Linked HashMap of FileTree as Json File
-     */
-    Map parseAsMap(Path nanoporeDataDirectory) {
-
-        String originDirPath = checkFilePath(filePath)
-        File dirNameFile = new File(originDirPath)
-        String origDirName = dirNameFile.getName()
-        fileTreeMap = storeFileTreeInMap(originDirPath)
-        fileTreeJson = createJson(fileTreeMap)
-        saveJsonToFilePath(originDirPath, fileTreeJson, origDirName)
+    class NanoporeFile {
+        Path filePath
+        String fileName
     }
 
-    /**
-     * @return filepath as a string if it consists of a directory
-     */
+    private void parseAsMap(Path filePath) {
 
-    private String checkFilePath(String filePath) {
+        File currentFile = new File(filePath.toString())
+        String currentFileName = currentFile.getName()
+        Path currentPathName = filePath
 
-        try {
+        /* ToDo Find solution to map directories correctly, currently all directories are put into singular map */
+        if (currentFile.directory) {
 
-            if (filePath == null) {
-                print("Please specify origin File Tree Directory ")
-                filePath = System.in.newReader().readLine()
+            NanoporeDirectory nanoporeDirectory = new NanoporeDirectory()
+            nanoporeDirectory.dirName = currentFileName
+            nanoporeDirectory.dirPath = currentPathName
+            nanoporeDirectory.children = currentFile.eachFileRecurse { file ->
+                parseAsMap(Paths.get(file.path))
             }
-            File userDirFile = new File(filePath)
-            if (userDirFile.isDirectory()) {
 
-                return filePath
-            } else {
-
-                throw new NotDirectoryException()
-            }
-        }
-        catch (NotDirectoryException e) {
-            print("Please provide a valid Directory Path")
-        }
-        catch (Exception e) {
-            print("Unexpected Exception occured during directory read process")
-        }
-    }
-
-
-    /**
-     * @return FileTree from DirectoryPath as LinkedHashMap
-     */
-
-    private LinkedHashMap storeFileTreeInMap(String filePath) {
-
-        try {
-
-            def fileTreeDir = new File(filePath)
-            def fileTreeMap = [:]
-            if (fileTreeDir.directory) {
-                fileTreeMap[fileTreeDir.name] = fileTreeDir.listFiles().collect { storeFileTreeInMap(it.path) }
-                return fileTreeMap
-            } else {
-                return fileTreeDir.name
-            }
-        }
-        catch (Exception e) {
-            print("Unexpected Exception occured during HashMap generation")
+            fileMap.put(nanoporeDirectory.dirName, nanoporeDirectory)
+        } else {
+            NanoporeFile nanoporeFile = new NanoporeFile()
+            nanoporeFile.fileName = currentFileName
+            nanoporeFile.filePath = currentPathName
+            fileMap.put(nanoporeFile.fileName, nanoporeFile)
         }
 
     }
-
-    /**
-     * @return Json from LinkedHashMap
-     */
 
     private JsonOutput createJson(LinkedHashMap map, Object jsonSchema = null) {
         try {
             def fileTreeJson = JsonOutput.toJson(map)
-
             /* ToDo Json Validation should happen here and only validated Json file should be returned
                *   https://www.newtonsoft.com/json/help/html/JsonSchema.htm for documentation
                *   Possible schemas hosted on https://github.com/nanoporetech/ont_h5_validator/tree/master/h5_validator/schemas */
-            if (jsonschema != null) {
+            if (jsonSchema != null) {
 
 
             } else {
@@ -105,42 +64,16 @@ class NanoporeParser {
         }
     }
 
-    /**
-     * @save Json File to specified DirectoryPath
-     */
-
-    private void saveJsonToFilePath(String filePath, String jsonFile, String origDirName) {
-
-        try {
-
-            String fileName = origDirName + ".Json"
-            File saveFile = new File(filePath, fileName)
-
-            if (saveFile.exists()) {
-                print("File already exists, Should it be Overwritten? Please Input Y or N: ")
-                String overwriteCheck = System.in.newReader().readLine()
-                if (overwriteCheck.toUpperCase() != "Y") {
-                    throw new FileAlreadyExistsException(fileName)
-                }
-            }
-            saveFile.write(jsonFile)
-
-        }
-        catch (FileAlreadyExistsException e) {
-            print("File already exists, please provide a different file name ")
-        }
-        catch (Exception e) {
-            print("Unexpected Exception occured during Json save process ")
-        }
-    }
-
-    /* ToDo Remove after confirming that parser works correctly */
+/* ToDo remove!, For Testing purposes only  */
 
     static void main(String[] args) {
+        Test test = new Test()
+        Path testPath = Paths.get("/Users/steffengreiner/Desktop/testdir/")
+        test.parseAsMap(testPath)
+        print(test.fileMap)
+        //def json = test.createJson(test.fileMap)
+        //print(json)
 
-
-        NanoporeParser nanoporeParser = new NanoporeParser()
-        nanoporeParser.runParser()
     }
-}
 
+}
