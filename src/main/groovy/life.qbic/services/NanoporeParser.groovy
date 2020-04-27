@@ -1,10 +1,17 @@
+import com.fasterxml.jackson.core.JsonGenerationException
+import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import groovy.json.JsonOutput
 
+import javax.validation.ValidationException
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class Test {
+import org.everit.json.schema.Schema;
+import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+class NanoporeParser {
 
     Map<Object, Object> fileMap = new HashMap<>()
 
@@ -45,35 +52,48 @@ class Test {
 
     }
 
-    private JsonOutput createJson(LinkedHashMap map, Object jsonSchema = null) {
+    private String createJson(Map map) {
+
         try {
-            def fileTreeJson = JsonOutput.toJson(map)
-            /* ToDo Json Validation should happen here and only validated Json file should be returned
-               *   https://www.newtonsoft.com/json/help/html/JsonSchema.htm for documentation
-               *   Possible schemas hosted on https://github.com/nanoporetech/ont_h5_validator/tree/master/h5_validator/schemas */
-            if (jsonSchema != null) {
+            // Mapping according to https://howtodoinjava.com/jackson/jackson-json-to-from-hashmap/
+            ObjectMapper jsonMapper = new ObjectMapper()
+            String jsonFromMap = jsonMapper.writeValueAsString(map)
+            return jsonFromMap
+        }
+        catch (JsonGenerationException e) {
+            print("Json could not be generated!")
+        } catch (JsonMappingException e) {
+            print("Internal Map could not be converted to Json")
+        }
+    }
 
+    private void validateJson(String json, InputStream jsonSchemaStream) {
 
-            } else {
-                print("Returning unvalidated Json File")
-                return fileTreeJson
-            }
+        //Validation according to documentation found on https://github.com/everit-org/json-schema
+        try {
+            JSONObject jsonSchemaObject = new JSONObject(new JSONTokener(jsonSchemaStream))
+            Schema jsonSchema = SchemaLoader.load(jsonSchemaObject)
+            jsonSchema.validate(json)
+        }
+        catch (ValidationException e) {
+            print("Structure of Input Json File did not match specified Jsonschema")
         }
         catch (Exception e) {
-            print("Unexpected Exception occured during Json file generation")
+            print("Unexpected Exception occurred")
         }
     }
 
 /* ToDo remove!, For Testing purposes only  */
 
     static void main(String[] args) {
-        Test test = new Test()
+        NanoporeParser nanoporeParser= new NanoporeParser()
         Path testPath = Paths.get("/Users/steffengreiner/Desktop/testdir/")
-        test.parseAsMap(testPath)
-        print(test.fileMap)
-        //def json = test.createJson(test.fileMap)
-        //print(json)
-
+        nanoporeParser.parseAsMap(testPath)
+        print(nanoporeParser.fileMap)
+        String json = nanoporeParser.createJson(nanoporeParser.fileMap)
+        InputStream jsonSchemaStream = getClass().getResourceAsStream("/Users/steffengreiner/Documents/GitHub/Work/core-utils-lib/src/main/resources/nanopore-instrument-output.schema.json")
+        nanoporeParser.validateJson(json, jsonSchemaStream)
+        print(json)
     }
 
 }
