@@ -43,6 +43,10 @@
       <name>QBiC Releases</name>
       <url>https://qbic-repo.am10.uni-tuebingen.de/repository/maven-releases</url>
     </repository>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -58,6 +62,11 @@
       <groupId>io.micronaut</groupId>
       <artifactId>micronaut-http-client</artifactId>
       <version>1.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.everit-org.json-schema</groupId>
+      <artifactId>org.everit.json.schema</artifactId>
+      <version>1.12.1</version>
     </dependency>
   </dependencies>
 </project>
