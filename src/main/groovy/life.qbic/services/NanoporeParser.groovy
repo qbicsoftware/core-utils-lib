@@ -44,6 +44,7 @@ class NanoporeParser {
             nanoporeDirectory.dirPath = currentPathName
             nanoporeDirectory.children = []
             currentFile.eachFileRecurse { file ->
+                nanoporeDirectory.children.add(file)
                 parseAsMap(Paths.get(file.path))
             }
             fileMap.put(nanoporeDirectory.dirName, nanoporeDirectory)
@@ -98,11 +99,12 @@ class NanoporeParser {
 /* ToDo remove!, For Testing purposes only  */
 
     static void main(String[] args) {
-        NanoporeParser nanoporeParser= new NanoporeParser()
+        NanoporeParser nanoporeParser = new NanoporeParser()
         Path testPath = Paths.get("/Users/steffengreiner/Desktop/testdir/")
         nanoporeParser.parseAsMap(testPath)
         print(nanoporeParser.fileMap)
         String json = nanoporeParser.createJson(nanoporeParser.fileMap)
+        print(json)
         //ToDo Inputstream returns null no matter what path is specified
         InputStream jsonSchemaStream = getClass().getResourceAsStream("/Users/steffengreiner/Documents/GitHub/Work/core-utils-lib/src/main/resources/nanopore-instrument-output.schema.json")
         nanoporeParser.validateJson(json, jsonSchemaStream)
