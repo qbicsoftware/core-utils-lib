@@ -1,6 +1,8 @@
 package life.qbic.utils
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.util.logging.Log4j2
+import org.json.JSONObject
 
 import java.nio.file.NotDirectoryException
 import java.nio.file.Path
@@ -27,7 +29,20 @@ class NanoporeParser {
         // Step1: convert directory to json
         Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
         // Step2: validate json
+        JSONObject
         // Step3: create data-model-lib objects from json
+    }
+
+    private static String mapToJson(Map map) {
+        ObjectMapper jsonMapper = new ObjectMapper()
+        String json = jsonMapper.writeValueAsString(map)
+        return json
+    }
+
+    private static boolean isValidJsonForSchema(String json, Path schema) {
+        // Step1: load schema
+        // Step2: validate against schema
+        return false
     }
 
     /**
