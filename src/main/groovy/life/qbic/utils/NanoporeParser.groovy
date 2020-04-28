@@ -48,7 +48,7 @@ class NanoporeParser {
     /**
      * Converts a file tree into a json object.
      */
-    private class DirectoryConverter {
+    private static class DirectoryConverter {
         private static final PREDEFINED_EXTENSIONS = ["fastq.gz"]
 
         /**
