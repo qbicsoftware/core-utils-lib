@@ -1,8 +1,11 @@
 package life.qbic.utils
 
+import groovy.util.logging.Log4j2
+
+import java.nio.file.NotDirectoryException
 import java.nio.file.Path
 
-
+@Log4j2
 class NanoporeParser {
 
     Path targetDirectoryPath
@@ -21,6 +24,7 @@ class NanoporeParser {
      */
     def parseDirectory(Path directory) {
         // Step1: convert directory to json
+        Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
         // Step2: validate json
         // Step3: create data-model-lib objects from json
     }
@@ -30,58 +34,73 @@ class NanoporeParser {
      */
     private class DirectoryConverter {
 
-        private class JsonDirectory {
-            String name
-            Path path
-            ArrayList children
-
-            private JsonDirectory() {
-                throw new AssertionError()
-            }
-
-            JsonDirectory(String name, Path path, List children) {
-                this.name = name
-                this.path = path
-                this.children = children
-            }
-        }
-
-        private class JsonFile {
-            String name
-            Path path
-            String extension
-
-            private JsonFile() {
-                throw new AssertionError()
-            }
-
-            JsonFile(String name, Path path, String extension) {
-                this.name = name
-                this.path = path
-                this.extension = extension
-            }
-        }
-
         /**
          *
          * @param path a path to the directory which will be used as root for parsing
          * @return a Map describing the file tree starting from the given path
          */
         static Map fileTreeToMap(Path path) {
-            // Recursive conversion
-            JsonDirectory rootDirectory = convertDirectory(path)
-            // Return as Map
-            return rootDirectory as Map
+            File rootLocation = new File(path.toString())
+            if (rootLocation.isFile()) {
+                log.error("Expected directory. Got file instead.")
+                throw new NotDirectoryException("Expected a directory. Got a file instead.")
+            } else {
+                // Recursive conversion
+                return convertDirectory(rootLocation.toPath())
+            }
+
         }
 
-        private JsonDirectory convertDirectory(Path path) {
+        /**
+         *
+         * @param path
+         * @return a map representing a directory with name, path and children as keys
+         */
+        private static Map convertDirectory(Path path) {
             // convert to File object
-            Path currentLocation = path
-            currentLocation.eachObject{ file -> test}
-            // if file detected; recursion stop
+            File currentDirectory = new File(path.toString())
+            String name = currentDirectory.getName()
+            List children = currentDirectory.listFiles().collect {
+                file ->
+                    if (file.isFile()) {
+                        convertFile(file.toPath())
+                    } else if (file.isDirectory()) {
+                        convertDirectory(file.toPath())
+                    }
+            }
 
-            // if folder detected; new recursive call for each element
+            def convertedDirectory = [
+                    "name"    : name,
+                    "path"    : path,
+                    "children": children
+            ]
+
+            return convertedDirectory
         }
-        private JsonFile convertFile(Path path) {}
+
+        /**
+         *
+         * @param path
+         * @return a map representing the file with name, path and file_type as keys
+         */
+        private static Map convertFile(Path path) {
+            final predefinedExtensions = ["fastq.gz"]
+            // convert to File object
+            File currentFile = new File(path.toString())
+            String name = currentFile.getName()
+            // defaults to the string following the last '.' in the filename
+            String fileType = name.tokenize('.').last()
+            // check for predefined file type extensions
+            for (extension in predefinedExtensions) {
+                if (name.endsWith(extension)) fileType = extension
+            }
+
+            def convertedFile = [
+                    "name"     : name,
+                    "path"     : path,
+                    "file_type": fileType
+            ]
+            return convertedFile
+        }
     }
 }
