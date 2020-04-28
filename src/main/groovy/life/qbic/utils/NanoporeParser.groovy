@@ -2,7 +2,12 @@ package life.qbic.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.util.logging.Log4j2
+import org.everit.json.schema.Schema
+import org.everit.json.schema.ValidationException
+import org.everit.json.schema.loader.SchemaLoader
+import org.json.JSONException
 import org.json.JSONObject
+import org.json.JSONTokener
 
 import java.nio.file.NotDirectoryException
 import java.nio.file.Path
@@ -23,26 +28,56 @@ class NanoporeParser {
 
     /**
      * Method where all the magic of the nanopore parser takes place
-     * @param directory
+     * @param directory path of directory whose fileTree should be converted into map
      */
-    def parseFileStructure(Path directory) {
+    static Map parseFileStructure(Path directory) {
         // Step1: convert directory to json
         Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
         // Step2: validate json
         String json = mapToJson(convertedDirectory)
-        // Step3: create data-model-lib objects from json
+        if (isValidJsonForSchema(json, JSON_SCHEMA))
+        //Step3: return valid json as Map
+        {
+            return convertedDirectory
+        }
+        //ToDo Add Possibility of returning Json as String?
     }
 
+    /**
+     * Method which converts a map into json String
+     * @param map a nested map representing a fileTree structure
+     */
     private static String mapToJson(Map map) {
         ObjectMapper jsonMapper = new ObjectMapper()
         String json = jsonMapper.writeValueAsString(map)
         return json
     }
 
+    /**
+     * Method which checks if a given Json String matches a given Json schema
+     * @param json Json String which will be compared to schema
+     * @param schema path to Json schema for validation of Json String
+     */
     private static boolean isValidJsonForSchema(String json, Path schema) {
         // Step1: load schema
-        // Step2: validate against schema
-        return false
+        try {
+            JSONObject jsonObject = new JSONObject(json)
+            InputStream schemaStream = getClass().getResourceAsStream(schema.toString())
+            JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream))
+            Schema jsonSchema = SchemaLoader.load(rawSchema)
+            // Step2: validate against schema return true if valid, throw exception if invalid
+            jsonSchema.validate(jsonObject)
+            return true
+        }
+        catch (JSONException e) {
+            log.error("JsonObject could not be generated")
+            e.printStackTrace()
+
+        }
+        catch (ValidationException e) {
+            log.error("Json did net match Json Schema")
+            return false
+        }
     }
 
     /**
@@ -70,7 +105,7 @@ class NanoporeParser {
 
         /**
          *
-         * @param path
+         * @param a path to the current location in recursion
          * @return a map representing a directory with name, path and children as keys
          */
         private static Map convertDirectory(Path path) {
@@ -97,7 +132,7 @@ class NanoporeParser {
 
         /**
          *
-         * @param path
+         * @param a path to the current file in recursion
          * @return a map representing the file with name, path and file_type as keys
          */
         private static Map convertFile(Path path) {
