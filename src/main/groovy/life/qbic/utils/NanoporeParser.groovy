@@ -8,6 +8,7 @@ import java.nio.file.Path
 @Log4j2
 class NanoporeParser {
 
+    final static private JSON_SCHEMA = "nanopore-instrument-output.schema.json"
     Path targetDirectoryPath
 
     private NanoporeParser() {
