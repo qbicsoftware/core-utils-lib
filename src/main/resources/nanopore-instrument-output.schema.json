@@ -59,7 +59,7 @@
                 {"properties":
                     {
                         "name": {
-                        "allOf": [{ "$ref": "#/definitions/qbic_code" }]
+                            "$ref": "#/definitions/qbic_code"
                         }
                     }
                 }
