@@ -247,11 +247,7 @@
           "properties": {
             "children": {
               "items": {
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/fastq_file"
-                  }
-                ]
+                "$ref": "#/definitions/fastq_file"
               },
               "minItems": 1
             }
