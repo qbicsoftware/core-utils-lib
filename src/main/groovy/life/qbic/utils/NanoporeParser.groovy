@@ -34,6 +34,7 @@ class NanoporeParser {
      * Converts a file tree into a json object.
      */
     private class DirectoryConverter {
+        private static final PREDEFINED_EXTENSIONS = ["fastq.gz"]
 
         /**
          *
@@ -85,14 +86,13 @@ class NanoporeParser {
          * @return a map representing the file with name, path and file_type as keys
          */
         private static Map convertFile(Path path) {
-            final predefinedExtensions = ["fastq.gz"]
             // convert to File object
             File currentFile = new File(path.toString())
             String name = currentFile.getName()
             // defaults to the string following the last '.' in the filename
             String fileType = name.tokenize('.').last()
             // check for predefined file type extensions
-            for (extension in predefinedExtensions) {
+            for (extension in PREDEFINED_EXTENSIONS) {
                 if (name.endsWith(extension)) fileType = extension
             }
 
