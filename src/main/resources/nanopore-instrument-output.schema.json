@@ -121,11 +121,7 @@
           "properties": {
             "children": {
               "items": {
-                "allOf": [
-                  {
-                    "$ref": "#/definitions/fast5_file"
-                  }
-                ]
+                "$ref": "#/definitions/fast5_file"
               },
               "minItems": 1
             }
