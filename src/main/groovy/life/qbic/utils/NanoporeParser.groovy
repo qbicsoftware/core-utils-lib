@@ -25,7 +25,7 @@ class NanoporeParser {
      * Method where all the magic of the nanopore parser takes place
      * @param directory
      */
-    def parseDirectory(Path directory) {
+    def parseFileStructure(Path directory) {
         // Step1: convert directory to json
         Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
         // Step2: validate json
