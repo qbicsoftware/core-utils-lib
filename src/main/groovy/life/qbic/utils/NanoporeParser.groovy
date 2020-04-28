@@ -1,7 +1,7 @@
 package life.qbic.utils
 
-
 import java.nio.file.Path
+
 
 class NanoporeParser {
 
@@ -68,7 +68,20 @@ class NanoporeParser {
          * @return a Map describing the file tree starting from the given path
          */
         static Map fileTreeToMap(Path path) {
-
+            // Recursive conversion
+            JsonDirectory rootDirectory = convertDirectory(path)
+            // Return as Map
+            return rootDirectory as Map
         }
+
+        private JsonDirectory convertDirectory(Path path) {
+            // convert to File object
+            Path currentLocation = path
+            currentLocation.eachObject{ file -> test}
+            // if file detected; recursion stop
+
+            // if folder detected; new recursive call for each element
+        }
+        private JsonFile convertFile(Path path) {}
     }
 }
