@@ -29,7 +29,7 @@ class NanoporeParser {
         // Step1: convert directory to json
         Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
         // Step2: validate json
-        JSONObject
+        String json = mapToJson(convertedDirectory)
         // Step3: create data-model-lib objects from json
     }
 
