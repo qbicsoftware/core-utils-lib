@@ -1,5 +1,5 @@
 {
-    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "http://qbic.life/nanopore-instrument-output.schema.json",
     "title": "Nanopore Instrument Output",
     "description": "Describes in which form nanopore data is received from the lab.",
