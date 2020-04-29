@@ -2,6 +2,7 @@ package life.qbic.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.util.logging.Log4j2
+
 import org.everit.json.schema.Schema
 import org.everit.json.schema.ValidationException
 import org.everit.json.schema.loader.SchemaLoader
@@ -9,13 +10,17 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.json.JSONTokener
 
+import java.nio.file.Files
 import java.nio.file.NotDirectoryException
 import java.nio.file.Path
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
+import java.util.stream.Stream
 
 @Log4j2
 class NanoporeParser {
 
-    final static private JSON_SCHEMA = "nanopore-instrument-output.schema.json"
+    final static private JSON_SCHEMA = "/nanopore-instrument-output.schema.json"
     Path targetDirectoryPath
 
     private NanoporeParser() {
@@ -34,7 +39,9 @@ class NanoporeParser {
         // Step1: convert directory to json
         Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
         // Step2: validate json
+        print(convertedDirectory)
         String json = mapToJson(convertedDirectory)
+        print(json)
         if (isValidJsonForSchema(json, JSON_SCHEMA))
         //Step3: return valid json as Map
         {
@@ -58,11 +65,11 @@ class NanoporeParser {
      * @param json Json String which will be compared to schema
      * @param schema path to Json schema for validation of Json String
      */
-    private static boolean isValidJsonForSchema(String json, Path schema) {
+    private static boolean isValidJsonForSchema(String json, String schema) {
         // Step1: load schema
         try {
             JSONObject jsonObject = new JSONObject(json)
-            InputStream schemaStream = getClass().getResourceAsStream(schema.toString())
+            InputStream schemaStream = NanoporeParser.getResourceAsStream(schema)
             JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream))
             Schema jsonSchema = SchemaLoader.load(rawSchema)
             // Step2: validate against schema return true if valid, throw exception if invalid
@@ -79,7 +86,6 @@ class NanoporeParser {
             return false
         }
     }
-
     /**
      * Converts a file tree into a json object.
      */
@@ -153,5 +159,6 @@ class NanoporeParser {
             ]
             return convertedFile
         }
+
     }
 }
