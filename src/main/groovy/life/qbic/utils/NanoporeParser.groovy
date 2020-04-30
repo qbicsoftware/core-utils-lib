@@ -2,7 +2,6 @@ package life.qbic.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.util.logging.Log4j2
-
 import org.everit.json.schema.Schema
 import org.everit.json.schema.ValidationException
 import org.everit.json.schema.loader.SchemaLoader
@@ -42,6 +41,8 @@ class NanoporeParser {
         {
             return convertedDirectory
         }
+
+
         //ToDo Add Possibility of returning Json as String?
     }
 
@@ -78,7 +79,7 @@ class NanoporeParser {
         }
         catch (ValidationException e) {
             log.error("Json did not match Json Schema")
-            System.out.println(e.getMessage())
+            print(e.getAllMessages())
             return false
         }
     }
