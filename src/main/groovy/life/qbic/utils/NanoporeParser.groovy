@@ -10,12 +10,9 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.json.JSONTokener
 
-import java.nio.file.Files
 import java.nio.file.NotDirectoryException
 import java.nio.file.Path
-import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
-import java.util.stream.Stream
+
 
 @Log4j2
 class NanoporeParser {
@@ -39,9 +36,7 @@ class NanoporeParser {
         // Step1: convert directory to json
         Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
         // Step2: validate json
-        print(convertedDirectory)
         String json = mapToJson(convertedDirectory)
-        print(json)
         if (isValidJsonForSchema(json, JSON_SCHEMA))
         //Step3: return valid json as Map
         {
@@ -82,7 +77,8 @@ class NanoporeParser {
 
         }
         catch (ValidationException e) {
-            log.error("Json did net match Json Schema")
+            log.error("Json did not match Json Schema")
+            System.out.println(e.getMessage())
             return false
         }
     }
