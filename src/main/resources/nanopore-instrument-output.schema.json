@@ -289,8 +289,10 @@
               "description": "Name of measurement subfolder. Starts with date and time of measurement."
             },
             "children": {
+              "uniqueItems": true,
+              "minItems": 12,
               "items": {
-                "allOf": [
+                "oneOf": [
                   {
                     "$ref": "#/definitions/fastq_fail"
                   },
