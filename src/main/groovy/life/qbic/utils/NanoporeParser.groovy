@@ -1,172 +1,161 @@
 package life.qbic.utils
 
-import com.fasterxml.jackson.core.JsonGenerationException
-import com.fasterxml.jackson.databind.JsonMappingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import javax.validation.ValidationException
-import java.nio.file.Path
-import java.nio.file.Paths
-import org.everit.json.schema.Schema;
-import org.everit.json.schema.loader.SchemaLoader;
-import org.json.JSONObject;
+import groovy.util.logging.Log4j2
+import org.everit.json.schema.Schema
+import org.everit.json.schema.ValidationException
+import org.everit.json.schema.loader.SchemaLoader
+import org.json.JSONException
+import org.json.JSONObject
 import org.json.JSONTokener
-import java.util.stream.Stream;
 
+import java.nio.file.NotDirectoryException
+import java.nio.file.Path
+
+
+@Log4j2
 class NanoporeParser {
 
+    final static private JSON_SCHEMA = "/nanopore-instrument-output.schema.json"
     Path targetDirectoryPath
-    Path schemaPath
 
     private NanoporeParser() {
         throw new AssertionError()
     }
-    NanoporeParser(Path targetDirectoryPath, Path schemaPath) {
+
+    NanoporeParser(Path targetDirectoryPath) {
         this.targetDirectoryPath = targetDirectoryPath
-        this.schemaPath = schemaPath
-
-    }
-    Map<Object, Object> fileMap = new HashMap<>()
-
-    class NanoporeDirectory {
-        String name
-        Path path
-        ArrayList children
-
-
-        private NanoporeDirectory() {
-            throw new AssertionError()
-        }
-
-        NanoporeDirectory(String name, Path path, List children) {
-            this.name = name
-            this.path = path
-            this.children = children
-        }
     }
 
-    class NanoporeFile {
-        String name
-        Path path
-        String extension
-
-        private NanoporeFile() {
-            throw new AssertionError()
+    /**
+     * Method where all the magic of the nanopore parser takes place
+     * @param directory path of directory whose fileTree should be converted into map
+     */
+    static Map parseFileStructure(Path directory) {
+        // Step1: convert directory to json
+        Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
+        // Step2: validate json
+        String json = mapToJson(convertedDirectory)
+        if (isValidJsonForSchema(json, JSON_SCHEMA))
+        //Step3: return valid json as Map
+        {
+            return convertedDirectory
         }
 
-        NanoporeFile(String name, Path path, String extension) {
-            this.name = name
-            this.path = path
-            this.extension = extension
-        }
+
+        //ToDo Add Possibility of returning Json as String?
     }
 
-    private void directoryToMap(Path filePath) {
-
-        File currentFile = new File(filePath.toString())
-        String currentFullFileName = currentFile.getName()
-        Path currentPathName = filePath
-
-        /* ToDo Find solution to map directories correctly, currently all directories are put into singular map */
-        if (currentFile.isDirectory()) {
-
-            String dirName = currentFullFileName
-            Path dirPath = currentPathName
-            List children = []
-            NanoporeDirectory nanoporeDirectory = new NanoporeDirectory(dirName, dirPath, children)
-
-            currentFile.eachFileRecurse { file ->
-                nanoporeDirectory.children.add(file)
-                directoryToMap(file.toPath())
-            }
-
-            this.fileMap.put(nanoporeDirectory.getName(), nanoporeDirectory)
-
-        } else {
-
-            String[] splitFileName = fileNameSplit(currentFile)
-            String fileName = splitFileName[0]
-            String fileExtension = splitFileName[1]
-
-            NanoporeFile nanoporeFile = new NanoporeFile(fileName, currentPathName, fileExtension)
-            fileMap.put(nanoporeFile.getName(), nanoporeFile)
-        }
-
+    /**
+     * Method which converts a map into json String
+     * @param map a nested map representing a fileTree structure
+     */
+    private static String mapToJson(Map map) {
+        ObjectMapper jsonMapper = new ObjectMapper()
+        String json = jsonMapper.writeValueAsString(map)
+        return json
     }
 
-    private String[] fileNameSplit(File file) {
-        String fullFileName = file.getName()
-        //ToDo What about Zip Files?
-        String[] splitFileName = fullFileName.split('\\.(?=[^\\.]+$)')
-
-        String fileName
-        String fileExtension
-
-        if (splitFileName.size() > 1)
-            fileExtension = splitFileName[1]
-        else {
-            fileExtension = "None"
-        }
-        if (splitFileName[0].size() < 1) {
-            fileName = splitFileName[1]
-            fileExtension = "None"
-        } else {
-            fileName = splitFileName[0]
-        }
-
-        String[] resultingFileArray = [fileName, fileExtension]
-        return resultingFileArray
-    }
-
-    private String createJson(Map map) {
-
+    /**
+     * Method which checks if a given Json String matches a given Json schema
+     * @param json Json String which will be compared to schema
+     * @param schema path to Json schema for validation of Json String
+     */
+    private static boolean isValidJsonForSchema(String json, String schema) {
+        // Step1: load schema
         try {
-            // Mapping according to https://howtodoinjava.com/jackson/jackson-json-to-from-hashmap/
-            ObjectMapper jsonMapper = new ObjectMapper()
-            String jsonFromMap = jsonMapper.writeValueAsString(map)
-            return jsonFromMap
+            JSONObject jsonObject = new JSONObject(json)
+            InputStream schemaStream = NanoporeParser.getResourceAsStream(schema)
+            JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream))
+            Schema jsonSchema = SchemaLoader.load(rawSchema)
+            // Step2: validate against schema return true if valid, throw exception if invalid
+            jsonSchema.validate(jsonObject)
+            return true
         }
-        catch (JsonGenerationException e) {
-            print("Json could not be generated")
-        } catch (JsonMappingException e) {
-            print("Internal Map could not be converted to Json")
-        }
-    }
-    //Validation according to documentation found on https://github.com/everit-org/json-schema
-    private void validateJson(String json, Schema jsonSchema) {
+        catch (JSONException e) {
+            log.error("JsonObject could not be generated")
+            e.printStackTrace()
 
-        try {
-            jsonSchema.validate(json)
         }
         catch (ValidationException e) {
-            print("Structure of Input Json File did not match specified Jsonschema")
-            e.printStackTrace()
-        }
-        catch (Exception e) {
-            print("Unexpected Exception occurred")
-            e.printStackTrace()
+            log.error("Json did not match Json Schema")
+            print(e.getAllMessages())
+            return false
         }
     }
-    //Json schema generation according to documentation found on https://github.com/everit-org/json-schema
-    private Schema fileToSchema(Path path) {
-        //ToDo InputStream returns null no matter what path is specified
-        InputStream jsonSchemaStream = getClass().getResourceAsStream(path.toString())
-        JSONObject jsonSchemaObject = new JSONObject(new JSONTokener(jsonSchemaStream as Stream))
-        Schema jsonSchema = SchemaLoader.load(jsonSchemaObject)
-        return jsonSchema
+    /**
+     * Converts a file tree into a json object.
+     */
+    private static class DirectoryConverter {
+        private static final PREDEFINED_EXTENSIONS = ["fastq.gz"]
+
+        /**
+         *
+         * @param path a path to the directory which will be used as root for parsing
+         * @return a Map describing the file tree starting from the given path
+         */
+        static Map fileTreeToMap(Path path) {
+            File rootLocation = new File(path.toString())
+            if (rootLocation.isFile()) {
+                log.error("Expected directory. Got file instead.")
+                throw new NotDirectoryException("Expected a directory. Got a file instead.")
+            } else {
+                // Recursive conversion
+                return convertDirectory(rootLocation.toPath())
+            }
+
+        }
+
+        /**
+         *
+         * @param a path to the current location in recursion
+         * @return a map representing a directory with name, path and children as keys
+         */
+        private static Map convertDirectory(Path path) {
+            // convert to File object
+            File currentDirectory = new File(path.toString())
+            String name = currentDirectory.getName()
+            List children = currentDirectory.listFiles().collect {
+                file ->
+                    if (file.isFile()) {
+                        convertFile(file.toPath())
+                    } else if (file.isDirectory()) {
+                        convertDirectory(file.toPath())
+                    }
+            }
+
+            def convertedDirectory = [
+                    "name"    : name,
+                    "path"    : path,
+                    "children": children
+            ]
+
+            return convertedDirectory
+        }
+
+        /**
+         *
+         * @param a path to the current file in recursion
+         * @return a map representing the file with name, path and file_type as keys
+         */
+        private static Map convertFile(Path path) {
+            // convert to File object
+            File currentFile = new File(path.toString())
+            String name = currentFile.getName()
+            // defaults to the string following the last '.' in the filename
+            String fileType = name.tokenize('.').last()
+            // check for predefined file type extensions
+            for (extension in PREDEFINED_EXTENSIONS) {
+                if (name.endsWith(extension)) fileType = extension
+            }
+
+            def convertedFile = [
+                    "name"     : name,
+                    "path"     : path,
+                    "file_type": fileType
+            ]
+            return convertedFile
+        }
+
     }
-
-/* ToDo remove!, For Testing purposes only  */
-
-    static void main(String[] args) {
-        Path dirPath = Paths.get("/Users/steffengreiner/Desktop/testdir/")
-        Path schemaPath = Paths.get("src/main/resources/nanopore-instrument-output.schema.json")
-        NanoporeParser nanoporeParser = new NanoporeParser(dirPath, schemaPath)
-
-        nanoporeParser.directoryToMap(dirPath)
-        String json = nanoporeParser.createJson(nanoporeParser.fileMap)
-
-        Schema jsonSchema = nanoporeParser.fileToSchema(schemaPath)
-        nanoporeParser.validateJson(json, jsonSchema)
-    }
-
 }
