@@ -2,15 +2,26 @@ package life.qbic.utils
 
 import spock.lang.Specification
 
-class NanoporeParserSpec extends Specification{
+import java.nio.file.Paths
 
-    def "Test"(){
+class NanoporeParserSpec extends Specification {
+    def exampleDirectoriesRoot = "src/test/resources/dummyFileSystem/nanopore-instrument-output"
+
+    def "parsing a valid file structure creates a Map"() {
+        given:
+            def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345")
         when:
-        def a = "test"
-
+            def map = NanoporeParser.parseFileStructure(pathToDirectory)
         then:
-        assert a == "test"
-
+            map instanceof Map
     }
 
+    def "parsing an empty directory returns null"() {
+        given:
+            def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/empty_directory")
+        when:
+            def map = NanoporeParser.parseFileStructure(pathToDirectory)
+        then:
+            map == null
+    }
 }
