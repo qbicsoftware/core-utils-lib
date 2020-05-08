@@ -395,7 +395,7 @@
         {
           "properties": {
             "name": {
-              "pattern": "mux_scan_data.*"
+              "pattern": "mux_scan_data_.*"
             },
             "file_type": {
               "pattern": "csv"
@@ -412,7 +412,7 @@
         {
           "properties": {
             "name": {
-              "pattern": "report.*"
+              "pattern": "report_.*"
             },
             "file_type": {
               "pattern": "md"
@@ -429,7 +429,7 @@
         {
           "properties": {
             "name": {
-              "pattern": "report.*"
+              "pattern": "report_.*"
             },
             "file_type": {
               "pattern": "pdf"
