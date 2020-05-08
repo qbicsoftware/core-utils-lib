@@ -5,23 +5,25 @@ import spock.lang.Specification
 import java.nio.file.Paths
 
 class NanoporeParserSpec extends Specification {
-    def exampleDirectoriesRoot = "src/test/resources/dummyFileSystem/nanopore-instrument-output"
+
+    def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/nanopore-instrument-output").getPath()
 
     def "parsing a valid file structure creates a Map"() {
         given:
-            def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345")
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345")
+        print(pathToDirectory)
         when:
-            def map = NanoporeParser.parseFileStructure(pathToDirectory)
+        def map = NanoporeParser.parseFileStructure(pathToDirectory)
         then:
-            map instanceof Map
+        map instanceof Map
     }
 
     def "parsing an empty directory returns null"() {
         given:
-            def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/empty_directory")
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/empty_directory")
         when:
-            def map = NanoporeParser.parseFileStructure(pathToDirectory)
+        def map = NanoporeParser.parseFileStructure(pathToDirectory)
         then:
-            map == null
+        map == null
     }
 }
