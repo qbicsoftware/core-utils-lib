@@ -76,9 +76,19 @@ class NanoporeParser {
             if (rootLocation.isFile()) {
                 log.error("Expected directory. Got file instead.")
                 throw new NotDirectoryException("Expected a directory. Got a file instead.")
+            } else if (rootLocation.isDirectory()) {
+                //Check if existing Directory is empty
+                if (rootLocation.list().length > 0) {
+                    print(rootLocation.list().length)
+                    // Recursive conversion
+                    return convertDirectory(rootLocation.toPath())
+                } else {
+                    log.error("Specified directory is empty")
+                    throw new NullPointerException()
+                }
             } else {
-                // Recursive conversion
-                return convertDirectory(rootLocation.toPath())
+                log.error("Input Path could not be processed")
+                throw new IOException()
             }
 
         }
