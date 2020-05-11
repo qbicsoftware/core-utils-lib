@@ -27,12 +27,16 @@ class NanoporeParser {
         String json = mapToJson(convertedDirectory)
         try {
             validateJsonForSchema(json, JSON_SCHEMA)
-            //Step3: return valid json as Map
             return convertedDirectory
         } catch (ValidationException validationException) {
+            log.error("Specified directory could not be validated")
             log.error(validationException.getMessage())
             log.debug(validationException)
+            throw validationException
         }
+        //Step3: return valid json as Map
+
+
     }
 
     /**
@@ -79,7 +83,6 @@ class NanoporeParser {
             } else if (rootLocation.isDirectory()) {
                 //Check if existing Directory is empty
                 if (rootLocation.list().length > 0) {
-                    print(rootLocation.list().length)
                     // Recursive conversion
                     return convertDirectory(rootLocation.toPath())
                 } else {
@@ -87,7 +90,7 @@ class NanoporeParser {
                     throw new NullPointerException()
                 }
             } else {
-                log.error("Input Path could not be processed")
+                log.error("Input path could not be processed")
                 throw new IOException()
             }
 
