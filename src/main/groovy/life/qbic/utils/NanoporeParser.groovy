@@ -119,12 +119,8 @@ class NanoporeParser {
             // convert to File object
             File currentFile = new File(path.toString())
             String name = currentFile.getName()
-            // defaults to the string following the last '.' in the filename
             String fileType = determineFileType(name)
-            // check for predefined file type extensions
-            for (extension in PREDEFINED_EXTENSIONS) {
-                if (name.endsWith(extension)) fileType = extension
-            }
+
 
             def convertedFile = [
                     "name"     : name,
@@ -132,6 +128,26 @@ class NanoporeParser {
                     "file_type": fileType
             ]
             return convertedFile
+        }
+
+        /**
+         * This method extracts the file type also called extension from the filename.
+         * The type defaults to the substring after the last `.` character in the string.
+         * If the filename ends with one of the predefined extensions in
+         * DirectoryConverter.PREDEFINED_EXTENSIONS then this extension is returned as fileType.
+         * @param fileName the full name of the file including extension
+         * @return the extension of the filename that was provided
+         */
+        private static String determineFileType(String fileName) {
+            // defaults to the string following the last '.' in the filename
+            String fileType = fileName.tokenize('.').last()
+            // check for predefined file type extensions
+            for (extension in PREDEFINED_EXTENSIONS) {
+                if (fileName.endsWith(extension)) {
+                    fileType = extension
+                }
+            }
+            return fileType
         }
 
     }
