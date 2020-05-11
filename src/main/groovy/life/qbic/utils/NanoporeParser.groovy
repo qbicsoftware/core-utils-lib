@@ -17,18 +17,9 @@ import java.nio.file.Path
 class NanoporeParser {
 
     final static private JSON_SCHEMA = "/nanopore-instrument-output.schema.json"
-    final private Path targetDirectoryPath
-
-    private NanoporeParser() {
-        throw new AssertionError()
-    }
-
-    NanoporeParser(Path targetDirectoryPath) {
-        this.targetDirectoryPath = targetDirectoryPath
-    }
 
     /**
-     * Method where all the magic of the nanopore parser takes place
+     * Generates a map representing the folder structure
      * @param directory path of directory whose fileTree should be converted into map
      */
     static Map parseFileStructure(Path directory) {
@@ -36,9 +27,8 @@ class NanoporeParser {
         Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
         // Step2: validate json
         String json = mapToJson(convertedDirectory)
-        if (isValidJsonForSchema(json, JSON_SCHEMA))
-        //Step3: return valid json as Map
-        {
+        if (isValidJsonForSchema(json, JSON_SCHEMA)) {
+            //Step3: return valid json as Map
             return convertedDirectory
         }
 
