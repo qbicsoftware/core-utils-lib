@@ -17,7 +17,7 @@ import java.nio.file.Path
 class NanoporeParser {
 
     final static private JSON_SCHEMA = "/nanopore-instrument-output.schema.json"
-    Path targetDirectoryPath
+    final private Path targetDirectoryPath
 
     private NanoporeParser() {
         throw new AssertionError()
