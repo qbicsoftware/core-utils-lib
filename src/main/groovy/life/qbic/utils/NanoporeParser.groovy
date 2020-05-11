@@ -120,7 +120,7 @@ class NanoporeParser {
             File currentFile = new File(path.toString())
             String name = currentFile.getName()
             // defaults to the string following the last '.' in the filename
-            String fileType = name.tokenize('.').last()
+            String fileType = determineFileType(name)
             // check for predefined file type extensions
             for (extension in PREDEFINED_EXTENSIONS) {
                 if (name.endsWith(extension)) fileType = extension
