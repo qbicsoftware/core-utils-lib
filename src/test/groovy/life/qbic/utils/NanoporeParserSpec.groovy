@@ -8,23 +8,21 @@ class NanoporeParserSpec extends Specification {
 
     def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/nanopore-instrument-output").getPath()
 
-    def "parsing a valid file structure creates a Map"() {
+    def "parsing an empty directory throws NullPointerException"() {
         given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345")
-        
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "/empty_directory")
         when:
-        def map = NanoporeParser.parseFileStructure(pathToDirectory)
-        
+        NanoporeParser.parseFileStructure(pathToDirectory)
         then:
-        assert map instanceof Map
+        thrown(NullPointerException)
     }
 
-    def "parsing an empty directory returns null"() {
+    def "parsing a non-existing directory throws IOError"() {
         given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/empty_directory")
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_directory")
         when:
-        def map = NanoporeParser.parseFileStructure(pathToDirectory)
+        NanoporeParser.parseFileStructure(pathToDirectory)
         then:
-        map == null
+        thrown(IOException)
     }
 }
