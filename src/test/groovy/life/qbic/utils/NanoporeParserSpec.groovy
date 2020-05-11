@@ -11,11 +11,12 @@ class NanoporeParserSpec extends Specification {
     def "parsing a valid file structure creates a Map"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345")
-        print(pathToDirectory)
+        
         when:
         def map = NanoporeParser.parseFileStructure(pathToDirectory)
+        
         then:
-        map instanceof Map
+        assert map instanceof Map
     }
 
     def "parsing an empty directory returns null"() {
