@@ -18,6 +18,10 @@ class NanoporeParserSpec extends Specification {
         def map = NanoporeParser.parseFileStructure(pathToDirectory)
         then:
         assert map instanceof Map
+        // Check that the metadata from the report file has been retrieved
+        assert map.children.get(0).get("metadata").hostname == "PCT0094"
+        // Check that the metadata from the summary file has been retrieved
+        assert map.children.get(0).get("metadata").protocol == "sequencing/sequencing_PRO002_DNA:FLO-PRO002:SQK-LSK109:True"
     }
 
     def "parsing an invalid file structure throws ValidationError"() {

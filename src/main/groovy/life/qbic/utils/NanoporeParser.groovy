@@ -1,6 +1,7 @@
 package life.qbic.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import org.everit.json.schema.Schema
 import org.everit.json.schema.ValidationException
@@ -29,6 +30,7 @@ class NanoporeParser {
         try {
             validateJsonForSchema(json, JSON_SCHEMA)
             //Step3: return valid json as Map
+            parseMetaData(convertedDirectory)
             return convertedDirectory
         } catch (ValidationException validationException) {
             log.error("Specified directory could not be validated")
@@ -36,6 +38,48 @@ class NanoporeParser {
             log.debug(validationException)
             throw validationException
         }
+    }
+
+
+    private static Map parseMetaData(Map convertedDirectory) {
+        convertedDirectory.get("children").each { measurement ->
+            def reportFile = measurement["children"].find {it["name"].contains("report") && it["file_type"] == "md"}
+            def summaryFile = measurement["children"].find {it["name"].contains("final_summary") && it["file_type"] == "txt"}
+            def metadata = readMetaData(reportFile as Map, summaryFile as Map)
+            measurement["metadata"] = metadata
+        }
+        return convertedDirectory
+    }
+
+    private static Map readMetaData(Map<String, String> reportFile, Map<String, String> summaryFile) {
+        def report = new File(reportFile["path"].toString()).readLines().iterator()
+        def buffer = new StringBuffer()
+        def jsonSlurper = new JsonSlurper()
+        def jsonStarted = false
+        def jsonEnded = false
+        while (report.hasNext()) {
+            if (jsonEnded) {
+                break
+            }
+            def line = report.next()
+            if (line.startsWith("{")) {
+                jsonStarted = true
+            }
+            if (jsonStarted) {
+                buffer.append(line)
+            }
+            if (line.startsWith("}")) {
+                jsonEnded = true
+            }
+        }
+        def finalMetaData = (Map) jsonSlurper.parseText(buffer.toString())
+
+        new File(summaryFile["path"].toString()).readLines().each { line ->
+            def split = line.split("=")
+            finalMetaData[split[0]] = split[1]
+        }
+
+        return finalMetaData
     }
 
     /**
