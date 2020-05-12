@@ -53,7 +53,7 @@ class NanoporeParser {
         convertedDirectory.get("children").each { measurement ->
             def reportFile = measurement["children"].find {it["name"].contains("report") && it["file_type"] == "md"}
             def summaryFile = measurement["children"].find {it["name"].contains("final_summary") && it["file_type"] == "txt"}
-            def metadata = readMetaData(reportFile, summaryFile)
+            def metadata = readMetaData(reportFile as Map, summaryFile as Map)
             measurement["metadata"] = metadata
         }
         return convertedDirectory
@@ -80,7 +80,14 @@ class NanoporeParser {
                 jsonEnded = true
             }
         }
-        return (Map) jsonSlurper.parseText(buffer.toString())
+        def finalMetaData = (Map) jsonSlurper.parseText(buffer.toString())
+
+        new File(summaryFile["path"]).readLines().each { line ->
+            def split = line.split("=")
+            finalMetaData[split[0]] = split[1]
+        }
+
+        return finalMetaData
     }
 
     /**
