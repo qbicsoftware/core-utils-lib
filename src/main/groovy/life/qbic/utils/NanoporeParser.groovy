@@ -86,7 +86,7 @@ class NanoporeParser {
                     return convertDirectory(rootLocation.toPath())
                 } else {
                     log.error("Specified directory is empty")
-                    throw new ParseException()
+                    throw new ParseException("Parsed directory might not be empty", -1)
                 }
             } else {
                 log.error("Input path could not be processed")
