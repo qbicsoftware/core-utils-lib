@@ -10,6 +10,7 @@ import org.json.JSONTokener
 
 import java.nio.file.NotDirectoryException
 import java.nio.file.Path
+import java.text.ParseException
 
 @Log4j2
 class NanoporeParser {
@@ -87,7 +88,7 @@ class NanoporeParser {
                     return convertDirectory(rootLocation.toPath())
                 } else {
                     log.error("Specified directory is empty")
-                    throw new NullPointerException()
+                    throw new ParseException("The specified directory must not be empty.")
                 }
             } else {
                 log.error("Input path could not be processed")
