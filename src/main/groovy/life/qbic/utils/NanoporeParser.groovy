@@ -52,7 +52,7 @@ class NanoporeParser {
     }
 
     private static Map readMetaData(Map<String, String> reportFile, Map<String, String> summaryFile) {
-        def report = new File(reportFile["path"]).readLines().iterator()
+        def report = new File(reportFile["path"].toString()).readLines().iterator()
         def buffer = new StringBuffer()
         def jsonSlurper = new JsonSlurper()
         def jsonStarted = false
@@ -74,7 +74,7 @@ class NanoporeParser {
         }
         def finalMetaData = (Map) jsonSlurper.parseText(buffer.toString())
 
-        new File(summaryFile["path"]).readLines().each { line ->
+        new File(summaryFile["path"].toString()).readLines().each { line ->
             def split = line.split("=")
             finalMetaData[split[0]] = split[1]
         }
