@@ -31,11 +31,18 @@ class NanoporeParserSpec extends Specification {
 
     def "parsing an empty directory throws ParseException"() {
         given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/empty_directory/")
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "/empty_directory/")
+        // Maven doesn't include empty folders in build process so it has to be generated explicitly
+        File directory = new File(pathToDirectory.toString())
+        if (!directory.exists()) {
+            directory.mkdir()
+        }
         when:
         NanoporeParser.parseFileStructure(pathToDirectory)
         then:
         thrown(ParseException)
+        // Remove new created folder after testing
+        directory.delete()
     }
 
     def "parsing a non-existing directory throws FileNotFoundException"() {
