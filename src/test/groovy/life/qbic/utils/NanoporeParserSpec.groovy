@@ -29,22 +29,22 @@ class NanoporeParserSpec extends Specification {
         thrown(ValidationException)
     }
 
-    def "parsing an empty directory throws NullPointerException"() {
+    def "parsing an empty directory throws ParseException"() {
         given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "/empty_directory")
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/empty_directory/")
         when:
         NanoporeParser.parseFileStructure(pathToDirectory)
         then:
         thrown(ParseException)
     }
 
-    def "parsing a non-existing directory throws IOException"() {
+    def "parsing a non-existing directory throws FileNotFoundException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_directory")
         when:
         NanoporeParser.parseFileStructure(pathToDirectory)
         then:
-        thrown(IOException)
+        thrown(FileNotFoundException)
     }
 
     def "parsing a file throws NotDirectoryException "() {

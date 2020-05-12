@@ -89,8 +89,13 @@ class NanoporeParser {
                     throw new ParseException("Parsed directory might not be empty", -1)
                 }
             } else {
-                log.error("Input path could not be processed")
-                throw new IOException()
+                if (! rootLocation.exists()) {
+                    log.error("The given directory does not exist.")
+                    throw new FileNotFoundException("The given path does not exist.")
+                } else {
+                    log.error("Input path could not be processed")
+                    throw new IOException()
+                }
             }
 
         }
