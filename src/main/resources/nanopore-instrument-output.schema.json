@@ -27,7 +27,7 @@
           "description": "Describes one or more files and/or sub-folders",
           "type": "array",
           "items": {
-            "anyOf": [
+            "oneOf": [
               {
                 "$ref": "#/definitions/folder"
               },
