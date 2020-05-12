@@ -28,6 +28,7 @@ class NanoporeParser {
         String json = mapToJson(convertedDirectory)
         try {
             validateJsonForSchema(json, JSON_SCHEMA)
+            //Step3: return valid json as Map
             return convertedDirectory
         } catch (ValidationException validationException) {
             log.error("Specified directory could not be validated")
@@ -35,9 +36,6 @@ class NanoporeParser {
             log.debug(validationException)
             throw validationException
         }
-        //Step3: return valid json as Map
-
-
     }
 
     /**

@@ -5,6 +5,7 @@ import spock.lang.Specification
 
 import java.nio.file.NotDirectoryException
 import java.nio.file.Paths
+import java.text.ParseException
 
 class NanoporeParserSpec extends Specification {
 
@@ -34,7 +35,7 @@ class NanoporeParserSpec extends Specification {
         when:
         NanoporeParser.parseFileStructure(pathToDirectory)
         then:
-        thrown(NullPointerException)
+        thrown(ParseException)
     }
 
     def "parsing a non-existing directory throws IOException"() {
