@@ -127,7 +127,8 @@ class NanoporeParser {
                 //Check if existing Directory is empty
                 if (rootLocation.list().length > 0) {
                     // Recursive conversion
-                    return convertDirectory(rootLocation.toPath())
+                    Map folderStructure = convertDirectory(rootLocation.toPath())
+                    return convertToRelativePaths(folderStructure, rootLocation.toPath())
                 } else {
                     log.error("Specified directory is empty")
                     throw new ParseException("Parsed directory might not be empty", -1)
@@ -169,6 +170,19 @@ class NanoporeParser {
             ]
 
             return convertedDirectory
+        }
+
+        private static Map convertToRelativePaths(Map content, Path root) {
+            if (content["children"]) {
+                // Children always contains a map, so convert recursively
+                content["children"] = convertToRelativePaths(content, root)
+            }
+            content["path"] = toRelativePath(content["path"] as String, root)
+            return content
+        }
+
+        private static String toRelativePath(String path, Path root) {
+            return path.replace(root.toString(), "")
         }
 
         /**
