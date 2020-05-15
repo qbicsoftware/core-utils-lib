@@ -30,7 +30,7 @@ class NanoporeParser {
         try {
             validateJsonForSchema(json, JSON_SCHEMA)
             //Step3: return valid json as Map
-            parseMetaData(convertedDirectory)
+            parseMetaData(convertedDirectory, directory)
             return convertedDirectory
         } catch (ValidationException validationException) {
             log.error("Specified directory could not be validated")
@@ -41,18 +41,20 @@ class NanoporeParser {
     }
 
 
-    private static Map parseMetaData(Map convertedDirectory) {
+    private static Map parseMetaData(Map convertedDirectory, Path root) {
         convertedDirectory.get("children").each { measurement ->
             def reportFile = measurement["children"].find {it["name"].contains("report") && it["file_type"] == "md"}
             def summaryFile = measurement["children"].find {it["name"].contains("final_summary") && it["file_type"] == "txt"}
-            def metadata = readMetaData(reportFile as Map, summaryFile as Map)
+            def metadata = readMetaData(reportFile as Map, summaryFile as Map, root)
             measurement["metadata"] = metadata
         }
         return convertedDirectory
     }
 
-    private static Map readMetaData(Map<String, String> reportFile, Map<String, String> summaryFile) {
-        def report = new File(reportFile["path"].toString()).readLines().iterator()
+    private static Map readMetaData(Map<String, String> reportFile, Map<String, String> summaryFile, Path root) {
+        def report = new File(root.toString() + reportFile["path"])
+                .readLines()
+                .iterator()
         def buffer = new StringBuffer()
         def jsonSlurper = new JsonSlurper()
         def jsonStarted = false
@@ -74,9 +76,10 @@ class NanoporeParser {
         }
         def finalMetaData = (Map) jsonSlurper.parseText(buffer.toString())
 
-        new File(summaryFile["path"].toString()).readLines().each { line ->
-            def split = line.split("=")
-            finalMetaData[split[0]] = split[1]
+        new File(root.toString() + summaryFile["path"].toString())
+                .readLines().each { line ->
+                    def split = line.split("=")
+                    finalMetaData[split[0]] = split[1]
         }
 
         return finalMetaData
