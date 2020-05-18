@@ -124,7 +124,6 @@ class NanoporeParser {
          * @return a Map describing the file tree starting from the given path
          */
         static Map fileTreeToMap(Path path) {
-            log.debug "real root $path"
             File rootLocation = new File(path.toString())
             if (rootLocation.isFile()) {
                 log.error("Expected directory. Got file instead.")
