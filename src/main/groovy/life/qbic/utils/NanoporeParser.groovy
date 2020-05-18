@@ -34,9 +34,9 @@ class NanoporeParser {
             return convertedDirectory
         } catch (ValidationException validationException) {
             log.error("Specified directory could not be validated")
-            log.error(validationException.getMessage())
-            log.debug(validationException)
-            println validationException.causingExceptions.join("\n")
+            // we have to fetch all validation exceptions
+            def causes = validationException.getCausingExceptions().collect{ it.message  }.join("\n")
+            log.error(causes)
             throw validationException
         }
     }
@@ -188,7 +188,7 @@ class NanoporeParser {
         }
 
         private static String toRelativePath(String path, Path root) {
-            if (root.toString().equals(path.toString())) {
+            if (root.toString() == path) {
                 return "."
             } else {
                 return path.replace(root.toString(), "")
