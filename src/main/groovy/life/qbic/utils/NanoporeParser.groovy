@@ -77,7 +77,7 @@ class NanoporeParser {
         }
         def finalMetaData = (Map) jsonSlurper.parseText(buffer.toString())
 
-        new File(root.toString() + summaryFile["path"].toString())
+        new File(Paths.get(root.toString(), summaryFile["path"].toString()))
                 .readLines().each { line ->
                     def split = line.split("=")
                     finalMetaData[split[0]] = split[1]
