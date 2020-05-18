@@ -36,7 +36,6 @@ class NanoporeParser {
             log.error("Specified directory could not be validated")
             log.error(validationException.getMessage())
             log.debug(validationException)
-            println validationException.causingExceptions.join("\n")
             throw validationException
         }
     }
@@ -123,7 +122,7 @@ class NanoporeParser {
          * @return a Map describing the file tree starting from the given path
          */
         static Map fileTreeToMap(Path path) {
-            println "real root $path"
+            log.debug "real root $path"
             File rootLocation = new File(path.toString())
             if (rootLocation.isFile()) {
                 log.error("Expected directory. Got file instead.")
