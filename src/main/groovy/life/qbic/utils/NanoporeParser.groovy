@@ -188,7 +188,11 @@ class NanoporeParser {
         }
 
         private static String toRelativePath(String path, Path root) {
-            return path.replace(root.toString(), "")
+            if (root.toString().equals(path.toString())) {
+                return "."
+            } else {
+                return path.replace(root.toString(), "")
+            }
         }
 
         /**
