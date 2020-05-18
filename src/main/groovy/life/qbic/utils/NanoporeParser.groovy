@@ -53,7 +53,7 @@ class NanoporeParser {
     }
 
     private static Map readMetaData(Map<String, String> reportFile, Map<String, String> summaryFile, Path root) {
-        def report = new File(root.toString() + reportFile["path"].toString())
+        def report = new File(Paths.get(root.toString(),reportFile["path"].toString()))
                 .readLines()
                 .iterator()
         def buffer = new StringBuffer()
