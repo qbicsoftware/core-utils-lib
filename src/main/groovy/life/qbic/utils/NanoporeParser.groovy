@@ -11,6 +11,7 @@ import org.json.JSONTokener
 
 import java.nio.file.NotDirectoryException
 import java.nio.file.Path
+import java.nio.file.Paths
 import java.text.ParseException
 
 @Log4j2
@@ -53,7 +54,7 @@ class NanoporeParser {
     }
 
     private static Map readMetaData(Map<String, String> reportFile, Map<String, String> summaryFile, Path root) {
-        def report = new File(Paths.get(root.toString(),reportFile["path"].toString()))
+        def report = new File(Paths.get(root.toString(),reportFile["path"].toString()) as String)
                 .readLines()
                 .iterator()
         def buffer = new StringBuffer()
@@ -77,7 +78,7 @@ class NanoporeParser {
         }
         def finalMetaData = (Map) jsonSlurper.parseText(buffer.toString())
 
-        new File(Paths.get(root.toString(), summaryFile["path"].toString()))
+        new File(Paths.get(root.toString(), summaryFile["path"].toString()) as String)
                 .readLines().each { line ->
                     def split = line.split("=")
                     finalMetaData[split[0]] = split[1]
@@ -191,7 +192,7 @@ class NanoporeParser {
             if (root.toString() == path) {
                 return "./"
             } else {
-                return path.replace(root.toString(), "")
+                return path.replace("${root.toString()}/", "")
             }
         }
 
