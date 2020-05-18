@@ -36,6 +36,7 @@ class NanoporeParser {
             log.error("Specified directory could not be validated")
             log.error(validationException.getMessage())
             log.debug(validationException)
+            println validationException.causingExceptions.join("\n")
             throw validationException
         }
     }
@@ -52,7 +53,7 @@ class NanoporeParser {
     }
 
     private static Map readMetaData(Map<String, String> reportFile, Map<String, String> summaryFile, Path root) {
-        def report = new File(root.toString() + reportFile["path"])
+        def report = new File(root.toString() + reportFile["path"].toString())
                 .readLines()
                 .iterator()
         def buffer = new StringBuffer()
@@ -122,6 +123,7 @@ class NanoporeParser {
          * @return a Map describing the file tree starting from the given path
          */
         static Map fileTreeToMap(Path path) {
+            println "real root $path"
             File rootLocation = new File(path.toString())
             if (rootLocation.isFile()) {
                 log.error("Expected directory. Got file instead.")
@@ -176,12 +178,13 @@ class NanoporeParser {
         }
 
         private static Map convertToRelativePaths(Map content, Path root) {
+            content["path"] = toRelativePath(content["path"] as String, root)
             if (content["children"]) {
                 // Children always contains a map, so convert recursively
-                content["children"] = convertToRelativePaths(content, root)
+                content["children"] = (content["children"] as List).collect { convertToRelativePaths(it as Map, root) }
             }
-            content["path"] = toRelativePath(content["path"] as String, root)
             return content
+
         }
 
         private static String toRelativePath(String path, Path root) {
