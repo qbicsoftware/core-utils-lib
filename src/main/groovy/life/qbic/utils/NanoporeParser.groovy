@@ -56,7 +56,6 @@ class NanoporeParser {
             def metadata = readMetaData(reportFile as Map, summaryFile as Map, root)
             Map finalMetadata = finalizeMetadata(metadata)
             measurement["metadata"] = finalMetadata
-            print(metadata)
         }
         return convertedDirectory
     }
