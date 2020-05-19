@@ -7,7 +7,7 @@
   </Appenders>
   <Loggers>
     <Root level="ALL">
-      <AppenderRef ref="SysOut" level="INFO"/>
+      <AppenderRef ref="SysOut" level="DEBUG"/>
     </Root>
   </Loggers>
 </Configuration>
