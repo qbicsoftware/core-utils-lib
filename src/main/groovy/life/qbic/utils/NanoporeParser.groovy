@@ -29,8 +29,6 @@ class NanoporeParser {
         Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
 
         String json = mapToJson(convertedDirectory)
-        print(json)
-        print(convertedDirectory.getClass())
         try {
             validateJsonForSchema(json, JSON_SCHEMA)
             //Step3: convert valid json to OxfordNanoporeExperiment Object
@@ -56,7 +54,9 @@ class NanoporeParser {
             def reportFile = measurement["children"].find {it["name"].contains("report") && it["file_type"] == "md"}
             def summaryFile = measurement["children"].find {it["name"].contains("final_summary") && it["file_type"] == "txt"}
             def metadata = readMetaData(reportFile as Map, summaryFile as Map, root)
-            measurement["metadata"] = metadata
+            Map finalMetadata = finalizeMetadata(metadata)
+            measurement["metadata"] = finalMetadata
+            print(metadata)
         }
         return convertedDirectory
     }
@@ -93,6 +93,32 @@ class NanoporeParser {
         }
 
         return finalMetaData
+    }
+
+    private static Map finalizeMetadata(Map metadataMap) {
+        //Step1: Set entries that need to be changed in Metadata Map
+        //ToDo Are there other basecallers used in Nanopore Sequencing and if so how are they stored in summary file?
+        String basecallerName = "guppy"
+        String flowcellPositionName = "position"
+        //Step2: Get key and values for specified entries
+        //ToDo how to handle if a specified can't be found? Currently it's ignored should this throw an exception?
+        String basecallerKey = metadataMap.find{ it.key.toString().contains(basecallerName) }?.key
+        String flowcellPositionKey = metadataMap.find{ it.key.toString().contains(flowcellPositionName) }?.key
+        if (basecallerKey) {
+            def (basecaller, _) = basecallerKey.tokenize('_')
+            String basecallerValue = metadataMap[basecallerKey.toString()]
+            metadataMap.remove(basecallerKey)
+            metadataMap["base_caller"] = basecaller
+            metadataMap["base_caller_version"] = basecallerValue
+        }
+        if (flowcellPositionKey)
+        {
+            String flowcellPositionValue =  metadataMap[flowcellPositionKey]
+            metadataMap.remove(flowcellPositionKey)
+            metadataMap["flow_cell_position"] = flowcellPositionValue
+        }
+
+        return metadataMap
     }
 
     /**
