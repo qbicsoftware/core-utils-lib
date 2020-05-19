@@ -17,6 +17,7 @@ class NanoporeParserSpec extends Specification {
         when:
         def map = NanoporeParser.parseFileStructure(pathToDirectory)
         then:
+
         assert map instanceof Map
         // Check that the metadata from the report file has been retrieved
         assert map.children.get(0).get("metadata").hostname == "PCT0094"

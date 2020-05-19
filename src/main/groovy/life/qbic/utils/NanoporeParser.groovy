@@ -13,6 +13,7 @@ import java.nio.file.NotDirectoryException
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.text.ParseException
+import life.qbic.datamodel.datasets.OxfordNanoporeExperiment
 
 @Log4j2
 class NanoporeParser {
@@ -26,17 +27,25 @@ class NanoporeParser {
     static Map parseFileStructure(Path directory) {
         // Step1: convert directory to json
         Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
-        // Step2: validate json
+
         String json = mapToJson(convertedDirectory)
+        print(json)
+        print(convertedDirectory.getClass())
         try {
             validateJsonForSchema(json, JSON_SCHEMA)
-            //Step3: return valid json as Map
+            //Step3: convert valid json to OxfordNanoporeExperiment Object
+            OxfordNanoporeExperiment convertedExperiment = OxfordNanoporeExperiment.create(convertedDirectory)
+            print(convertedExperiment)
+            //Step4:
             parseMetaData(convertedDirectory, directory)
+            /*Step5: return valid json as OxfordNanoporeExperiment
+            return convertedExperiment */
+
             return convertedDirectory
         } catch (ValidationException validationException) {
             log.error("Specified directory could not be validated")
             // we have to fetch all validation exceptions
-            def causes = validationException.getCausingExceptions().collect{ it.message  }.join("\n")
+            def causes = validationException.getCausingExceptions().collect{ it.message }.join("\n")
             log.error(causes)
             throw validationException
         }
