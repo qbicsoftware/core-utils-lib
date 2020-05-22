@@ -3,6 +3,7 @@ package life.qbic.utils
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
+import groovyjarjarcommonscli.MissingArgumentException
 import org.everit.json.schema.Schema
 import org.everit.json.schema.ValidationException
 import org.everit.json.schema.loader.SchemaLoader
@@ -95,30 +96,40 @@ class NanoporeParser {
     }
 
     private static Map finalizeMetadata(Map metadataMap) {
-        //Step1: Set entries that need to be changed in Metadata Map
-        //ToDo Are there other basecallers used in Nanopore Sequencing and if so how are they stored in summary file?
-        String basecallerName = "guppy"
+        // Step1: Set entries that need to be changed in Metadata Map
+        // Current base-caller information is stored in a Key-Value pair like "guppy_version": "3.2.8+bd67289"
+        String basecallerName = "guppy_version"
+        // Current flow cell position information is stored in a Key-Value pair like "position": "1-A3-D3"
         String flowcellPositionName = "position"
-        //Step2: Get key and values for specified entries
-        //ToDo how to handle if a specified can't be found? Currently it's ignored should this throw an exception?
-        String basecallerKey = metadataMap.find{ it.key.toString().contains(basecallerName) }?.key
-        String flowcellPositionKey = metadataMap.find{ it.key.toString().contains(flowcellPositionName) }?.key
-        if (basecallerKey) {
-            def (basecaller, _) = basecallerKey.tokenize('_')
-            String basecallerValue = metadataMap[basecallerKey.toString()]
-            metadataMap.remove(basecallerKey)
-            metadataMap["base_caller"] = basecaller
-            metadataMap["base_caller_version"] = basecallerValue
-        }
-        if (flowcellPositionKey)
-        {
-            String flowcellPositionValue =  metadataMap[flowcellPositionKey]
-            metadataMap.remove(flowcellPositionKey)
-            metadataMap["flow_cell_position"] = flowcellPositionValue
-        }
+        // Step2: Get key and values for specified entries
+        checkPresenceOfBaseCaller(metadataMap, basecallerName)
+        checkPresenceOfFlowCellPosition(metadataMap, flowcellPositionName)
+
+        metadataMap["base_caller"] = "guppy"
+        metadataMap["base_caller_version"] = metadataMap[basecallerName]
+        metadataMap["flow_cell_position"] = metadataMap[flowcellPositionName]
 
         return metadataMap
     }
+
+    private static void checkPresenceOfFlowCellPosition(Map metadata, String flowCellEntry) {
+        if (! metadata.containsKey(flowCellEntry)) {
+            throw new MissingArgumentException("Could not find metadata information about the flow cell position.")
+        }
+        if ( (metadata[flowCellEntry] as String).isEmpty() ) {
+            throw new MissingArgumentException("Flow cell position information was empty.")
+        }
+    }
+
+    private static void checkPresenceOfBaseCaller(Map metadata, String baseCallerEntry) {
+        if (! metadata.containsKey(baseCallerEntry)) {
+            throw new MissingArgumentException("Could not find metadata information about the base caller.")
+        }
+        if ( (metadata[baseCallerEntry] as String).isEmpty() ) {
+            throw new MissingArgumentException("Base caller information was empty.")
+        }
+    }
+            
 
     /**
      * Method which converts a map into json String
