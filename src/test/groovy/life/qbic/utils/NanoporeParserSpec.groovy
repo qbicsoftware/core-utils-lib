@@ -1,5 +1,6 @@
 package life.qbic.utils
 
+import life.qbic.datamodel.datasets.OxfordNanoporeExperiment
 import org.everit.json.schema.ValidationException
 import spock.lang.Specification
 
@@ -15,13 +16,13 @@ class NanoporeParserSpec extends Specification {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345")
         when:
-        def map = NanoporeParser.parseFileStructure(pathToDirectory)
+        def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
         then:
-        assert map instanceof Map
+        assert experiment instanceof OxfordNanoporeExperiment
         // Check that the metadata from the report file has been retrieved
-        assert map.children.get(0).get("metadata").hostname == "PCT0094"
+        assert experiment.getMeasurements().get(0).getMachineHost() == "PCT0094"
         // Check that the metadata from the summary file has been retrieved
-        assert map.children.get(0).get("metadata").protocol == "sequencing/sequencing_PRO002_DNA:FLO-PRO002:SQK-LSK109:True"
+        assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109"
     }
 
     def "parsing an invalid file structure throws ValidationError"() {

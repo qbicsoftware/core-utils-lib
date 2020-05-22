@@ -3,6 +3,7 @@ package life.qbic.utils
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
+import groovyjarjarcommonscli.MissingArgumentException
 import org.everit.json.schema.Schema
 import org.everit.json.schema.ValidationException
 import org.everit.json.schema.loader.SchemaLoader
@@ -13,6 +14,7 @@ import java.nio.file.NotDirectoryException
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.text.ParseException
+import life.qbic.datamodel.datasets.OxfordNanoporeExperiment
 
 @Log4j2
 class NanoporeParser {
@@ -23,20 +25,25 @@ class NanoporeParser {
      * Generates a map representing the folder structure
      * @param directory path of directory whose fileTree should be converted into map
      */
-    static Map parseFileStructure(Path directory) {
+    static OxfordNanoporeExperiment parseFileStructure(Path directory) {
         // Step1: convert directory to json
         Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
-        // Step2: validate json
+
         String json = mapToJson(convertedDirectory)
         try {
             validateJsonForSchema(json, JSON_SCHEMA)
-            //Step3: return valid json as Map
-            parseMetaData(convertedDirectory, directory)
-            return convertedDirectory
+            //Step3: convert valid json to OxfordNanoporeExperiment Object
+
+            // Step4: Parse meta data out of report files and extend the map
+            def finalMap = parseMetaData(convertedDirectory, directory)
+
+            // Step5: Create the final OxfordNanoporeExperiment from the map
+            OxfordNanoporeExperiment convertedExperiment = OxfordNanoporeExperiment.create(finalMap)
+            return convertedExperiment
         } catch (ValidationException validationException) {
             log.error("Specified directory could not be validated")
             // we have to fetch all validation exceptions
-            def causes = validationException.getCausingExceptions().collect{ it.message  }.join("\n")
+            def causes = validationException.getCausingExceptions().collect{ it.message }.join("\n")
             log.error(causes)
             throw validationException
         }
@@ -48,7 +55,8 @@ class NanoporeParser {
             def reportFile = measurement["children"].find {it["name"].contains("report") && it["file_type"] == "md"}
             def summaryFile = measurement["children"].find {it["name"].contains("final_summary") && it["file_type"] == "txt"}
             def metadata = readMetaData(reportFile as Map, summaryFile as Map, root)
-            measurement["metadata"] = metadata
+            Map finalMetadata = finalizeMetadata(metadata)
+            measurement["metadata"] = finalMetadata
         }
         return convertedDirectory
     }
@@ -86,6 +94,42 @@ class NanoporeParser {
 
         return finalMetaData
     }
+
+    private static Map finalizeMetadata(Map metadataMap) {
+        // Step1: Set entries that need to be changed in Metadata Map
+        // Current base-caller information is stored in a Key-Value pair like "guppy_version": "3.2.8+bd67289"
+        String basecallerName = "guppy_version"
+        // Current flow cell position information is stored in a Key-Value pair like "position": "1-A3-D3"
+        String flowcellPositionName = "position"
+        // Step2: Get key and values for specified entries
+        checkPresenceOfBaseCaller(metadataMap, basecallerName)
+        checkPresenceOfFlowCellPosition(metadataMap, flowcellPositionName)
+
+        metadataMap["base_caller"] = "guppy"
+        metadataMap["base_caller_version"] = metadataMap[basecallerName]
+        metadataMap["flow_cell_position"] = metadataMap[flowcellPositionName]
+
+        return metadataMap
+    }
+
+    private static void checkPresenceOfFlowCellPosition(Map metadata, String flowCellEntry) {
+        if (! metadata.containsKey(flowCellEntry)) {
+            throw new MissingArgumentException("Could not find metadata information about the flow cell position.")
+        }
+        if ( (metadata[flowCellEntry] as String).isEmpty() ) {
+            throw new MissingArgumentException("Flow cell position information was empty.")
+        }
+    }
+
+    private static void checkPresenceOfBaseCaller(Map metadata, String baseCallerEntry) {
+        if (! metadata.containsKey(baseCallerEntry)) {
+            throw new MissingArgumentException("Could not find metadata information about the base caller.")
+        }
+        if ( (metadata[baseCallerEntry] as String).isEmpty() ) {
+            throw new MissingArgumentException("Base caller information was empty.")
+        }
+    }
+            
 
     /**
      * Method which converts a map into json String
