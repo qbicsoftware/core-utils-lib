@@ -31,6 +31,7 @@ class NanoporeParser {
 
         String json = mapToJson(convertedDirectory)
         try {
+        // Step2: Validate created Json against schema 
             validateJsonForSchema(json, JSON_SCHEMA)
             //Step3: convert valid json to OxfordNanoporeExperiment Object
 
