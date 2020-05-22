@@ -12,7 +12,7 @@ class NanoporeParserSpec extends Specification {
 
     def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/nanopore-instrument-output").getPath()
 
-    def "parsing a valid file structure creates a Map"() {
+    def "parsing a valid file structure returns an OxfordNanoporeExperiment Object"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345")
         when:
