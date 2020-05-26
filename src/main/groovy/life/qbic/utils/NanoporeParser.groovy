@@ -215,8 +215,7 @@ class NanoporeParser {
                 file ->
                     if (file.isFile()) {
                         convertFile(file.toPath())
-                    } else if (file.isDirectory())
-                    {
+                    } else if (file.isDirectory()) {
                         convertDirectory(file.toPath())
                     }
             }
