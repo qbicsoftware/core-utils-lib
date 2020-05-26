@@ -177,7 +177,6 @@ class NanoporeParser {
                 if (rootLocation.list().length > 0) {
                     // Recursive conversion
                     Map folderStructure = convertDirectory(rootLocation.toPath())
-                    print(folderStructure)
                     //folderStructure.values().removeAll(Collections.singleton(null))
                     return convertToRelativePaths(folderStructure, rootLocation.toPath())
                 } else {
