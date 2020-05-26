@@ -10,7 +10,7 @@
   </parent>
   <artifactId>core-utils-lib</artifactId>
 
-  <version>1.4.1</version>
+  <version>1.4.3</version>
   <name>Core Utilities Library</name>
   <url>http://github.com/qbicsoftware/core-utils-lib</url>
   <description>Collection of non-Vaadin, non-Liferay utilities.</description>
