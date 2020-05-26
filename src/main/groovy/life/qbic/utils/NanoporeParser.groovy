@@ -43,7 +43,7 @@ class NanoporeParser {
         } catch (ValidationException validationException) {
             log.error("Specified directory could not be validated")
             // we have to fetch all validation exceptions
-            def causes = validationException.getCausingExceptions().collect{ it.message }.join("\n")
+            def causes = validationException.getCausingExceptions().collect { it.message }.join("\n")
             log.error(causes)
             throw validationException
         }
@@ -52,8 +52,8 @@ class NanoporeParser {
 
     private static Map parseMetaData(Map convertedDirectory, Path root) {
         convertedDirectory.get("children").each { measurement ->
-            def reportFile = measurement["children"].find {it["name"].contains("report") && it["file_type"] == "md"}
-            def summaryFile = measurement["children"].find {it["name"].contains("final_summary") && it["file_type"] == "txt"}
+            def reportFile = measurement["children"].find { it["name"].contains("report") && it["file_type"] == "md" }
+            def summaryFile = measurement["children"].find { it["name"].contains("final_summary") && it["file_type"] == "txt" }
             def metadata = readMetaData(reportFile as Map, summaryFile as Map, root)
             Map finalMetadata = finalizeMetadata(metadata)
             measurement["metadata"] = finalMetadata
@@ -62,7 +62,7 @@ class NanoporeParser {
     }
 
     private static Map readMetaData(Map<String, String> reportFile, Map<String, String> summaryFile, Path root) {
-        def report = new File(Paths.get(root.toString(),reportFile["path"].toString()) as String)
+        def report = new File(Paths.get(root.toString(), reportFile["path"].toString()) as String)
                 .readLines()
                 .iterator()
         def buffer = new StringBuffer()
@@ -88,8 +88,8 @@ class NanoporeParser {
 
         new File(Paths.get(root.toString(), summaryFile["path"].toString()) as String)
                 .readLines().each { line ->
-                    def split = line.split("=")
-                    finalMetaData[split[0]] = split[1]
+            def split = line.split("=")
+            finalMetaData[split[0]] = split[1]
         }
 
         return finalMetaData
@@ -113,23 +113,23 @@ class NanoporeParser {
     }
 
     private static void checkPresenceOfFlowCellPosition(Map metadata, String flowCellEntry) {
-        if (! metadata.containsKey(flowCellEntry)) {
+        if (!metadata.containsKey(flowCellEntry)) {
             throw new MissingArgumentException("Could not find metadata information about the flow cell position.")
         }
-        if ( (metadata[flowCellEntry] as String).isEmpty() ) {
+        if ((metadata[flowCellEntry] as String).isEmpty()) {
             throw new MissingArgumentException("Flow cell position information was empty.")
         }
     }
 
     private static void checkPresenceOfBaseCaller(Map metadata, String baseCallerEntry) {
-        if (! metadata.containsKey(baseCallerEntry)) {
+        if (!metadata.containsKey(baseCallerEntry)) {
             throw new MissingArgumentException("Could not find metadata information about the base caller.")
         }
-        if ( (metadata[baseCallerEntry] as String).isEmpty() ) {
+        if ((metadata[baseCallerEntry] as String).isEmpty()) {
             throw new MissingArgumentException("Base caller information was empty.")
         }
     }
-            
+
 
     /**
      * Method which converts a map into json String
@@ -161,7 +161,7 @@ class NanoporeParser {
      */
     private static class DirectoryConverter {
         private static final PREDEFINED_EXTENSIONS = ["fastq.gz"]
-
+        private static final IGNORED_FOLDERNAMES = ["qc"]
         /**
          *
          * @param path a path to the directory which will be used as root for parsing
@@ -177,13 +177,15 @@ class NanoporeParser {
                 if (rootLocation.list().length > 0) {
                     // Recursive conversion
                     Map folderStructure = convertDirectory(rootLocation.toPath())
+                    print(folderStructure)
+                    //folderStructure.values().removeAll(Collections.singleton(null))
                     return convertToRelativePaths(folderStructure, rootLocation.toPath())
                 } else {
                     log.error("Specified directory is empty")
                     throw new ParseException("Parsed directory might not be empty", -1)
                 }
             } else {
-                if (! rootLocation.exists()) {
+                if (!rootLocation.exists()) {
                     log.error("The given directory does not exist.")
                     throw new FileNotFoundException("The given path does not exist.")
                 } else {
@@ -203,11 +205,19 @@ class NanoporeParser {
             // convert to File object
             File currentDirectory = new File(path.toString())
             String name = currentDirectory.getName()
-            List children = currentDirectory.listFiles().collect {
+            if (IGNORED_FOLDERNAMES.contains(name)) {
+                log.debug("Skipped " + name)
+                return null
+            }
+            List children = currentDirectory.listFiles().findAll {  file ->
+                String currentFolderName = file.getName()
+                return !IGNORED_FOLDERNAMES.contains(currentFolderName)
+            }.collect {
                 file ->
                     if (file.isFile()) {
                         convertFile(file.toPath())
-                    } else if (file.isDirectory()) {
+                    } else if (file.isDirectory())
+                    {
                         convertDirectory(file.toPath())
                     }
             }
