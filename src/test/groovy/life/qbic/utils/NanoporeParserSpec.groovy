@@ -25,6 +25,15 @@ class NanoporeParserSpec extends Specification {
         assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109"
     }
 
+    def "qc folder is ignored"() {
+            given:
+            def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/with_qc_folder/QABCD001AB_E12A345a01_PAE12345")
+            when:
+            def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
+            then:
+            assert experiment instanceof OxfordNanoporeExperiment
+    }
+
     def "parsing an invalid file structure throws ValidationError"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_entries/QABCD001AB_E12A345a01_PAE12345/20200122_1217_1-A1-B1-PAE12345_1234567a")
