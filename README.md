@@ -6,7 +6,7 @@
 Core Utilities Library - Collection of non-Vaadin, non-Liferay utilities.
 
 ## Author
-Created by Luis de la Garza (luis.delagarza@qbic.uni-tuebingen.de), maintained and developed further by the ITSS team of QBiC.
+Created by Luis de la Garza (luis.delagarza@qbic.uni-tuebingen.de), maintained and developed further by the [ITSS team](https://github.com/orgs/qbicsoftware/teams/itss) of QBiC.
 
 ## Description
 Contains a collection of classes and utilities that depend neither on Vaadin nor on Liferay.
