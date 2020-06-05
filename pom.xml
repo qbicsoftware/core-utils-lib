@@ -78,6 +78,13 @@
       <artifactId>data-model-lib</artifactId>
       <version>1.8.2</version>
     </dependency>
+    <dependency>
+      <groupId>life.qbic.openbis</groupId>
+      <artifactId>dss-server</artifactId>
+      <version>18.06.2</version>
+      <!-- This library will be provided by the openBIS DSS -->
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
   <build>
     <plugins>
