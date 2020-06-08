@@ -1,6 +1,11 @@
 package life.qbic.dss.registration.datasources
 
+import life.qbic.datamodel.samples.OpenbisTestSample
 import life.qbic.dss.registration.usecases.DataSetRegistrationDataSource
+
+import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
+
+import java.nio.file.Path
 
 /**
  * A data source that can be provided during ETL processes.
@@ -16,4 +21,34 @@ import life.qbic.dss.registration.usecases.DataSetRegistrationDataSource
  */
 class ETLDataSource implements DataSetRegistrationDataSource {
 
+    private final IDataSetRegistrationTransactionV2 transaction
+
+    ETLDataSource(IDataSetRegistrationTransactionV2 transaction) {
+        this.transaction = transaction
+    }
+
+    @Override
+    String createNewTestSample(String parentBioSampleCode, String type) {
+        return null
+    }
+
+    @Override
+    String createNewAnalysisRunSample(String parentTestSampleCode) {
+        return null
+    }
+
+    @Override
+    String determineSampleType(String sampleCode) {
+        return null
+    }
+
+    @Override
+    OpenbisTestSample findTestSample(String sampleCode) {
+        return null
+    }
+
+    @Override
+    String registerDataSet(List<Path> dataSetFiles, String runSampleCode) {
+        return null
+    }
 }

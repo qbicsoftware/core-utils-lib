@@ -1,6 +1,5 @@
 package life.qbic.dss.registration.usecases
 
-import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import life.qbic.dss.registration.usecases.entities.UploadMetaData
 import life.qbic.dss.registration.usecases.entities.UploadSample
 
