@@ -1,7 +1,6 @@
 package life.qbic.dss.registration.datasources
 
-import life.qbic.dss.registration.usecases.QuerySampleInformationDataSource
-import life.qbic.dss.registration.usecases.RegisterDataSetDataSource
+import life.qbic.dss.registration.usecases.DataSetRegistrationDataSource
 
 /**
  * A data source that can be provided during ETL processes.
@@ -15,6 +14,6 @@ import life.qbic.dss.registration.usecases.RegisterDataSetDataSource
  *
  * @author: Sven Fillinger
  */
-class ETLDataSource implements RegisterDataSetDataSource, QuerySampleInformationDataSource {
+class ETLDataSource implements DataSetRegistrationDataSource {
 
 }
