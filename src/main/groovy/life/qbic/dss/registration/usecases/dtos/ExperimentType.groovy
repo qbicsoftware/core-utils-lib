@@ -1,4 +1,4 @@
-package life.qbic.dss.registration.usecases.entities
+package life.qbic.dss.registration.usecases.dtos
 
 enum ExperimentType {
     DNA_SEQ,

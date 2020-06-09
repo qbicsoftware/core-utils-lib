@@ -1,6 +1,6 @@
 package life.qbic.dss.registration.usecases
 
-import life.qbic.dss.registration.usecases.entities.UploadMetaData
+import life.qbic.dss.registration.usecases.dtos.UploadMetaData
 
 interface DataSetRegistrationOutput {
 
