@@ -1,6 +1,7 @@
 package life.qbic.dss.registration.datasources
 
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
+import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.IExperimentImmutable
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISampleImmutable
 import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria
 import life.qbic.datamodel.identifiers.SampleCodeFunctions
@@ -42,8 +43,33 @@ class ETLDataSource implements DataSetRegistrationDataSource {
         def newRegisteredSample = this.transaction.createNewSample(
                 createIdentifer(projectSpace, availableSampleCode),
                 REGISTER_SAMPLE_TYPE)
+
         newRegisteredSample.setParentSampleIdentifiers([createIdentifer(projectSpace, parentBioSampleCode)])
+        newRegisteredSample.setExperiment(createSamplePreparationExperiment(projectSpace, projectCode, type))
         return newRegisteredSample.getCode()
+    }
+
+    private IExperimentImmutable createSamplePreparationExperiment(String space, String projectCode, String sampleType) {
+        def testSamplesWithType = findAllTestSamples(projectCode).findAll {
+                it.getPropertyValue("Q_SAMPLE_TYPE").equals(sampleType)
+        }
+        if (testSamplesWithType){
+            return testSamplesWithType[0].getExperiment()
+        }
+        def usedExperimentIdentifiers = [] as Set
+        def searchService = transaction.getSearchService()
+        def existingExperiments = searchService.listExperiments("/" + space + "/" + projectCode)
+        def lastExperimentNumber = (existingExperiments as Set).size()
+
+        def expExists = true
+        def newExpID = ""
+        while (expExists) {
+            lastExperimentNumber += 1
+            newExpID = "/$space/$projectCode/${projectCode}E$lastExperimentNumber"
+            expExists = newExpID in usedExperimentIdentifiers
+            usedExperimentIdentifiers.add(newExpID)
+        }
+        transaction.createNewExperiment(newExpID, "Q_SAMPLE_PREPARATION")
     }
 
     private static String createIdentifer(String space, String code) {
@@ -79,7 +105,8 @@ class ETLDataSource implements DataSetRegistrationDataSource {
     private List<ISampleImmutable> findAllTestSamples(String projectCode) {
         final def searchCriteria = new SearchCriteria()
         final def searchService = transaction.getSearchService()
-        searchCriteria.addMatchClause(SearchCriteria.MatchClause.createPropertyMatch("Project", projectCode))
+        searchCriteria.addMatchClause(SearchCriteria.MatchClause.createAttributeMatch(SearchCriteria.MatchClauseAttribute.PROJECT, projectCode))
+        searchCriteria.addMatchClause(SearchCriteria.MatchClause.createPropertyMatch("Q_SAMPLE_TYPE", REGISTER_SAMPLE_TYPE))
         List<ISampleImmutable> samples = searchService.searchForSamples(searchCriteria)
         return samples
     }
