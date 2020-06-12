@@ -126,6 +126,27 @@
       <!-- This library will be provided by the openBIS DSS -->
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>life.qbic.openbis</groupId>
+      <artifactId>common-base</artifactId>
+      <version>18.06.2</version>
+      <!-- This library will be provided by the openBIS DSS -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-collections4</artifactId>
+      <version>4.0</version>
+      <!-- This library will be provided by the openBIS DSS -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.6</version>
+      <!-- This library will be provided by the openBIS DSS -->
+      <scope>provided</scope>
+    </dependency>
 
   </dependencies>
   <build>

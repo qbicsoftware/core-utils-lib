@@ -1,9 +1,15 @@
 package life.qbic.dss.registration.datasources
 
+import ch.systemsx.cisd.etlserver.registrator.api.v2.ISample
+import ch.systemsx.cisd.etlserver.registrator.api.v2.impl.SearchService
+import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISampleImmutable
+import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria
+import life.qbic.datamodel.identifiers.SampleCodeFunctions
 import life.qbic.datamodel.samples.OpenbisTestSample
 import life.qbic.dss.registration.usecases.DataSetRegistrationDataSource
 
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
+import life.qbic.dss.registration.usecases.exceptions.DataSetRegistrationException
 
 
 /**
@@ -22,13 +28,62 @@ class ETLDataSource implements DataSetRegistrationDataSource {
 
     private final IDataSetRegistrationTransactionV2 transaction
 
+    private static final String REGISTER_SAMPLE_TYPE = "Q_TEST_SAMPLE"
+
     ETLDataSource(IDataSetRegistrationTransactionV2 transaction) {
         this.transaction = transaction
     }
 
     @Override
-    String createNewTestSample(String parentBioSampleCode, String type) {
-        return "test"
+    String createNewTestSample(String parentBioSampleCode, String type) throws DataSetRegistrationException{
+        if (! SampleCodeFunctions.isQbicBarcode(parentBioSampleCode) ){
+            throw new DataSetRegistrationException("Provided sample ${parentBioSampleCode} code is not a valid QBiC sample code.")
+        }
+        def projectCode = SampleCodeFunctions.getProjectPrefix(parentBioSampleCode)
+        def availableSampleCode = determineNextFreeSampleCode(projectCode)
+        def projectSpace = determineProjectSpace(parentBioSampleCode)
+        def newRegisteredSample = this.transaction.createNewSample(
+                createIdentifer(projectSpace, availableSampleCode),
+                REGISTER_SAMPLE_TYPE)
+        newRegisteredSample.setParentSampleIdentifiers([createIdentifer(projectSpace, parentBioSampleCode)])
+        return newRegisteredSample.getCode()
+    }
+
+    private static String createIdentifer(String space, String code) {
+        return "/$space/$code"
+    }
+
+    private String determineProjectSpace(String sampleCode) {
+        def searchService = transaction.getSearchService()
+        def searchCriteria = new SearchCriteria()
+        searchCriteria.addMatchClause(SearchCriteria.MatchClause.createAttributeMatch(SearchCriteria.MatchClauseAttribute.PROJECT, sampleCode));
+
+        def foundSamples = searchService.searchForSamples(searchCriteria)
+        if (foundSamples.isEmpty()) {
+            throw new DataSetRegistrationException("Could not determine space for sample ")
+        }
+        return foundSamples[0].getSpace()
+    }
+
+    private String determineNextFreeSampleCode(String projectCode) {
+        def samples = findAllTestSamples(projectCode)
+        def base = projectCode + "001A"
+        def firstFreeBarcode = base + SampleCodeFunctions.checksum(base)
+        samples.each { sample ->
+            String code = sample.getCode()
+            if (SampleCodeFunctions.isQbicBarcode(code)) {
+                if (SampleCodeFunctions.compareSampleCodes(firstFreeBarcode, code) <= 0) {
+                    firstFreeBarcode = SampleCodeFunctions.incrementSampleCode(code)
+                }
+            }
+        }}
+
+    private List<ISampleImmutable> findAllTestSamples(String projectCode) {
+        final def searchCriteria = new SearchCriteria()
+        final def searchService = transaction.getSearchService()
+        searchCriteria.addMatchClause(SearchCriteria.MatchClause.createPropertyMatch("Project", projectCode))
+        List<ISampleImmutable> samples = searchService.searchForSamples(searchCriteria)
+        return samples
     }
 
     @Override
