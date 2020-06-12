@@ -78,6 +78,11 @@
       <artifactId>data-model-lib</artifactId>
       <version>1.8.2</version>
     </dependency>
+    <!-- The following dependencies are used for classes that will be used in a running openBIS
+    environment (ETL, DSS, etc.).
+
+    Currently, this affects only classes in the package life.qbic.dss
+     -->
     <dependency>
       <groupId>life.qbic.openbis</groupId>
       <artifactId>dss-server</artifactId>
@@ -85,6 +90,43 @@
       <!-- This library will be provided by the openBIS DSS -->
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>life.qbic.openbis</groupId>
+      <artifactId>openbis-shared</artifactId>
+      <version>18.06.2</version>
+      <!-- This library will be provided by the openBIS DSS -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>life.qbic.openbis</groupId>
+      <artifactId>openbis-api</artifactId>
+      <version>18.06.2</version>
+      <!-- This library will be provided by the openBIS DSS -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>life.qbic.openbis</groupId>
+      <artifactId>eodsql</artifactId>
+      <version>2.2.0</version>
+      <classifier>CISD</classifier>
+      <!-- This library will be provided by the openBIS DSS -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>life.qbic.openbis</groupId>
+      <artifactId>common</artifactId>
+      <version>18.06.2</version>
+      <!-- This library will be provided by the openBIS DSS -->
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <version>2.8.2</version>
+      <!-- This library will be provided by the openBIS DSS -->
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>

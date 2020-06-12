@@ -5,7 +5,6 @@ import life.qbic.dss.registration.usecases.DataSetRegistrationDataSource
 
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 
-import java.nio.file.Path
 
 /**
  * A data source that can be provided during ETL processes.
@@ -29,7 +28,7 @@ class ETLDataSource implements DataSetRegistrationDataSource {
 
     @Override
     String createNewTestSample(String parentBioSampleCode, String type) {
-        return null
+        return "test"
     }
 
     @Override
@@ -48,7 +47,7 @@ class ETLDataSource implements DataSetRegistrationDataSource {
     }
 
     @Override
-    String registerDataSet(List<Path> dataSetFiles, String runSampleCode) {
+    String registerDataSet(List<URL> dataSetFiles, String runSampleCode) {
         return null
     }
 }

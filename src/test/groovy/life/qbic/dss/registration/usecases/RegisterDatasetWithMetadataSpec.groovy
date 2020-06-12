@@ -7,8 +7,6 @@ import life.qbic.dss.registration.usecases.exceptions.DataSetRegistrationExcepti
 import spock.lang.Shared
 import spock.lang.Specification
 
-import java.nio.file.Paths
-
 /**
  * <add class description here>
  *
