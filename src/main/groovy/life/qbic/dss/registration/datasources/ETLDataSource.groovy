@@ -1,16 +1,13 @@
 package life.qbic.dss.registration.datasources
 
-import ch.systemsx.cisd.etlserver.registrator.api.v2.ISample
-import ch.systemsx.cisd.etlserver.registrator.api.v2.impl.SearchService
+import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISampleImmutable
 import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria
 import life.qbic.datamodel.identifiers.SampleCodeFunctions
 import life.qbic.datamodel.samples.OpenbisTestSample
 import life.qbic.dss.registration.usecases.DataSetRegistrationDataSource
-
-import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import life.qbic.dss.registration.usecases.exceptions.DataSetRegistrationException
-
+import life.qbic.dss.registration.usecases.exceptions.SampleCreationException
 
 /**
  * A data source that can be provided during ETL processes.
@@ -35,9 +32,9 @@ class ETLDataSource implements DataSetRegistrationDataSource {
     }
 
     @Override
-    String createNewTestSample(String parentBioSampleCode, String type) throws DataSetRegistrationException{
-        if (! SampleCodeFunctions.isQbicBarcode(parentBioSampleCode) ){
-            throw new DataSetRegistrationException("Provided sample ${parentBioSampleCode} code is not a valid QBiC sample code.")
+    String createNewTestSample(String parentBioSampleCode, String type) throws SampleCreationException {
+        if (!SampleCodeFunctions.isQbicBarcode(parentBioSampleCode)) {
+            throw new SampleCreationException("Provided sample ${parentBioSampleCode} code is not a valid QBiC sample code.")
         }
         def projectCode = SampleCodeFunctions.getProjectPrefix(parentBioSampleCode)
         def availableSampleCode = determineNextFreeSampleCode(projectCode)
@@ -56,11 +53,11 @@ class ETLDataSource implements DataSetRegistrationDataSource {
     private String determineProjectSpace(String sampleCode) {
         def searchService = transaction.getSearchService()
         def searchCriteria = new SearchCriteria()
-        searchCriteria.addMatchClause(SearchCriteria.MatchClause.createAttributeMatch(SearchCriteria.MatchClauseAttribute.PROJECT, sampleCode));
+        searchCriteria.addMatchClause(SearchCriteria.MatchClause.createAttributeMatch(SearchCriteria.MatchClauseAttribute.PROJECT, sampleCode))
 
         def foundSamples = searchService.searchForSamples(searchCriteria)
         if (foundSamples.isEmpty()) {
-            throw new DataSetRegistrationException("Could not determine space for sample ")
+            throw new SampleCreationException("Could not determine space for sample ")
         }
         return foundSamples[0].getSpace()
     }
@@ -76,7 +73,8 @@ class ETLDataSource implements DataSetRegistrationDataSource {
                     firstFreeBarcode = SampleCodeFunctions.incrementSampleCode(code)
                 }
             }
-        }}
+        }
+    }
 
     private List<ISampleImmutable> findAllTestSamples(String projectCode) {
         final def searchCriteria = new SearchCriteria()

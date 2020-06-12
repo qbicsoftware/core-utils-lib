@@ -3,6 +3,7 @@ package life.qbic.dss.registration.usecases
 import life.qbic.datamodel.samples.OpenbisTestSample
 import life.qbic.dss.registration.usecases.exceptions.DataSetRegistrationException
 import life.qbic.dss.registration.usecases.exceptions.ResourceAccessException
+import life.qbic.dss.registration.usecases.exceptions.SampleCreationException
 
 
 interface DataSetRegistrationDataSource {
@@ -14,7 +15,7 @@ interface DataSetRegistrationDataSource {
      * @return The sample code that has been generated
      * @throws DataSetRegistrationException
      */
-    String createNewTestSample(String parentBioSampleCode, String sampleType) throws DataSetRegistrationException
+    String createNewTestSample(String parentBioSampleCode, String sampleType) throws SampleCreationException
 
     /**
      * Creates a new analysis run sample, that
@@ -22,7 +23,7 @@ interface DataSetRegistrationDataSource {
      * @return
      * @throws DataSetRegistrationException
      */
-    String createNewAnalysisRunSample(String parentTestSampleCode) throws DataSetRegistrationException
+    String createNewAnalysisRunSample(String parentTestSampleCode) throws SampleCreationException
 
     String determineSampleType(String sampleCode) throws ResourceAccessException
 

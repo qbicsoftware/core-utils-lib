@@ -4,6 +4,7 @@ import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransac
 import ch.systemsx.cisd.etlserver.registrator.api.v2.ISample
 import ch.systemsx.cisd.etlserver.registrator.api.v2.impl.SearchService
 import life.qbic.dss.registration.usecases.exceptions.DataSetRegistrationException
+import life.qbic.dss.registration.usecases.exceptions.SampleCreationException
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -51,7 +52,7 @@ class ETLDataSourceSpec extends Specification {
         source.createNewTestSample("EVIL_SAMPLE_CODE", "DNA")
 
         then:
-        thrown(DataSetRegistrationException)
+        thrown(SampleCreationException)
     }
 
 }
