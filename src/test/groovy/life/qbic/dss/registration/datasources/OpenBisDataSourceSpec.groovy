@@ -12,7 +12,7 @@ import spock.lang.Specification
  *
  * @author: Sven Fillinger
  */
-class ETLDataSourceSpec extends Specification {
+class OpenBisDataSourceSpec extends Specification {
 
     @Shared
     private IDataSetRegistrationTransactionV2 transaction
@@ -38,8 +38,8 @@ class ETLDataSourceSpec extends Specification {
 
     def "Create a new test sample successfully"() {
         when:
-        def source = new ETLDataSource(transaction)
-        def testSampleCode = source.createNewTestSample("QUK17664GI", "DNA")
+        def source = new OpenBisDataSource(transaction)
+        def testSampleCode = source.createAnalyteSample("QUK17664GI", "DNA")
 
         then:
         assert testSampleCode.equals("QTEST099HH")
@@ -47,8 +47,8 @@ class ETLDataSourceSpec extends Specification {
 
     def "When an error occurs during new test sample creation, the system shall throw an DataSetRegistrationException"() {
         when:
-        def source = new ETLDataSource(transaction)
-        source.createNewTestSample("EVIL_SAMPLE_CODE", "DNA")
+        def source = new OpenBisDataSource(transaction)
+        source.createAnalyteSample("EVIL_SAMPLE_CODE", "DNA")
 
         then:
         thrown(SampleCreationException)
@@ -56,7 +56,7 @@ class ETLDataSourceSpec extends Specification {
 
     def "Sample type query shall return a biological sample type for a given sample code"() {
         when:
-        def source = new ETLDataSource(transaction)
+        def source = new OpenBisDataSource(transaction)
         def result = source.determineSampleType("QUK17664GI")
 
         then:
@@ -65,7 +65,7 @@ class ETLDataSourceSpec extends Specification {
 
     def "Sample type query shall return a extract sample type for a given sample code"() {
         when:
-        def source = new ETLDataSource(transaction)
+        def source = new OpenBisDataSource(transaction)
         def result = source.determineSampleType("QUK17664GI")
 
         then:

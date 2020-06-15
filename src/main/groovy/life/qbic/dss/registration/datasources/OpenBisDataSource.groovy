@@ -5,7 +5,6 @@ import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.IExperimentIm
 import ch.systemsx.cisd.openbis.dss.generic.shared.api.internal.v2.ISampleImmutable
 import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria
 import life.qbic.datamodel.identifiers.SampleCodeFunctions
-import life.qbic.datamodel.samples.OpenbisTestSample
 import life.qbic.dss.registration.usecases.DataSetRegistrationDataSource
 import life.qbic.dss.registration.usecases.exceptions.SampleCreationException
 
@@ -21,18 +20,18 @@ import life.qbic.dss.registration.usecases.exceptions.SampleCreationException
  *
  * @author: Sven Fillinger
  */
-class ETLDataSource implements DataSetRegistrationDataSource {
+class OpenBisDataSource implements DataSetRegistrationDataSource {
 
     private final IDataSetRegistrationTransactionV2 transaction
 
     private static final String EXTRACT_SAMPLE_TYPE = "Q_TEST_SAMPLE"
 
-    ETLDataSource(IDataSetRegistrationTransactionV2 transaction) {
+    OpenBisDataSource(IDataSetRegistrationTransactionV2 transaction) {
         this.transaction = transaction
     }
 
     @Override
-    String createNewExtractSample(String parentBioSampleCode, String sampleType) throws SampleCreationException {
+    String createAnalyteSample(String parentBioSampleCode, String sampleType) throws SampleCreationException {
         if (!SampleCodeFunctions.isQbicBarcode(parentBioSampleCode)) {
             throw new SampleCreationException("Provided sample ${parentBioSampleCode} code is not a valid QBiC sample code.")
         }
@@ -111,7 +110,7 @@ class ETLDataSource implements DataSetRegistrationDataSource {
     }
 
     @Override
-    String createNewAnalysisRunSample(String parentTestSampleCode) {
+    String createAnalysisRunSample(String parentTestSampleCode) {
         return null
     }
 
@@ -124,7 +123,7 @@ class ETLDataSource implements DataSetRegistrationDataSource {
     }
 
     @Override
-    OpenbisTestSample findExtractSample(String sampleCode) {
+    Map findAnalyteSample(String sampleCode) {
         return null
     }
 

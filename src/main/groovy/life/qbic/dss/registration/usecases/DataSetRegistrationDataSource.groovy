@@ -15,7 +15,7 @@ interface DataSetRegistrationDataSource {
      * @return The sample code that has been generated
      * @throws DataSetRegistrationException
      */
-    String createPreparedExtractSample(String parentBioSampleCode, String sampleType) throws SampleCreationException
+    String createAnalyteSample(String parentBioSampleCode, String sampleType) throws SampleCreationException
 
     /**
      * Creates a new analysis run sample, that
@@ -38,7 +38,7 @@ interface DataSetRegistrationDataSource {
      */
     String determineSampleType(String sampleCode) throws ResourceAccessException
 
-    Map findPreparedExtractSample(String sampleCode)
+    Map findAnalyteSample(String sampleCode)
 
     String registerDataSet(List<URL> dataSetFiles, String runSampleCode) throws DataSetRegistrationException
 
