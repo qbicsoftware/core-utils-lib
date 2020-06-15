@@ -3,7 +3,6 @@ package life.qbic.dss.registration.datasources
 import ch.systemsx.cisd.etlserver.registrator.api.v2.IDataSetRegistrationTransactionV2
 import ch.systemsx.cisd.etlserver.registrator.api.v2.ISample
 import ch.systemsx.cisd.etlserver.registrator.api.v2.impl.SearchService
-import life.qbic.dss.registration.usecases.exceptions.DataSetRegistrationException
 import life.qbic.dss.registration.usecases.exceptions.SampleCreationException
 import spock.lang.Shared
 import spock.lang.Specification
@@ -53,6 +52,24 @@ class ETLDataSourceSpec extends Specification {
 
         then:
         thrown(SampleCreationException)
+    }
+
+    def "Sample type query shall return a biological sample type for a given sample code"() {
+        when:
+        def source = new ETLDataSource(transaction)
+        def result = source.determineSampleType("QUK17664GI")
+
+        then:
+        assert result.equals("Extract Sample")
+    }
+
+    def "Sample type query shall return a extract sample type for a given sample code"() {
+        when:
+        def source = new ETLDataSource(transaction)
+        def result = source.determineSampleType("QUK17664GI")
+
+        then:
+        assert result.equals("Analyte Sample")
     }
 
 }

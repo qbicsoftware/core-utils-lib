@@ -15,7 +15,7 @@ interface DataSetRegistrationDataSource {
      * @return The sample code that has been generated
      * @throws DataSetRegistrationException
      */
-    String createNewTestSample(String parentBioSampleCode, String sampleType) throws SampleCreationException
+    String createPreparedExtractSample(String parentBioSampleCode, String sampleType) throws SampleCreationException
 
     /**
      * Creates a new analysis run sample, that
@@ -23,11 +23,22 @@ interface DataSetRegistrationDataSource {
      * @return
      * @throws DataSetRegistrationException
      */
-    String createNewAnalysisRunSample(String parentTestSampleCode) throws SampleCreationException
+    String createAnalysisRunSample(String parentTestSampleCode) throws SampleCreationException
 
+    /**
+     * Returns the sample type for a given sample code
+     *
+     * The sample type must be one of:
+     *
+     * ["Source Sample", "Extract Sample", "Analyte Sample", "Analysis Run Sample"]
+     *
+     * @param sampleCode
+     * @return
+     * @throws ResourceAccessException
+     */
     String determineSampleType(String sampleCode) throws ResourceAccessException
 
-    OpenbisTestSample findTestSample(String sampleCode)
+    Map findPreparedExtractSample(String sampleCode)
 
     String registerDataSet(List<URL> dataSetFiles, String runSampleCode) throws DataSetRegistrationException
 

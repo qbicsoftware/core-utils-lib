@@ -7,7 +7,6 @@ import ch.systemsx.cisd.openbis.generic.shared.api.v1.dto.SearchCriteria
 import life.qbic.datamodel.identifiers.SampleCodeFunctions
 import life.qbic.datamodel.samples.OpenbisTestSample
 import life.qbic.dss.registration.usecases.DataSetRegistrationDataSource
-import life.qbic.dss.registration.usecases.exceptions.DataSetRegistrationException
 import life.qbic.dss.registration.usecases.exceptions.SampleCreationException
 
 /**
@@ -26,14 +25,14 @@ class ETLDataSource implements DataSetRegistrationDataSource {
 
     private final IDataSetRegistrationTransactionV2 transaction
 
-    private static final String REGISTER_SAMPLE_TYPE = "Q_TEST_SAMPLE"
+    private static final String EXTRACT_SAMPLE_TYPE = "Q_TEST_SAMPLE"
 
     ETLDataSource(IDataSetRegistrationTransactionV2 transaction) {
         this.transaction = transaction
     }
 
     @Override
-    String createNewTestSample(String parentBioSampleCode, String type) throws SampleCreationException {
+    String createNewExtractSample(String parentBioSampleCode, String sampleType) throws SampleCreationException {
         if (!SampleCodeFunctions.isQbicBarcode(parentBioSampleCode)) {
             throw new SampleCreationException("Provided sample ${parentBioSampleCode} code is not a valid QBiC sample code.")
         }
@@ -42,10 +41,10 @@ class ETLDataSource implements DataSetRegistrationDataSource {
         def projectSpace = determineProjectSpace(parentBioSampleCode)
         def newRegisteredSample = this.transaction.createNewSample(
                 createIdentifer(projectSpace, availableSampleCode),
-                REGISTER_SAMPLE_TYPE)
+                EXTRACT_SAMPLE_TYPE)
 
         newRegisteredSample.setParentSampleIdentifiers([createIdentifer(projectSpace, parentBioSampleCode)])
-        newRegisteredSample.setExperiment(createSamplePreparationExperiment(projectSpace, projectCode, type))
+        newRegisteredSample.setExperiment(createSamplePreparationExperiment(projectSpace, projectCode, sampleType))
         return newRegisteredSample.getCode()
     }
 
@@ -106,7 +105,7 @@ class ETLDataSource implements DataSetRegistrationDataSource {
         final def searchCriteria = new SearchCriteria()
         final def searchService = transaction.getSearchService()
         searchCriteria.addMatchClause(SearchCriteria.MatchClause.createAttributeMatch(SearchCriteria.MatchClauseAttribute.PROJECT, projectCode))
-        searchCriteria.addMatchClause(SearchCriteria.MatchClause.createPropertyMatch("Q_SAMPLE_TYPE", REGISTER_SAMPLE_TYPE))
+        searchCriteria.addMatchClause(SearchCriteria.MatchClause.createPropertyMatch("Q_SAMPLE_TYPE", EXTRACT_SAMPLE_TYPE))
         List<ISampleImmutable> samples = searchService.searchForSamples(searchCriteria)
         return samples
     }
@@ -118,11 +117,14 @@ class ETLDataSource implements DataSetRegistrationDataSource {
 
     @Override
     String determineSampleType(String sampleCode) {
-        return null
+        final def searchCriteria = new SearchCriteria()
+        final def searchService = transaction.getSearchService()
+        searchCriteria.addMatchClause(SearchCriteria.MatchClause.createAttributeMatch(SearchCriteria.MatchClauseAttribute.CODE, sampleCode))
+        def searchResult = searchService.searchForSamples(searchCriteria)
     }
 
     @Override
-    OpenbisTestSample findTestSample(String sampleCode) {
+    OpenbisTestSample findExtractSample(String sampleCode) {
         return null
     }
 
