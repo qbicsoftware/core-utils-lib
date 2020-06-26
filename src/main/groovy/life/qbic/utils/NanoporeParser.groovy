@@ -30,6 +30,7 @@ class NanoporeParser {
         Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
 
         String json = mapToJson(convertedDirectory)
+        log.error(json)
         try {
         // Step2: Validate created Json against schema 
             validateJsonForSchema(json, JSON_SCHEMA)
@@ -37,9 +38,10 @@ class NanoporeParser {
 
             // Step4: Parse meta data out of report files and extend the map
             def finalMap = parseMetaData(convertedDirectory, directory)
-
+log.info finalMap
             // Step5: Create the final OxfordNanoporeExperiment from the map
             OxfordNanoporeExperiment convertedExperiment = OxfordNanoporeExperiment.create(finalMap)
+            log.info(convertedExperiment.getMeasurements().get(0).getRawDataPerSample(convertedExperiment))
             return convertedExperiment
         } catch (ValidationException validationException) {
             log.error("Specified directory could not be validated")
