@@ -9,8 +9,7 @@
     <version>2.2.0</version>
   </parent>
   <artifactId>core-utils-lib</artifactId>
-
-  <version>1.4.2</version>
+  <version>1.4.4</version>
   <name>Core Utilities Library</name>
   <url>http://github.com/qbicsoftware/core-utils-lib</url>
   <description>Collection of non-Vaadin, non-Liferay utilities.</description>
@@ -76,7 +75,7 @@
     <dependency>
       <groupId>life.qbic</groupId>
       <artifactId>data-model-lib</artifactId>
-      <version>1.8.2</version>
+      <version>1.8.3</version>
     </dependency>
   </dependencies>
   <build>
