@@ -31,7 +31,7 @@ class NanoporeParserSpec extends Specification {
     when:
     def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
     def measurement = experiment.getMeasurements().get(0)
-   def rawDataPerSample = measurement.getRawDataPerSample(experiment).keySet()
+    def rawDataPerSample = measurement.getRawDataPerSample(experiment).entrySet()
     then:
     
     assert experiment instanceof OxfordNanoporeExperiment
@@ -40,9 +40,9 @@ class NanoporeParserSpec extends Specification {
     // Check that the metadata from the summary file has been retrieved
     assert measurement.getLibraryPreparationKit() == "SQK-LSK109"
     // check that multiple pooled samples are contained
-    assert keys.size() > 1
+    assert rawDataPerSample.size() > 1
     // ...and that they are linked to two different folder structures
-    assert measurement.getRawDataPerSample(experiment).get(keys.get(0)) != measurement.getRawDataPerSample(experiment).get(keys.get(1))
+    assert rawDataPerSample.get(0) != rawDataPerSample.get(1)
   }
 
   def "parsing an invalid file structure throws ValidationError"() {
