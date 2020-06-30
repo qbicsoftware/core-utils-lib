@@ -1,5 +1,9 @@
 # Changelog for new releases
 
+##  1.4.2
+
+* Use data model lib version 1.8.2, which introduces an important bug fix
+
 ##  1.4.1
 
 * Provide JAR with all dependencies included for single deployment (i.e. ETL dropboxes, etc.)
