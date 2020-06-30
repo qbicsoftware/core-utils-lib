@@ -31,7 +31,7 @@ class NanoporeParserSpec extends Specification {
     when:
     def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
     def measurement = experiment.getMeasurements().get(0)
-    def rawDataPerSample = measurement.getRawDataPerSample(experiment).entrySet()
+    def rawDataPerSample = new ArrayList<>(measurement.getRawDataPerSample(experiment).entrySet())
     then:
     
     assert experiment instanceof OxfordNanoporeExperiment
