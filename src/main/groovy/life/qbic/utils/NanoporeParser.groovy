@@ -34,17 +34,15 @@ class NanoporeParser {
         // Step2: Validate created Json against schema 
             validateJsonForSchema(json, JSON_SCHEMA)
             //Step3: convert valid json to OxfordNanoporeExperiment Object
-
             // Step4: Parse meta data out of report files and extend the map
             def finalMap = parseMetaData(convertedDirectory, directory)
-
             // Step5: Create the final OxfordNanoporeExperiment from the map
             OxfordNanoporeExperiment convertedExperiment = OxfordNanoporeExperiment.create(finalMap)
             return convertedExperiment
         } catch (ValidationException validationException) {
             log.error("Specified directory could not be validated")
             // we have to fetch all validation exceptions
-            def causes = validationException.getCausingExceptions().collect{ it.message }.join("\n")
+            def causes = validationException.getAllMessages().collect{ it }.join("\n")
             log.error(causes)
             throw validationException
         }

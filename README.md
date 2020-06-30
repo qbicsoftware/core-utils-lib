@@ -1,10 +1,12 @@
 # Core Utilities Library
-[![Build Status](https://travis-ci.com/qbicsoftware/core-utils-lib.svg?branch=development)](https://travis-ci.com/qbicsoftware/core-utils-lib)[![Code Coverage]( https://codecov.io/gh/qbicsoftware/core-utils-lib/branch/development/graph/badge.svg)](https://codecov.io/gh/qbicsoftware/core-utils-lib)
+[![Build Status](https://travis-ci.com/qbicsoftware/core-utils-lib.svg?branch=master)](https://travis-ci.com/qbicsoftware/core-utils-lib)
+[![Release](https://img.shields.io/github/v/release/qbicsoftware/core-utils-lib)](https://github.com/qbicsoftware/core-utils-lib/tags)
+[![Code Coverage]( https://codecov.io/gh/qbicsoftware/core-utils-lib/branch/master/graph/badge.svg)](https://codecov.io/gh/qbicsoftware/core-utils-lib)
 
-Core Utilities Library, version 1.0.0-SNAPSHOT - Collection of non-Vaadin, non-Liferay utilities.
+Core Utilities Library - Collection of non-Vaadin, non-Liferay utilities.
 
 ## Author
-Created by Luis de la Garza (luis.delagarza@qbic.uni-tuebingen.de).
+Created by Luis de la Garza (luis.delagarza@qbic.uni-tuebingen.de), maintained and developed further by the [ITSS team](https://github.com/orgs/qbicsoftware/teams/itss) of QBiC.
 
 ## Description
 Contains a collection of classes and utilities that depend neither on Vaadin nor on Liferay.
