@@ -43,7 +43,6 @@ class NanoporeParser {
             log.error("Specified directory could not be validated")
             // we have to fetch all validation exceptions
             def causes = validationException.getAllMessages().collect{ it }.join("\n")
-//            def causes = validationException.getCausingExceptions().collect{ it.message }.join("\n")
             log.error(causes)
             throw validationException
         }
