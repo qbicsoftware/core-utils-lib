@@ -43,7 +43,7 @@ class NanoporeParser {
         } catch (ValidationException validationException) {
             log.error("Specified directory could not be validated")
             // we have to fetch all validation exceptions
-            def causes = validationException.getAllMessages().collect{ it }.join("\n")
+            def causes = validationException.getAllMessages().collect { it }.join("\n")
             log.error(causes)
             throw validationException
         }
@@ -207,7 +207,7 @@ class NanoporeParser {
                 log.debug("Skipped " + name)
                 return null
             }
-            List children = currentDirectory.listFiles().findAll {  file ->
+            List children = currentDirectory.listFiles().findAll { file ->
                 String currentFolderName = file.getName()
                 return !IGNORED_FOLDERNAMES.contains(currentFolderName)
             }.collect {
