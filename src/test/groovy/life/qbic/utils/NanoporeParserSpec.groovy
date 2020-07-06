@@ -10,20 +10,20 @@ import java.text.ParseException
 
 class NanoporeParserSpec extends Specification {
 
-    def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/nanopore-instrument-output").getPath()
+  def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/nanopore-instrument-output").getPath()
 
-    def "parsing a valid file structure creates a Map"() {
-        given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345")
-        when:
-        def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
-        then:
-        assert experiment instanceof OxfordNanoporeExperiment
-        // Check that the metadata from the report file has been retrieved
-        assert experiment.getMeasurements().get(0).getMachineHost() == "PCT0094"
-        // Check that the metadata from the summary file has been retrieved
-        assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109"
-    }
+  def "parsing a valid file structure returns an OxfordNanoporeExperiment Object"() {
+    given:
+    def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345")
+    when:
+    def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
+    then:
+    assert experiment instanceof OxfordNanoporeExperiment
+    // Check that the metadata from the report file has been retrieved
+    assert experiment.getMeasurements().get(0).getMachineHost() == "PCT0094"
+    // Check that the metadata from the summary file has been retrieved
+    assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109"
+  }
 
     def "qc folder is ignored"() {
         given:
@@ -78,23 +78,23 @@ class NanoporeParserSpec extends Specification {
         // Remove new created folder after testing
         directory.delete()
     }
+  
+  def "parsing a non-existing directory throws FileNotFoundException"() {
+    given:
+    def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_directory")
+    when:
+    NanoporeParser.parseFileStructure(pathToDirectory)
+    then:
+    thrown(FileNotFoundException)
+  }
 
-    def "parsing a non-existing directory throws FileNotFoundException"() {
-        given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_directory")
-        when:
-        NanoporeParser.parseFileStructure(pathToDirectory)
-        then:
-        thrown(FileNotFoundException)
-    }
-
-    def "parsing a file throws NotDirectoryException "() {
-        given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345/20200122_1217_1-A1-B1-PAE12345_1234567a/report_.pdf")
-        when:
-        NanoporeParser.parseFileStructure(pathToDirectory)
-        then:
-        thrown(NotDirectoryException)
-    }
+  def "parsing a file throws NotDirectoryException "() {
+    given:
+    def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345/20200122_1217_1-A1-B1-PAE12345_1234567a/report_.pdf")
+    when:
+    NanoporeParser.parseFileStructure(pathToDirectory)
+    then:
+    thrown(NotDirectoryException)
+  }
 
 }

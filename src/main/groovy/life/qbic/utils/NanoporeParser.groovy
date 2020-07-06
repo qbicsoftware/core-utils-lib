@@ -31,25 +31,29 @@ class NanoporeParser {
 
         String json = mapToJson(convertedDirectory)
         try {
+        // Step2: Validate created Json against schema 
             validateJsonForSchema(json, JSON_SCHEMA)
             //Step3: convert valid json to OxfordNanoporeExperiment Object
-
             // Step4: Parse meta data out of report files and extend the map
             def finalMap = parseMetaData(convertedDirectory, directory)
-
             // Step5: Create the final OxfordNanoporeExperiment from the map
             OxfordNanoporeExperiment convertedExperiment = OxfordNanoporeExperiment.create(finalMap)
             return convertedExperiment
         } catch (ValidationException validationException) {
             log.error("Specified directory could not be validated")
             // we have to fetch all validation exceptions
-            def causes = validationException.getAllMessages().collect { it }.join("\n")
+            def causes = validationException.getAllMessages().collect{ it }.join("\n")
             log.error(causes)
             throw validationException
         }
     }
 
-
+    /*
+     * The main metadata we need to provide for the OxfordNanoporeExperiment is in
+     * the report markdown file and final summary file.
+     * The parsed metadata properties are summarized as key value pairs under an new map
+     * key "metadata".
+     */
     private static Map parseMetaData(Map convertedDirectory, Path root) {
         convertedDirectory.get("children").each { measurement ->
             def reportFile = measurement["children"].find { it["name"].contains("report") && it["file_type"] == "md" }
@@ -61,6 +65,11 @@ class NanoporeParser {
         return convertedDirectory
     }
 
+    /*
+     * The metadata contained in the report markdown is notated as an embedded JSON object in the header of the file.
+     * The additional metadata contained in the final summary is a line-separated list of
+     * key=value pairs.
+     */
     private static Map readMetaData(Map<String, String> reportFile, Map<String, String> summaryFile, Path root) {
         def report = new File(Paths.get(root.toString(), reportFile["path"].toString()) as String)
                 .readLines()
@@ -95,6 +104,10 @@ class NanoporeParser {
         return finalMetaData
     }
 
+    /*
+     * The base caller and flow cell position entries are not nicely stored in the metadata.
+     * We refactor them to the properties, the data model OxfordNanoporeExperiment expects.
+     */
     private static Map finalizeMetadata(Map metadataMap) {
         // Step1: Set entries that need to be changed in Metadata Map
         // Current base-caller information is stored in a Key-Value pair like "guppy_version": "3.2.8+bd67289"
@@ -131,7 +144,7 @@ class NanoporeParser {
     }
 
 
-    /**
+    /*
      * Method which converts a map into json String
      * @param map a nested map representing a fileTree structure
      */
@@ -141,7 +154,7 @@ class NanoporeParser {
         return json
     }
 
-    /**
+    /*
      * Method which checks if a given Json String matches a given Json schema
      * @param json Json String which will be compared to schema
      * @param schema path to Json schema for validation of Json String
@@ -156,7 +169,8 @@ class NanoporeParser {
         // Step2: validate against schema return if valid, throw exception if invalid
         jsonSchema.validate(jsonObject)
     }
-    /**
+
+    /*
      * Converts a file tree into a json object.
      */
     private static class DirectoryConverter {
@@ -194,8 +208,8 @@ class NanoporeParser {
 
         }
 
-        /**
-         *
+        /*
+         * Convert a directory structure to a map, following the Nanopore schema.
          * @param a path to the current location in recursion
          * @return a map representing a directory with name, path and children as keys
          */
@@ -246,8 +260,8 @@ class NanoporeParser {
             }
         }
 
-        /**
-         *
+        /*
+         * File to JSON converter
          * @param a path to the current file in recursion
          * @return a map representing the file with name, path and file_type as keys
          */
@@ -266,7 +280,7 @@ class NanoporeParser {
             return convertedFile
         }
 
-        /**
+        /*
          * This method extracts the file type also called extension from the filename.
          * The type defaults to the substring after the last `.` character in the string.
          * If the filename ends with one of the predefined extensions in
