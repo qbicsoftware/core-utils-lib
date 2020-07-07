@@ -48,7 +48,7 @@ class NanoporeParser {
         }
     }
 
-    /*
+    /**
      * The main metadata we need to provide for the OxfordNanoporeExperiment is in
      * the report markdown file and final summary file.
      * The parsed metadata properties are summarized as key value pairs under an new map
@@ -65,7 +65,7 @@ class NanoporeParser {
         return convertedDirectory
     }
 
-    /*
+    /**
      * The metadata contained in the report markdown is notated as an embedded JSON object in the header of the file.
      * The additional metadata contained in the final summary is a line-separated list of
      * key=value pairs.
@@ -104,7 +104,7 @@ class NanoporeParser {
         return finalMetaData
     }
 
-    /*
+    /**
      * The base caller and flow cell position entries are not nicely stored in the metadata.
      * We refactor them to the properties, the data model OxfordNanoporeExperiment expects.
      */
@@ -144,7 +144,7 @@ class NanoporeParser {
     }
 
 
-    /*
+    /**
      * Method which converts a map into json String
      * @param map a nested map representing a fileTree structure
      */
@@ -154,7 +154,7 @@ class NanoporeParser {
         return json
     }
 
-    /*
+    /**
      * Method which checks if a given Json String matches a given Json schema
      * @param json Json String which will be compared to schema
      * @param schema path to Json schema for validation of Json String
@@ -176,6 +176,7 @@ class NanoporeParser {
     private static class DirectoryConverter {
         private static final PREDEFINED_EXTENSIONS = ["fastq.gz"]
         private static final IGNORED_FOLDERNAMES = ["qc"]
+
         /**
          *
          * @param path a path to the directory which will be used as root for parsing
@@ -208,7 +209,7 @@ class NanoporeParser {
 
         }
 
-        /*
+        /**
          * Convert a directory structure to a map, following the Nanopore schema.
          * @param a path to the current location in recursion
          * @return a map representing a directory with name, path and children as keys
@@ -260,7 +261,7 @@ class NanoporeParser {
             }
         }
 
-        /*
+        /**
          * File to JSON converter
          * @param a path to the current file in recursion
          * @return a map representing the file with name, path and file_type as keys
@@ -280,7 +281,7 @@ class NanoporeParser {
             return convertedFile
         }
 
-        /*
+        /**
          * This method extracts the file type also called extension from the filename.
          * The type defaults to the substring after the last `.` character in the string.
          * If the filename ends with one of the predefined extensions in
