@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import groovyjarjarcommonscli.MissingArgumentException
+import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutput
 import org.everit.json.schema.Schema
 import org.everit.json.schema.ValidationException
 import org.everit.json.schema.loader.SchemaLoader
@@ -19,8 +20,6 @@ import life.qbic.datamodel.datasets.OxfordNanoporeExperiment
 @Log4j2
 class NanoporeParser {
 
-    final static private JSON_SCHEMA = "/nanopore-instrument-output.schema.json"
-
     /**
      * Generates a map representing the folder structure
      * @param directory path of directory whose fileTree should be converted into map
@@ -32,7 +31,7 @@ class NanoporeParser {
         String json = mapToJson(convertedDirectory)
         try {
         // Step2: Validate created Json against schema 
-            validateJsonForSchema(json, JSON_SCHEMA)
+            validateJson(json)
             //Step3: convert valid json to OxfordNanoporeExperiment Object
             // Step4: Parse meta data out of report files and extend the map
             def finalMap = parseMetaData(convertedDirectory, directory)
@@ -157,13 +156,13 @@ class NanoporeParser {
     /**
      * Method which checks if a given Json String matches a given Json schema
      * @param json Json String which will be compared to schema
-     * @param schema path to Json schema for validation of Json String
+     * @param  path to Json schema for validation of Json String
      * @throws org.everit.json.schema.ValidationException
      */
-    private static void validateJsonForSchema(String json, String schema) throws ValidationException {
+    private static void validateJson(String json) throws ValidationException {
         // Step1: load schema
         JSONObject jsonObject = new JSONObject(json)
-        InputStream schemaStream = NanoporeParser.getResourceAsStream(schema)
+        InputStream schemaStream = OxfordNanoporeInstrumentOutput.getSchemaAsStream()
         JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream))
         Schema jsonSchema = SchemaLoader.load(rawSchema)
         // Step2: validate against schema return if valid, throw exception if invalid
