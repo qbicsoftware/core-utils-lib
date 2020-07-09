@@ -1,10 +1,18 @@
 # Changelog for new releases
 
-##  1.4.2
+## 1.4.4
+
+* Validation errors of the Nanopore file structure are now reported to the log more verbosely.
+
+## 1.4.3
+
+* Provides functionality to parse Nanopore data structure
+
+## 1.4.2
 
 * Use data model lib version 1.8.2, which introduces an important bug fix
 
-##  1.4.1
+## 1.4.1
 
 * Provide JAR with all dependencies included for single deployment (i.e. ETL dropboxes, etc.)
 
