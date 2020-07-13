@@ -58,7 +58,7 @@
     <dependency>
       <artifactId>data-model-lib</artifactId>
       <groupId>life.qbic</groupId>
-      <version>1.9.1</version>
+      <version>1.9.2</version>
     </dependency>
   </dependencies>
   <description>Collection of non-Vaadin, non-Liferay utilities.</description>
@@ -104,5 +104,5 @@
     </repository>
   </repositories>
   <url>http://github.com/qbicsoftware/core-utils-lib</url>
-  <version>1.5.1</version>
+  <version>1.5.2</version>
 </project>
