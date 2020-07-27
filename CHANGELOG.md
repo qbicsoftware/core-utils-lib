@@ -1,7 +1,7 @@
 # Changelog for new releases
 
 # 1.6.0
-* Increase data-model-lib version
+* Use data-model-lib version 1.9.4, which introduces proper `unclassified folder` handling
 
 # 1.5.0
 
