@@ -1,5 +1,8 @@
 # Changelog for new releases
 
+# 1.6.0
+* Increase data-model-lib version
+
 # 1.5.0
 
 * Ignore the quality control folder for now
