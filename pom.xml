@@ -7,7 +7,7 @@
   <description>Collection of non-Vaadin, non-Liferay utilities.</description>
   <modelVersion>4.0.0</modelVersion>
   <name>Core Utilities Library</name>
-  <version>1.7.0</version>
+  <version>1.7.1</version>
   <url>http://github.com/qbicsoftware/core-utils-lib</url>
   <packaging>jar</packaging>
   <parent>
@@ -28,7 +28,7 @@
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
       </snapshots>
-      <url>http://qbic-repo.qbic.uni-tuebingen.de:8081/repository/maven-snapshots</url>
+      <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-snapshots</url>
     </repository>
     <repository>
       <id>nexus-releases</id>
@@ -41,7 +41,7 @@
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-      <url>http://qbic-repo.qbic.uni-tuebingen.de:8081/repository/maven-releases</url>
+      <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-releases</url>
     </repository>
     <repository>
       <id>jitpack.io</id>
