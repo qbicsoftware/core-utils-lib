@@ -112,7 +112,7 @@
   <parent>
     <artifactId>parent-pom</artifactId>
     <groupId>life.qbic</groupId>
-    <version>2.4.0-SNAPSHOT</version>
+    <version>3.1.0</version>
   </parent>
   <!-- we only need to tell maven where to find our parent pom and other QBiC dependencies -->
   <repositories>
@@ -127,7 +127,7 @@
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
       </snapshots>
-      <url>http://qbic-repo.qbic.uni-tuebingen.de:8081/repository/maven-snapshots</url>
+      <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-snapshots</url>
     </repository>
     <repository>
       <id>nexus-releases</id>
@@ -140,7 +140,7 @@
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-      <url>http://qbic-repo.am10.uni-tuebingen.de:8081/repository/maven-releases</url>
+      <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-releases</url>
     </repository>
     <repository>
       <id>jitpack.io</id>
