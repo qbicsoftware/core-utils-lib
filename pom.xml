@@ -76,6 +76,11 @@
   </build>
   <dependencies>
     <dependency>
+      <artifactId>data-model-lib</artifactId>
+      <groupId>life.qbic</groupId>
+      <version>1.11.0</version>
+    </dependency>
+    <dependency>
       <artifactId>commons-lang3</artifactId>
       <groupId>org.apache.commons</groupId>
     </dependency>
@@ -88,11 +93,6 @@
       <artifactId>micronaut-http-client</artifactId>
       <groupId>io.micronaut</groupId>
       <version>1.2.11</version>
-    </dependency>
-    <dependency>
-      <artifactId>org.everit.json.schema</artifactId>
-      <groupId>com.github.everit-org.json-schema</groupId>
-      <version>1.12.1</version>
     </dependency>
     <dependency>
       <artifactId>spock-core</artifactId>
@@ -142,11 +142,6 @@
       <artifactId>system-rules</artifactId>
       <version>1.18.0</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <artifactId>data-model-lib</artifactId>
-      <groupId>life.qbic</groupId>
-      <version>1.11.0</version>
     </dependency>
   </dependencies>
 </project>
