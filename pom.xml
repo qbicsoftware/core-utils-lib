@@ -116,6 +116,7 @@
       <groupId>com.google.truth</groupId>
       <artifactId>truth</artifactId>
       <version>0.32</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.truth.extensions</groupId>
