@@ -93,6 +93,11 @@
             <scope>${osgi.scope}</scope>
         </dependency>
         <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <artifactId>picocli</artifactId>
             <groupId>info.picocli</groupId>
             <version>3.7.0</version>
