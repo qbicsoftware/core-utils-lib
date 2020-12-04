@@ -240,6 +240,9 @@
     <profiles>
         <profile>
             <id>no-liferay</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <properties>
                 <packaging.type>jar</packaging.type>
                 <osgi.scope>compile</osgi.scope>
