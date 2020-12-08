@@ -42,7 +42,7 @@ jobs:
           MAVEN_REPO_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
       - name: Build compiled bundle with Maven
-          run: mvn -P compiled clean -B package --file pom.xml
+        run: mvn -P compiled clean -B package --file pom.xml
 
       - name: Publish compiled bundle to QBiC Nexus Repository
         run: mvn --settings $GITHUB_WORKSPACE/.github.settings.xml deploy
