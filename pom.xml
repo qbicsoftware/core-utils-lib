@@ -103,13 +103,6 @@
             <version>3.7.0</version>
             <scope>${osgi.scope}</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-        <dependency>
-            <artifactId>micronaut-http-client</artifactId>
-            <groupId>io.micronaut</groupId>
-            <version>1.2.11</version>
-            <scope>${osgi.scope}</scope>
-        </dependency>
         <dependency>
             <artifactId>org.everit.json.schema</artifactId>
             <groupId>com.github.everit-org.json-schema</groupId>
