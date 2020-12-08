@@ -108,6 +108,7 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.12.0</version>
+            <scope>${osgi.scope}</scope>
         </dependency>
         <dependency>
             <artifactId>org.everit.json.schema</artifactId>
@@ -186,32 +187,6 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>classworlds:classworlds</exclude>
-                                    <exclude>junit:junit</exclude>
-                                    <exclude>jmock:*</exclude>
-                                    <exclude>*:xml-apis</exclude>
-                                    <exclude>org.apache.*:*</exclude>
-                                    <exclude>org.apache.maven:lib:tests</exclude>
-                                    <exclude>log4j:log4j:jar:</exclude>
-                                </excludes>
-                            </artifactSet>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
             </plugin>
@@ -240,7 +215,7 @@
 
     <profiles>
         <profile>
-            <id>no-osgi</id>
+            <id>compiled</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -258,6 +233,35 @@
                         <directory>src/main/webapp</directory>
                     </resource>
                 </resources>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.2.1</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <finalName>${artifactId}-${version}-compiled</finalName>
+                                    <artifactSet>
+                                        <excludes>
+                                            <exclude>classworlds:classworlds</exclude>
+                                            <exclude>junit:junit</exclude>
+                                            <exclude>jmock:*</exclude>
+                                            <exclude>*:xml-apis</exclude>
+                                            <exclude>org.apache.*:*</exclude>
+                                            <exclude>org.apache.maven:lib:tests</exclude>
+                                            <exclude>log4j:log4j:jar:</exclude>
+                                        </excludes>
+                                    </artifactSet>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
         <profile>
@@ -279,6 +283,33 @@
                     </resource>
                 </resources>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.2.1</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <finalName>${artifactId}-${version}-osgi</finalName>
+                                    <artifactSet>
+                                        <excludes>
+                                            <exclude>classworlds:classworlds</exclude>
+                                            <exclude>junit:junit</exclude>
+                                            <exclude>jmock:*</exclude>
+                                            <exclude>*:xml-apis</exclude>
+                                            <exclude>org.apache.*:*</exclude>
+                                            <exclude>org.apache.maven:lib:tests</exclude>
+                                            <exclude>log4j:log4j:jar:</exclude>
+                                        </excludes>
+                                    </artifactSet>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>biz.aQute.bnd</groupId>
                         <artifactId>bnd-maven-plugin</artifactId>
