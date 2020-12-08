@@ -240,7 +240,7 @@
 
     <profiles>
         <profile>
-            <id>no-liferay</id>
+            <id>no-osgi</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
@@ -261,7 +261,7 @@
             </build>
         </profile>
         <profile>
-            <id>liferay</id>
+            <id>osgi</id>
             <properties>
                 <packaging.type>jar</packaging.type>
                 <osgi.scope>provided</osgi.scope>
