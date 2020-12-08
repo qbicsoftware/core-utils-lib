@@ -114,7 +114,7 @@
             <artifactId>org.everit.json.schema</artifactId>
             <groupId>com.github.everit-org.json-schema</groupId>
             <version>1.12.1</version>
-            <scope>${osgi.scope}</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <artifactId>spock-core</artifactId>
@@ -188,15 +188,37 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <excludes>
+                                    <exclude>classworlds:classworlds</exclude>
+                                    <exclude>junit:junit</exclude>
+                                    <exclude>jmock:*</exclude>
+                                    <exclude>*:xml-apis</exclude>
+                                    <exclude>org.apache.*:*</exclude>
+                                    <exclude>org.apache.maven:lib:tests</exclude>
+                                    <exclude>log4j:log4j:jar:</exclude>
+                                </excludes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
                         <configuration>
-                            <archive>
-                                <manifest>
-                                    <mainClass>life.qbic.cli.PostregistrationToolEntryPoint</mainClass>
-                                </manifest>
-                            </archive>
                             <descriptorRefs>
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
                             </descriptorRefs>
@@ -208,7 +230,7 @@
                     </execution>
                 </executions>
                 <groupId>org.apache.maven.plugins</groupId>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

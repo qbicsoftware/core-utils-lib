@@ -3,4 +3,5 @@ Bundle-Version: ${project.version}
 Bundle-SymbolicName: ${project.groupId}.${project.artifactId}
 Bundle-URL: ${project.url}
 Export-Package: life.qbic.*;version="${project.version}"
-Import-Package: *
+Import-Package: !org.everit.json.schema.*,!org.json.*,!org.xml.sax,\\
+!picocli,*
