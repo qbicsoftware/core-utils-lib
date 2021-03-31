@@ -31,4 +31,6 @@ logs/
 
 # Other
 **/.factorypath
+
 **/.flattened-pom.xml
+.flattened-pom.xml
