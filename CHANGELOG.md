@@ -1,12 +1,19 @@
 # Changelog for new releases
 
+# 1.7.2
+
+* Use data-model-lib version 2.4.0
+
 # 1.7.1
+
 * Introduce secure connection to new nexus repository
 
 # 1.7.0
+
 * Use new parent pom 1.3.1 and integrate new nexus repository
 
 # 1.6.0
+
 * Use data-model-lib version 1.9.4, which introduces proper `unclassified folder` handling
 
 # 1.5.0
