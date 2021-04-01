@@ -66,7 +66,6 @@
             <url>https://jitpack.io</url>
         </repository>
     </repositories>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -78,7 +77,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <dependencies>
         <dependency>
             <artifactId>data-model-lib</artifactId>
@@ -94,8 +92,9 @@
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <scope>provided</scope>
+            <artifactId>groovy-all</artifactId>
+            <version>2.5.10</version>
+            <type>pom</type>
         </dependency>
         <dependency>
             <artifactId>picocli</artifactId>
@@ -168,7 +167,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <distributionManagement>
         <repository>
             <uniqueVersion>true</uniqueVersion>
@@ -202,7 +200,7 @@
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
                 <artifactId>gmavenplus-plugin</artifactId>
-                <version>1.11.0</version>
+                <version>1.12.1</version>
                 <executions>
                     <execution>
                         <goals>
@@ -217,8 +215,45 @@
                             <goal>removeTestStubs</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <id>site</id>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>generateStubs</goal>
+                            <goal>generateTestStubs</goal>
+                            <goal>groovydoc</goal>
+                            <goal>groovydocTests</goal>
+                        </goals>
+                    </execution>
                 </executions>
+                <configuration>
+                    <groovyDocOutputDirectory>${project.build.directory}/site/gapidocs</groovyDocOutputDirectory>
+                    <testGroovyDocOutputDirectory>${project.build.directory}/site/testgapidocs</testGroovyDocOutputDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.7.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
+            <plugin>
+                <groupId>life.qbic</groupId>
+                <artifactId>groovydoc-maven-plugin</artifactId>
+                <version>1.0.2</version>
             </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>life.qbic</groupId>
+                <artifactId>groovydoc-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>
