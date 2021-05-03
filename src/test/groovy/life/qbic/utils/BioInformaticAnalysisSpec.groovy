@@ -1,17 +1,15 @@
 package life.qbic.utils
 
-import org.everit.json.schema.ValidationException
 import spock.lang.Specification
 import java.nio.file.NotDirectoryException
 import java.nio.file.Paths
 import java.text.ParseException
 
 /**
- * <class short description - One Line!>
+ *  Tests for the BioinformaticAnalysisParser
  *
- * <More detailed description - When to use, what it solves, etc.>
- *
- * @since: <versiontag>
+ * @since: 1.8.0
+ * @see BioinformaticAnalysisParser
  *
  */
 class BioInformaticAnalysisSpec extends Specification {
@@ -23,9 +21,9 @@ class BioInformaticAnalysisSpec extends Specification {
             def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/resultset")
             when:
             def analysis = BioinformaticAnalysisParser.parseFileStructure(pathToDirectory)
-            println(analysis)
             then:
             assert analysis instanceof String
+            println(analysis)
 
         }
 
