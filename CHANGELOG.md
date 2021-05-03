@@ -1,5 +1,9 @@
 # Changelog for new releases
 
+# 1.8.0
+
+* Add a new static class `BioinformaticAnalysisParser` that is able to nf-core pipeline output and provide its content as a JSON String
+
 # 1.7.2
 
 * Use data-model-lib version 2.4.0
