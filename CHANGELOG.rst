@@ -10,6 +10,9 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Added**
 
+* Introduced new generic interface ``life.qbic.utils.DataSetParser`` that can be used to
+implement dataset parsers for different dataset types.
+
 **Fixed**
 
 **Dependencies**
