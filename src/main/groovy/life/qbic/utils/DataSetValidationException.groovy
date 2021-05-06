@@ -1,0 +1,32 @@
+package life.qbic.utils
+
+import org.everit.json.schema.ValidationException
+
+/**
+ * Exception that shall be thrown when a dataset validation failed.
+ *
+ * This exception class wraps the underlying <code>org.everit.json.schema
+ * .ValidationException</code> class, to encapsulate this third party dependency.
+ *
+ * @since 1.7.0
+ */
+class DataSetValidationException extends RuntimeException {
+
+    private final ValidationException validationException
+
+    DataSetValidationException(ValidationException validationException) {
+        this.validationException = validationException
+    }
+
+    List<String> getAllExceptions() {
+        return this.validationException.allMessages
+    }
+
+    List<DataSetValidationException> causingExceptions() {
+        List<DataSetValidationException> convertedExceptions = []
+        for (ValidationException validationException : validationException.causingExceptions) {
+            convertedExceptions.add(new DataSetValidationException(validationException))
+        }
+        return convertedExceptions
+    }
+}
