@@ -18,10 +18,19 @@ class DataSetValidationException extends RuntimeException {
         this.validationException = validationException
     }
 
+    /**
+     * Returns all messages of found dataset validations.
+     * @return A list of exception messages
+     */
     List<String> getAllExceptions() {
         return this.validationException.allMessages
     }
 
+    /**
+     * Returns a collection of all {@link DataSetValidationException} happened during
+     * the validation.
+     * @return
+     */
     List<DataSetValidationException> causingExceptions() {
         List<DataSetValidationException> convertedExceptions = []
         for (ValidationException validationException : validationException.causingExceptions) {
