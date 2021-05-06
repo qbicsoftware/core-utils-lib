@@ -16,14 +16,13 @@ class ImagingMetadataValidator {
      * Validates metadata properties for one imaging dataset
      * @param propertyMap Map of key - value pairs of metadata for one dataset
      */
-    static boolean validateImagingProperties(Map propertyMap) {
+    static void validateImagingProperties(Map propertyMap) {
         // Step1: convert directory to json
 
         String json = mapToJson(propertyMap)
         try {
         // Step2: Validate created Json against schema 
             validateJson(json)
-            return True
         } catch (ValidationException validationException) {
             log.error("Specified properties could not be validated")
             // we have to fetch all validation exceptions
