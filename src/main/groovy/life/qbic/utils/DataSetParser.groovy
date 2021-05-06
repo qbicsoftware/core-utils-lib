@@ -30,6 +30,6 @@ interface DataSetParser<T> {
      * @throws DataParserException if the data structure cannot be parsed (unknown structure)
      * @throws DataSetValidationException if the data structure is missing some required properties
      */
-    T parseFromPath(String rootPath) throws DataParserException, DataSetValidationException
+    T parseFrom(String rootPath) throws DataParserException, DataSetValidationException
 
 }
