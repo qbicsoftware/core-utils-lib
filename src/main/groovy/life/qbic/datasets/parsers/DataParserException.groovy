@@ -12,14 +12,29 @@ package life.qbic.datasets.parsers
  */
 class DataParserException extends RuntimeException {
 
+    /**
+     * Constructs a <code>DataParserException</code> with no detail message
+     * @since 1.7.0
+     */
     DataParserException() {
         super()
     }
 
+    /**
+     * Constructs a <code>DataParserException</code> with the specified detail message.
+     * @param message the detail message
+     * @since 1.7.0
+     */
     DataParserException(String message) {
         super(message)
     }
 
+    /**
+     * Constructs a new <code>DataParserException</code> with the specified detail message and cause.
+     * @param message the detail message
+     * @param cause the cause (A null value is permitted, and indicates that the cause is nonexistent or unknown.)
+     * @since 1.7.0
+     */
     DataParserException(String message, Throwable cause) {
         super(message, cause)
     }

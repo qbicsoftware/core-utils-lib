@@ -5,8 +5,8 @@ import org.everit.json.schema.ValidationException
 /**
  * Exception that shall be thrown when a dataset validation failed.
  *
- * This exception class wraps the underlying <code>org.everit.json.schema
- * .ValidationException</code> class, to encapsulate this third party dependency.
+ * <p>This exception class wraps the underlying <code>org.everit.json.schema
+ * .ValidationException</code> class, to encapsulate this third party dependency.</p>
  *
  * @since 1.7.0
  */
@@ -26,7 +26,7 @@ class DataSetValidationException extends RuntimeException {
 
     /**
      * Returns all messages of found dataset validations.
-     * @return A list of exception messages
+     * @return a list of exception messages
      * @since 1.7.0
      */
     List<String> getAllExceptions() {
@@ -36,7 +36,7 @@ class DataSetValidationException extends RuntimeException {
     /**
      * Returns a collection of all {@link DataSetValidationException} happened during
      * the validation.
-     * @return A list of causal exceptions
+     * @return a list of causal exceptions
      * @since 1.7.0
      */
     List<DataSetValidationException> getCauses() {

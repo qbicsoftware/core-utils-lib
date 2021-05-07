@@ -19,15 +19,15 @@ interface DataSetParser<T> {
      *      | - myFile.txt
      *      ` - anotherFile.txt
      * </pre>
-     * you would need to provide <code>"/SomePath/MyDataset"</code> as path.
+     * you would need to provide <code>"/SomePath/MyDataset"</code> as path.</p>
      *
      * @param rootPath The root path of the dataset structure, represents the top level of the
      * hierarchical data set structure. This path must be absolute.
      * @return A successfully parsed and validated dataset
-     * @throws DataParserException if the data structure cannot be parsed (unknown structure)
+     * @throws DataParserException if the data type cannot be parsed (unknown data type)
      * @throws DataSetValidationException if the data structure does not match a predefined schema
      * @since 1.7.0
      */
-    T parseFrom(String rootPath) throws DataParserException, DataSetValidationException
+    T parseFrom(Path root) throws DataParserException, DataSetValidationException
 
 }
