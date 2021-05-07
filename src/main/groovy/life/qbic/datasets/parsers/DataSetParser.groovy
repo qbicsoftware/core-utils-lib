@@ -1,5 +1,7 @@
 package life.qbic.datasets.parsers
 
+import java.nio.file.Path
+
 /**
  * A parser that takes an input data structure and tries to convert it to a certain type dataset
  * of type T.
