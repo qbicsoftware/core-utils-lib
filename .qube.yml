@@ -1,0 +1,19 @@
+qube_version: '2.7.0-SNAPSHOT # <<QUBE_NO_BUMP>>'
+full_name: Jennifer Bödker
+email: jennifer.boedker@qbic.uni-tuebingen.de
+project_name: core-utils-lib
+project_short_description: core-utils-lib. A qube based .
+version: 1.7.0-SNAPSHOT
+domain: lib
+language: groovy
+project_slug: core-utils-lib
+project_slug_no_hyphen: core_utils_lib
+template_version: '1.0.1 # <<QUBE_NO_BUMP>>'
+template_handle: lib-groovy
+github_username: jenniferboedker
+creator_github_username: jenniferboedker
+is_github_repo: false
+is_repo_private: false
+is_github_orga: false
+copyright_holder: QBiC
+license: MIT
