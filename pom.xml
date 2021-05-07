@@ -1,46 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>life.qbic</groupId>
-    <artifactId>parent-pom</artifactId>
-    <version>2.2.0</version>
-  </parent>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <artifactId>core-utils-lib</artifactId>
-  <version>1.4.4</version>
-  <name>Core Utilities Library</name>
-  <url>http://github.com/qbicsoftware/core-utils-lib</url>
   <description>Collection of non-Vaadin, non-Liferay utilities.</description>
+  <modelVersion>4.0.0</modelVersion>
+  <name>Core Utilities Library</name>
+  <version>1.7.2</version>
+  <url>http://github.com/qbicsoftware/core-utils-lib</url>
   <packaging>jar</packaging>
+  <parent>
+    <artifactId>parent-pom</artifactId>
+    <groupId>life.qbic</groupId>
+    <version>3.1.0</version>
+  </parent>
   <!-- we only need to tell maven where to find our parent pom and other QBiC dependencies -->
   <repositories>
     <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-        <checksumPolicy>fail</checksumPolicy>
-      </snapshots>
       <id>nexus-snapshots</id>
       <name>QBiC Snapshots</name>
-      <url>https://qbic-repo.am10.uni-tuebingen.de/repository/maven-snapshots</url>
-    </repository>
-    <repository>
       <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <checksumPolicy>fail</checksumPolicy>
         <enabled>true</enabled>
         <updatePolicy>always</updatePolicy>
+      </snapshots>
+      <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-snapshots</url>
+    </repository>
+    <repository>
+      <id>nexus-releases</id>
+      <name>QBiC Releases</name>
+      <releases>
         <checksumPolicy>fail</checksumPolicy>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
       </releases>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-      <id>nexus-releases</id>
-      <name>QBiC Releases</name>
-      <url>https://qbic-repo.am10.uni-tuebingen.de/repository/maven-releases</url>
+      <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-releases</url>
     </repository>
     <repository>
       <id>jitpack.io</id>
@@ -49,46 +50,66 @@
   </repositories>
   <dependencies>
     <dependency>
-      <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
+      <groupId>org.apache.commons</groupId>
     </dependency>
     <dependency>
-      <groupId>info.picocli</groupId>
       <artifactId>picocli</artifactId>
+      <groupId>info.picocli</groupId>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
     <dependency>
-      <groupId>io.micronaut</groupId>
       <artifactId>micronaut-http-client</artifactId>
+      <groupId>io.micronaut</groupId>
       <version>1.2.11</version>
     </dependency>
     <dependency>
-      <groupId>com.github.everit-org.json-schema</groupId>
       <artifactId>org.everit.json.schema</artifactId>
+      <groupId>com.github.everit-org.json-schema</groupId>
       <version>1.12.1</version>
     </dependency>
     <dependency>
-      <groupId>org.spockframework</groupId>
       <artifactId>spock-core</artifactId>
+      <groupId>org.spockframework</groupId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>life.qbic</groupId>
       <artifactId>data-model-lib</artifactId>
-      <version>1.8.3</version>
+      <groupId>life.qbic</groupId>
+      <version>2.4.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.8.4</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>2.18.3</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.stefanbirkner</groupId>
+      <artifactId>system-rules</artifactId>
+      <version>1.19.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-reflect</artifactId>
+      <version>1.6.1</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
           <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
             <configuration>
               <archive>
                 <manifest>
@@ -99,8 +120,13 @@
                 <descriptorRef>jar-with-dependencies</descriptorRef>
               </descriptorRefs>
             </configuration>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <phase>package</phase>
           </execution>
         </executions>
+        <groupId>org.apache.maven.plugins</groupId>
       </plugin>
     </plugins>
   </build>

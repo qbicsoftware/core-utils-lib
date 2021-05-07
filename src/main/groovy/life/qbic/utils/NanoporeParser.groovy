@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
 import groovyjarjarcommonscli.MissingArgumentException
+import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutput
 import org.everit.json.schema.Schema
 import org.everit.json.schema.ValidationException
 import org.everit.json.schema.loader.SchemaLoader
@@ -19,8 +20,6 @@ import life.qbic.datamodel.datasets.OxfordNanoporeExperiment
 @Log4j2
 class NanoporeParser {
 
-    final static private JSON_SCHEMA = "/nanopore-instrument-output.schema.json"
-
     /**
      * Generates a map representing the folder structure
      * @param directory path of directory whose fileTree should be converted into map
@@ -32,12 +31,10 @@ class NanoporeParser {
         String json = mapToJson(convertedDirectory)
         try {
         // Step2: Validate created Json against schema 
-            validateJsonForSchema(json, JSON_SCHEMA)
+            validateJson(json)
             //Step3: convert valid json to OxfordNanoporeExperiment Object
-
             // Step4: Parse meta data out of report files and extend the map
             def finalMap = parseMetaData(convertedDirectory, directory)
-
             // Step5: Create the final OxfordNanoporeExperiment from the map
             OxfordNanoporeExperiment convertedExperiment = OxfordNanoporeExperiment.create(finalMap)
             return convertedExperiment
@@ -45,13 +42,12 @@ class NanoporeParser {
             log.error("Specified directory could not be validated")
             // we have to fetch all validation exceptions
             def causes = validationException.getAllMessages().collect{ it }.join("\n")
-//            def causes = validationException.getCausingExceptions().collect{ it.message }.join("\n")
             log.error(causes)
             throw validationException
         }
     }
 
-    /*
+    /**
      * The main metadata we need to provide for the OxfordNanoporeExperiment is in
      * the report markdown file and final summary file.
      * The parsed metadata properties are summarized as key value pairs under an new map
@@ -59,8 +55,8 @@ class NanoporeParser {
      */
     private static Map parseMetaData(Map convertedDirectory, Path root) {
         convertedDirectory.get("children").each { measurement ->
-            def reportFile = measurement["children"].find {it["name"].contains("report") && it["file_type"] == "md"}
-            def summaryFile = measurement["children"].find {it["name"].contains("final_summary") && it["file_type"] == "txt"}
+            def reportFile = measurement["children"].find { it["name"].contains("report") && it["file_type"] == "md" }
+            def summaryFile = measurement["children"].find { it["name"].contains("final_summary") && it["file_type"] == "txt" }
             def metadata = readMetaData(reportFile as Map, summaryFile as Map, root)
             Map finalMetadata = finalizeMetadata(metadata)
             measurement["metadata"] = finalMetadata
@@ -68,13 +64,13 @@ class NanoporeParser {
         return convertedDirectory
     }
 
-    /*
+    /**
      * The metadata contained in the report markdown is notated as an embedded JSON object in the header of the file.
      * The additional metadata contained in the final summary is a line-separated list of
      * key=value pairs.
      */
     private static Map readMetaData(Map<String, String> reportFile, Map<String, String> summaryFile, Path root) {
-        def report = new File(Paths.get(root.toString(),reportFile["path"].toString()) as String)
+        def report = new File(Paths.get(root.toString(), reportFile["path"].toString()) as String)
                 .readLines()
                 .iterator()
         def buffer = new StringBuffer()
@@ -100,14 +96,14 @@ class NanoporeParser {
 
         new File(Paths.get(root.toString(), summaryFile["path"].toString()) as String)
                 .readLines().each { line ->
-                    def split = line.split("=")
-                    finalMetaData[split[0]] = split[1]
+            def split = line.split("=")
+            finalMetaData[split[0]] = split[1]
         }
 
         return finalMetaData
     }
 
-    /*
+    /**
      * The base caller and flow cell position entries are not nicely stored in the metadata.
      * We refactor them to the properties, the data model OxfordNanoporeExperiment expects.
      */
@@ -129,25 +125,25 @@ class NanoporeParser {
     }
 
     private static void checkPresenceOfFlowCellPosition(Map metadata, String flowCellEntry) {
-        if (! metadata.containsKey(flowCellEntry)) {
+        if (!metadata.containsKey(flowCellEntry)) {
             throw new MissingArgumentException("Could not find metadata information about the flow cell position.")
         }
-        if ( (metadata[flowCellEntry] as String).isEmpty() ) {
+        if ((metadata[flowCellEntry] as String).isEmpty()) {
             throw new MissingArgumentException("Flow cell position information was empty.")
         }
     }
 
     private static void checkPresenceOfBaseCaller(Map metadata, String baseCallerEntry) {
-        if (! metadata.containsKey(baseCallerEntry)) {
+        if (!metadata.containsKey(baseCallerEntry)) {
             throw new MissingArgumentException("Could not find metadata information about the base caller.")
         }
-        if ( (metadata[baseCallerEntry] as String).isEmpty() ) {
+        if ((metadata[baseCallerEntry] as String).isEmpty()) {
             throw new MissingArgumentException("Base caller information was empty.")
         }
     }
-            
 
-    /*
+
+    /**
      * Method which converts a map into json String
      * @param map a nested map representing a fileTree structure
      */
@@ -157,16 +153,16 @@ class NanoporeParser {
         return json
     }
 
-    /*
+    /**
      * Method which checks if a given Json String matches a given Json schema
      * @param json Json String which will be compared to schema
-     * @param schema path to Json schema for validation of Json String
+     * @param  path to Json schema for validation of Json String
      * @throws org.everit.json.schema.ValidationException
      */
-    private static void validateJsonForSchema(String json, String schema) throws ValidationException {
+    private static void validateJson(String json) throws ValidationException {
         // Step1: load schema
         JSONObject jsonObject = new JSONObject(json)
-        InputStream schemaStream = NanoporeParser.getResourceAsStream(schema)
+        InputStream schemaStream = OxfordNanoporeInstrumentOutput.getSchemaAsStream()
         JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream))
         Schema jsonSchema = SchemaLoader.load(rawSchema)
         // Step2: validate against schema return if valid, throw exception if invalid
@@ -178,6 +174,7 @@ class NanoporeParser {
      */
     private static class DirectoryConverter {
         private static final PREDEFINED_EXTENSIONS = ["fastq.gz"]
+        private static final IGNORED_FOLDERNAMES = ["qc"]
 
         /**
          *
@@ -200,7 +197,7 @@ class NanoporeParser {
                     throw new ParseException("Parsed directory might not be empty", -1)
                 }
             } else {
-                if (! rootLocation.exists()) {
+                if (!rootLocation.exists()) {
                     log.error("The given directory does not exist.")
                     throw new FileNotFoundException("The given path does not exist.")
                 } else {
@@ -211,7 +208,7 @@ class NanoporeParser {
 
         }
 
-        /*
+        /**
          * Convert a directory structure to a map, following the Nanopore schema.
          * @param a path to the current location in recursion
          * @return a map representing a directory with name, path and children as keys
@@ -220,7 +217,14 @@ class NanoporeParser {
             // convert to File object
             File currentDirectory = new File(path.toString())
             String name = currentDirectory.getName()
-            List children = currentDirectory.listFiles().collect {
+            if (IGNORED_FOLDERNAMES.contains(name)) {
+                log.debug("Skipped " + name)
+                return null
+            }
+            List children = currentDirectory.listFiles().findAll { file ->
+                String currentFolderName = file.getName()
+                return !IGNORED_FOLDERNAMES.contains(currentFolderName)
+            }.collect {
                 file ->
                     if (file.isFile()) {
                         convertFile(file.toPath())
@@ -256,7 +260,7 @@ class NanoporeParser {
             }
         }
 
-        /*
+        /**
          * File to JSON converter
          * @param a path to the current file in recursion
          * @return a map representing the file with name, path and file_type as keys
@@ -276,7 +280,7 @@ class NanoporeParser {
             return convertedFile
         }
 
-        /*
+        /**
          * This method extracts the file type also called extension from the filename.
          * The type defaults to the substring after the last `.` character in the string.
          * If the filename ends with one of the predefined extensions in
