@@ -23,7 +23,7 @@ interface DataSetParser<T> {
      * </pre>
      * you would need to provide <code>"/SomePath/MyDataset"</code> as path.</p>
      *
-     * @param rootPath The root path of the dataset structure, represents the top level of the
+     * @param root The root path of the dataset structure, represents the top level of the
      * hierarchical data set structure. This path must be absolute.
      * @return A successfully parsed and validated dataset
      * @throws DataParserException if the data type cannot be parsed (unknown data type)
