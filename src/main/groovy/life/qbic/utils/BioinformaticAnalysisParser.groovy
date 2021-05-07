@@ -105,7 +105,8 @@ class BioinformaticAnalysisParser {
                     println(rootStructure)
                     //ToDo find out what's missing here
                     Map folderStructure = convertDirectory(rootLocation.toPath())
-                    return convertToRelativePaths(folderStructure, rootLocation.toPath())
+                    println(folderStructure)
+                    return convertToRelativePaths(rootStructure, rootLocation.toPath())
                 } else {
                     log.error("Specified directory is empty")
                     throw new ParseException("Parsed directory might not be empty", -1)
@@ -189,10 +190,15 @@ class BioinformaticAnalysisParser {
         }
 
         private static Map convertToRelativePaths(Map content, Path root) {
-            content["path"] = toRelativePath(content["path"] as String, root)
-            if (content["children"]) {
-                // Children always contains a map, so convert recursively
-                content["children"] = (content["children"] as List).collect { convertToRelativePaths(it as Map, root) }
+            //Since each value in the root map is a map we need to iterate over each key/value pair
+            content.each {
+                Map currentValue = it.getValue() as Map
+                //ToDo Why does this not work?
+                currentValue["path"] = toRelativePath(currentValue["path"] as String, root)
+                if (currentValue["children"]) {
+                    // Children always contains a map, so convert recursively
+                    currentValue["children"] = (currentValue["children"] as List).collect { convertToRelativePaths(it as Map, root) }
+                }
             }
             return content
 
