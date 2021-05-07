@@ -1,4 +1,4 @@
-package life.qbic.utils
+package life.qbic.datasets.parsers
 
 /**
  * A parser that takes an input data structure and tries to convert it to a certain type dataset

@@ -1,4 +1,4 @@
-package life.qbic.utils
+package life.qbic.datasets.parsers
 
 import org.everit.json.schema.ValidationException
 

@@ -1,4 +1,4 @@
-package life.qbic.utils
+package life.qbic.datasets.parsers
 
 /**
  * Thrown to indicate that a dataset could not be parsed. 
