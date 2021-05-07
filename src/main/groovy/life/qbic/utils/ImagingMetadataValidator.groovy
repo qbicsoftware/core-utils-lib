@@ -17,7 +17,7 @@ class ImagingMetadataValidator {
      * @param propertyMap Map of key - value pairs of metadata for one dataset
      */
     static void validateImagingProperties(Map propertyMap) {
-        // Step1: convert directory to json
+        // Step1: convert properties to json
 
         String json = mapToJson(propertyMap)
         try {
