@@ -29,9 +29,10 @@ class DataSetValidationException extends RuntimeException {
     /**
      * Returns a collection of all {@link DataSetValidationException} happened during
      * the validation.
-     * @return
+     * @return a list of causal exceptions
+     * @since 1.7.0
      */
-    List<DataSetValidationException> causingExceptions() {
+    List<DataSetValidationException> getCauses() {
         List<DataSetValidationException> convertedExceptions = []
         for (ValidationException validationException : validationException.causingExceptions) {
             convertedExceptions.add(new DataSetValidationException(validationException))
