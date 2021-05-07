@@ -7,7 +7,6 @@ package life.qbic.utils
  * <li>a string describing the exception. This is used as the Java exception message.</li>
  * <li>the causal relationship, if any for this <code>DataParserException</code></li>
  * </ul>
- 
  *
  * @since 1.7.0
  */

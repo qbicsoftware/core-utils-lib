@@ -14,6 +14,12 @@ class DataSetValidationException extends RuntimeException {
 
     private final ValidationException validationException
 
+    /**
+     * Creates a dataset validation exception object wrapping a JSON schema
+     * {@link ValidationException}.
+     * @param validationException
+     * @since 1.7.0
+     */
     DataSetValidationException(ValidationException validationException) {
         this.validationException = validationException
     }
@@ -21,6 +27,7 @@ class DataSetValidationException extends RuntimeException {
     /**
      * Returns all messages of found dataset validations.
      * @return A list of exception messages
+     * @since 1.7.0
      */
     List<String> getAllExceptions() {
         return this.validationException.allMessages
@@ -29,7 +36,7 @@ class DataSetValidationException extends RuntimeException {
     /**
      * Returns a collection of all {@link DataSetValidationException} happened during
      * the validation.
-     * @return a list of causal exceptions
+     * @return A list of causal exceptions
      * @since 1.7.0
      */
     List<DataSetValidationException> getCauses() {
