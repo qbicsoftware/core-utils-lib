@@ -23,8 +23,6 @@ class BioInformaticAnalysisSpec extends Specification {
             def analysis = BioinformaticAnalysisParser.parseFileStructure(pathToDirectory)
             then:
             assert analysis instanceof String
-            println(analysis)
-
         }
 
         def "parsing an empty directory throws ParseException"() {

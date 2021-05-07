@@ -2,7 +2,7 @@
 
 # 1.8.0
 
-* Add a new static class `BioinformaticAnalysisParser` that is able to nf-core pipeline output and provide its content as a JSON String
+* Add a new static class `BioinformaticAnalysisParser` that is able to parse nf-core pipeline output and provide its content as a JSON String
 
 # 1.7.2
 

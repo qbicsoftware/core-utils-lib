@@ -27,7 +27,6 @@ class NanoporeParser {
     static OxfordNanoporeExperiment parseFileStructure(Path directory) {
         // Step1: convert directory to json
         Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
-
         String json = mapToJson(convertedDirectory)
         try {
         // Step2: Validate created Json against schema 
@@ -191,6 +190,7 @@ class NanoporeParser {
                 if (rootLocation.list().length > 0) {
                     // Recursive conversion
                     Map folderStructure = convertDirectory(rootLocation.toPath())
+
                     return convertToRelativePaths(folderStructure, rootLocation.toPath())
                 } else {
                     log.error("Specified directory is empty")

@@ -16,8 +16,51 @@ import java.text.ParseException
  * @param directory path of nf-core directory whose fileTree should be converted into a JSON String
  *
  */
+
 @Log4j2
 class BioinformaticAnalysisParser {
+
+    /**
+     * Possible product groups
+     *
+     * This enum describes the product groups into which the products of an offer are listed.
+     *
+     */
+    enum RootFolderTypes {
+        QUALITYCONTROL("qualityControl"),
+        PIPELINEINFORMATION("pipelineInformation"),
+        PROCESSFOLDERS("processFolders")
+        private String name
+
+        RootFolderTypes(String name) {
+            this.name = name;
+        }
+
+        String getName() {
+            return this.name;
+        }
+    }
+
+    /**
+     * Possible product groups
+     *
+     * This enum describes the product groups into which the products of an offer are listed.
+     *
+     */
+    enum RootFileTypes {
+        RUNID("runId"),
+        SAMPLEID("sampleIds"),
+
+        private String name
+
+        RootFileTypes(String name) {
+            this.name = name;
+        }
+
+        String getName() {
+            return this.name;
+        }
+    }
 
     /**
      * Generates a map representing the folder structure
@@ -57,7 +100,10 @@ class BioinformaticAnalysisParser {
             } else if (rootLocation.isDirectory()) {
                 //Check if existing Directory is empty
                 if (rootLocation.list().length > 0) {
+                    Map rootStructure = convertRoot(rootLocation)
                     // Recursive conversion
+                    println(rootStructure)
+                    //ToDo find out what's missing here
                     Map folderStructure = convertDirectory(rootLocation.toPath())
                     return convertToRelativePaths(folderStructure, rootLocation.toPath())
                 } else {
@@ -74,6 +120,46 @@ class BioinformaticAnalysisParser {
                 }
             }
 
+        }
+
+        /**
+         * Convert a directory structure to a map, following the BioinformaticAnalysis schema.
+         * @param a path to the current location in recursion
+         * @return a map representing a directory with name, path and children as keys
+         */
+        private static Map convertRoot(File file) {
+            Map rootFileTree = [:]
+            ArrayList processFolders = []
+            file.listFiles().each {
+                if (it.isFile()) {
+                    switch(it.getName()) {
+                        case "run_id.txt":
+                            rootFileTree[RootFileTypes.RUNID.name] = convertFile(it.toPath())
+                            break
+                        case "sample_ids.txt":
+                            rootFileTree[RootFileTypes.SAMPLEID.name] = convertFile(it.toPath())
+                            break
+                        default:
+                            log.error("Uncategorized File found: " + it.getName())
+                            break
+                    }
+                } else if (it.isDirectory()) {
+                    switch(it.getName()) {
+                        case "multiqc":
+                            rootFileTree[RootFolderTypes.QUALITYCONTROL.name] = convertDirectory(it.toPath())
+                            break
+                        case "pipeline_info":
+                            rootFileTree[RootFolderTypes.PIPELINEINFORMATION.name] = convertDirectory(it.toPath())
+                            break
+                        default:
+                            processFolders.add(convertDirectory(it.toPath()))
+                            break
+                    }
+
+                }
+            }
+            rootFileTree[RootFolderTypes.PROCESSFOLDERS.name] = processFolders
+            return rootFileTree
         }
 
         /**
