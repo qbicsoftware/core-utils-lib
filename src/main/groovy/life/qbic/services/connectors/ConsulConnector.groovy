@@ -2,23 +2,22 @@ package life.qbic.services.connectors
 
 import groovy.json.JsonSlurper
 
+import io.micronaut.http.client.RxHttpClient
+import io.micronaut.http.uri.UriBuilder
+
 import life.qbic.services.Service
 import life.qbic.services.ServiceConnector
 import life.qbic.services.ServiceType
-
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
 
 class ConsulConnector implements ServiceConnector, AutoCloseable {
 
     URL registryUrl
 
-    HttpClient client
+    RxHttpClient httpClient
 
     ConsulConnector(URL serviceRegistry) {
         this.registryUrl = serviceRegistry
-        this.client = HttpClient.newHttpClient()
+        this.httpClient = RxHttpClient.create(serviceRegistry)
     }
 
     @Override
@@ -34,18 +33,18 @@ class ConsulConnector implements ServiceConnector, AutoCloseable {
     }
 
     private List<Map> queryRegistryForService(String name) {
-        URI uri = URI.create("${registryUrl.toExternalForm()}/catalog/service/$name")
+        String uri = UriBuilder.of("${registryUrl.toExternalForm()}/catalog/service/{name}")
+                .expand(Collections.singletonMap("name", name))
+                .toString()
+        def result = this.httpClient.toBlocking().retrieve(uri)
+        def serviceMap = new JsonSlurper().parseText(result) as List<Map>
 
-        HttpRequest request = HttpRequest.newBuilder().uri(uri).build()
-        HttpResponse response = client.send(request, HttpResponse.BodyHandlers.ofString())
-
-        def serviceMap = new JsonSlurper().parseText(response.body()) as List<Map>
         return serviceMap
     }
 
     @Override
     void close() throws Exception {
-        client = null
+        httpClient.close()
     }
 
     class ServiceNames {
