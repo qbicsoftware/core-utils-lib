@@ -42,7 +42,7 @@ class ImagingMetadataValidatorSpec extends Specification {
     Map propertyMap = new HashMap<>()
     propertyMap.put("image_filename","myimage.tiff")
     propertyMap.put("imaging_modality","CT")
-    propertyMap.put("imaging_date","32.12.2011")
+    propertyMap.put("imaging_date","30122011")
     propertyMap.put("instrument_user","Arnold Schwarzenegger")
     propertyMap.put("instrument_manufacturer","FN")
     propertyMap.put("imaged_tissue","brain")
