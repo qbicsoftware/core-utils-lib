@@ -10,9 +10,20 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Added**
 
+* Add qube support
+
+* Add DatasetParser as interface for parsing datasets ``life/qbic/datasets/parsers/DatasetParser.groovy``
+
+* Add ImagingMetadataValidator for validating json files containing imaging metadata ``life/qbic/utils/ImagingMetadataValidator.groovy``, with test ``life/qbic/utils/ImagingMetadataValidatorSpec.groovy``
+
+
 **Fixed**
 
 **Dependencies**
+
+* Upgrade ``life.qbic:groovy:data-model-lib:jar:2.4.0`` -> ``2.6.0-SNAPSHOT``
+
+* Downgrade java 11 -> java 8
 
 **Deprecated**
 
