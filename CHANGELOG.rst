@@ -22,6 +22,10 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Added**
 
+* Use data-model-lib version 2.4.0
+
+* Introduce secure connection to new nexus repository
+
 **Fixed**
 
 **Dependencies**
