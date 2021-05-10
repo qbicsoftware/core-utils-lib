@@ -11,7 +11,7 @@ import java.nio.file.Path
  *
  * @since 1.7.0
  */
-interface DataSetParser<T> {
+interface DatasetParser<T> {
 
     /**
      * Parses and validates a data structure from a given path of a directory in the filesystem.
@@ -27,9 +27,9 @@ interface DataSetParser<T> {
      * hierarchical data set structure. This path must be absolute.
      * @return A successfully parsed and validated dataset
      * @throws DataParserException if the data type cannot be parsed (unknown data type)
-     * @throws DataSetValidationException if the data structure does not match a predefined schema
+     * @throws DatasetValidationException if the data structure does not match a predefined schema
      * @since 1.7.0
      */
-    T parseFrom(Path root) throws DataParserException, DataSetValidationException
+    T parseFrom(Path root) throws DataParserException, DatasetValidationException
 
 }

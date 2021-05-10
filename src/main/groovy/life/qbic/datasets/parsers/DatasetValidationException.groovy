@@ -10,7 +10,7 @@ import org.everit.json.schema.ValidationException
  *
  * @since 1.7.0
  */
-class DataSetValidationException extends RuntimeException {
+class DatasetValidationException extends RuntimeException {
 
     private final ValidationException validationException
 
@@ -20,7 +20,7 @@ class DataSetValidationException extends RuntimeException {
      * @param validationException
      * @since 1.7.0
      */
-    DataSetValidationException(ValidationException validationException) {
+    DatasetValidationException(ValidationException validationException) {
         this.validationException = validationException
     }
 
@@ -34,15 +34,15 @@ class DataSetValidationException extends RuntimeException {
     }
 
     /**
-     * Returns a collection of all {@link DataSetValidationException} happened during
+     * Returns a collection of all {@link DatasetValidationException} happened during
      * the validation.
      * @return a list of causal exceptions
      * @since 1.7.0
      */
-    List<DataSetValidationException> getCauses() {
-        List<DataSetValidationException> convertedExceptions = []
+    List<DatasetValidationException> getCauses() {
+        List<DatasetValidationException> convertedExceptions = []
         for (ValidationException validationException : validationException.causingExceptions) {
-            convertedExceptions.add(new DataSetValidationException(validationException))
+            convertedExceptions.add(new DatasetValidationException(validationException))
         }
         return convertedExceptions
     }
