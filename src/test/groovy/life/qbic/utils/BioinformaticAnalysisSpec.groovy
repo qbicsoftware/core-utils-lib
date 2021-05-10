@@ -14,11 +14,11 @@ import java.text.ParseException
  */
 class BioInformaticAnalysisSpec extends Specification {
 
-    def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/bioinformatic-analysis-output").getPath()
+    def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/bioinformatic-analysis-output/").getPath()
 
     def "parsing a valid file structure returns a Json String"() {
         given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/resultset")
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/")
         when:
         def analysis = BioinformaticAnalysisParser.parseFileStructure(pathToDirectory)
         then:
@@ -27,7 +27,7 @@ class BioInformaticAnalysisSpec extends Specification {
 
     def "parsing an empty directory throws ParseException"() {
         given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "/empty_directory/")
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "empty_directory/")
         // Maven doesn't include empty folders in build process so it has to be generated explicitly
         File directory = new File(pathToDirectory.toString())
         if (!directory.exists()) {
@@ -52,7 +52,7 @@ class BioInformaticAnalysisSpec extends Specification {
 
     def "parsing a file throws NotDirectoryException "() {
         given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/resultset/pipeline_info/execution_report.txt")
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/pipeline_info/execution_report.txt")
         when:
         BioinformaticAnalysisParser.parseFileStructure(pathToDirectory)
         then:
