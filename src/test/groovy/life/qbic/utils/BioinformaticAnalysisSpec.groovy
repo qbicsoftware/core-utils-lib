@@ -14,11 +14,11 @@ import java.text.ParseException
  */
 class BioInformaticAnalysisSpec extends Specification {
 
-    def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/bioinformatic-analysis-output/").getPath()
+    def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/bioinformatic-analysis-output").getPath()
 
     def "parsing a valid file structure returns a Json String"() {
         given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/")
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates")
         when:
         def analysis = BioinformaticAnalysisParser.parseFileStructure(pathToDirectory)
         then:
