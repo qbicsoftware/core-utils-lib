@@ -8,7 +8,7 @@ import java.text.ParseException
 /**
  *  Tests for the BioinformaticAnalysisParser
  *
- * @since: 1.8.0
+ * @since 1.8.0
  * @see BioinformaticAnalysisParser
  *
  */
