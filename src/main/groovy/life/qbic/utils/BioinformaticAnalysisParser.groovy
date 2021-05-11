@@ -135,11 +135,11 @@ class BioinformaticAnalysisParser {
                     String keyName = "softwareVersions"
                     insertAsProperty(pipelineInformation, child, keyName)
                     break
-                case "execution_report":
+                case "execution_report.txt":
                     String keyName = "executionReport"
                     insertAsProperty(pipelineInformation, child, keyName)
                     break
-                case "pipeline_report":
+                case "pipeline_report.txt":
                     String keyName = "pipelineReport"
                     insertAsProperty(pipelineInformation, child, keyName)
                     break
@@ -147,6 +147,7 @@ class BioinformaticAnalysisParser {
                     //ignoring other children
                     break
             }
+            println(pipelineInformation)
         }
     }
 
