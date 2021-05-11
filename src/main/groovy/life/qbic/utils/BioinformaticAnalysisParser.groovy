@@ -147,7 +147,6 @@ class BioinformaticAnalysisParser {
                     //ignoring other children
                     break
             }
-            println(pipelineInformation)
         }
     }
 
