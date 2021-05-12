@@ -2,6 +2,10 @@ package life.qbic.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.util.logging.Log4j2
+import life.qbic.datamodel.datasets.NfCorePipelineResult
+import life.qbic.datasets.parsers.DataParserException
+import life.qbic.datasets.parsers.DatasetParser
+import life.qbic.datasets.parsers.DatasetValidationException
 
 import java.nio.file.NotDirectoryException
 import java.nio.file.Path
@@ -19,7 +23,7 @@ import java.text.ParseException
  */
 
 @Log4j2
-class BioinformaticAnalysisParser {
+class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>{
 
     /**
      * Possible product groups
@@ -70,7 +74,6 @@ class BioinformaticAnalysisParser {
      */
     static String parseFileStructure(Path directory) {
         Map fileTreeMap = DirectoryConverter.fileTreeToMap(directory)
-        //NfCorePipelineResult nfCorePipelineResult = NfCorePipelineResult.createFrom(fileTreeMap)
         String json = mapToJson(fileTreeMap)
         return json
     }
@@ -206,47 +209,6 @@ class BioinformaticAnalysisParser {
          * Convert a directory structure to a map, following the BioinformaticAnalysis schema.
          * @param a path to the current location in recursion
          * @return a map representing a directory with name, path and children as keys
-         * @since 1.8.0
-         */
-        private static Map convertRoot(File file) {
-            Map rootFileTree = [:]
-            ArrayList processFolders = []
-            file.listFiles().each {
-                if (it.isFile()) {
-                    switch(it.getName()) {
-                        case "run_id.txt":
-                            rootFileTree[RootFileTypes.RUNID.name] = convertFile(it.toPath())
-                            break
-                        case "sample_ids.txt":
-                            rootFileTree[RootFileTypes.SAMPLEID.name] = convertFile(it.toPath())
-                            break
-                        default:
-                            log.error("Uncategorized File found: " + it.getName())
-                            break
-                    }
-                } else if (it.isDirectory()) {
-                    switch(it.getName()) {
-                        case "multiqc":
-                            rootFileTree[RootFolderTypes.QUALITYCONTROL.name] = convertDirectory(it.toPath())
-                            break
-                        case "pipeline_info":
-                            rootFileTree[RootFolderTypes.PIPELINEINFORMATION.name] = convertDirectory(it.toPath())
-                            break
-                        default:
-                            processFolders.add(convertDirectory(it.toPath()))
-                            break
-                    }
-
-                }
-            }
-            rootFileTree[RootFolderTypes.PROCESSFOLDERS.name] = processFolders
-            return rootFileTree
-        }
-
-        /**
-         * Convert a directory structure to a map, following the BioinformaticAnalysis schema.
-         * @param a path to the current location in recursion
-         * @return a map representing a directory with name, path and children as keys
          */
         private static Map convertDirectory(Path path) {
             File currentDirectory = new File(path.toString())
@@ -322,4 +284,32 @@ class BioinformaticAnalysisParser {
         }
 
     }
+
+    /**
+     * Parses and validates a data structure from a given path of a directory in the filesystem.
+     * <p> As an example, for a data set such as this:
+     * <pre>
+     * - /SomePath/MyDataset
+     *      | - myFile.txt
+     *      ` - anotherFile.txt
+     * </pre>
+     * you would need to provide <code>"/SomePath/MyDataset"</code> as path.</p>
+     *
+     * @param root The root path of the dataset structure, represents the top level of the
+     * hierarchical data set structure. This path must be absolute.
+     * @return A successfully parsed and validated dataset
+     * @throws DataParserException if the data type cannot be parsed (unknown data type)
+     * @throws DatasetValidationException if the data structure does not match a predefined schema
+     * @since 1.7.0
+     */
+    @Override
+    NfCorePipelineResult parseFrom(Path root) throws DataParserException, DatasetValidationException {
+        String json = parseFileStructure(root)
+        //TODO validate
+        //TODO convert
+        //TODO return
+        throw new RuntimeException("Method not implemented.")
+    }
+
+
 }
