@@ -15,14 +15,15 @@ import java.text.ParseException
 class BioInformaticAnalysisSpec extends Specification {
 
     def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/bioinformatic-analysis-output").getPath()
+    BioinformaticAnalysisParser bioinformaticAnalysisParser = new BioinformaticAnalysisParser()
 
     def "parsing a valid file structure returns a Json String"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates")
         when:
-        def analysis = BioinformaticAnalysisParser.parseFileStructure(pathToDirectory)
+        bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        assert analysis instanceof String
+        noExceptionThrown()
     }
 
     def "parsing an empty directory throws ParseException"() {
@@ -34,7 +35,7 @@ class BioInformaticAnalysisSpec extends Specification {
             directory.mkdir()
         }
         when:
-        BioinformaticAnalysisParser.parseFileStructure(pathToDirectory)
+        bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
         thrown(ParseException)
         // Remove new created folder after testing
@@ -45,7 +46,7 @@ class BioInformaticAnalysisSpec extends Specification {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_directory")
         when:
-        BioinformaticAnalysisParser.parseFileStructure(pathToDirectory)
+        bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
         thrown(FileNotFoundException)
     }
@@ -54,7 +55,7 @@ class BioInformaticAnalysisSpec extends Specification {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/pipeline_info/execution_report.txt")
         when:
-        BioinformaticAnalysisParser.parseFileStructure(pathToDirectory)
+        bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
         thrown(NotDirectoryException)
     }
