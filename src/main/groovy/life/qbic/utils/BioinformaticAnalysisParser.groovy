@@ -264,7 +264,7 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                     return convertToRelativePaths(folderStructure, rootLocation.toPath())
                 } else {
                     log.error("Specified directory is empty")
-                    throw new ParseException("Parsed directory might not be empty", -1)
+                    throw new ParseException("Specified directory is empty", -1)
                 }
             } else {
                 if (!rootLocation.exists()) {

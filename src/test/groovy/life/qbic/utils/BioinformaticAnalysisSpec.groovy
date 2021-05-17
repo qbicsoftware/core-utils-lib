@@ -1,5 +1,11 @@
 package life.qbic.utils
 
+import life.qbic.datamodel.datasets.NfCorePipelineResult
+import life.qbic.datamodel.datasets.datastructure.files.DataFile
+import life.qbic.datamodel.datasets.datastructure.folders.DataFolder
+import life.qbic.datamodel.datasets.datastructure.folders.nfcore.PipelineInformationFolder
+import life.qbic.datamodel.datasets.datastructure.folders.nfcore.ProcessFolder
+import life.qbic.datamodel.datasets.datastructure.folders.nfcore.QualityControlFolder
 import spock.lang.Specification
 import java.nio.file.NotDirectoryException
 import java.nio.file.Paths
@@ -21,9 +27,52 @@ class BioInformaticAnalysisSpec extends Specification {
         given: "A valid nf-core pipeline output data structure"
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates")
         when: "we parse this valid structure"
-        bioinformaticAnalysisParser.parseFrom(pathToDirectory)
+        NfCorePipelineResult nfCorePipelineResult = bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then: "we expect no exception should be thrown"
-        noExceptionThrown()
+        assert nfCorePipelineResult instanceof NfCorePipelineResult
+        //Root files can be parsed
+        assert nfCorePipelineResult.runId.getRelativePath() == "./run_id.txt"
+        assert nfCorePipelineResult.runId.getName()== "run_id.txt"
+        assert nfCorePipelineResult.sampleIds.getRelativePath() == "./sample_ids.txt"
+        assert nfCorePipelineResult.sampleIds.getName()== "sample_ids.txt"
+        //Root Folder can be parsed
+        QualityControlFolder multiQc = nfCorePipelineResult.getQualityControlFolder()
+        assert multiQc.getRelativePath() == "./multiqc"
+        assert multiQc.getName() == "multiqc"
+        assert multiQc instanceof DataFolder
+
+        PipelineInformationFolder pipelineInfo = nfCorePipelineResult.getPipelineInformation()
+        assert pipelineInfo.getRelativePath() == "./pipeline_info"
+        assert pipelineInfo.getName() == "pipeline_info"
+        assert pipelineInfo instanceof DataFolder
+
+        List<DataFolder> processFolders = nfCorePipelineResult.getProcessFolders()
+        assert processFolders[0].getRelativePath()== "./salmon"
+        assert processFolders[0].getName() == "salmon"
+        assert processFolders[0] instanceof DataFolder
+
+        //Childrens of Root folders can be parsed
+        assert multiQc.getChildren()[0].getChildren()[0].getRelativePath() == "./multiqc/star_salmon/multiqc_report.html"
+        assert multiQc.getChildren()[0].getChildren()[0].getName() == "multiqc_report.html"
+        assert multiQc.getChildren()[0].getChildren() instanceof DataFile
+
+
+        assert pipelineInfo.getChildren()[0].getRelativePath() == "software_versions.csv"
+        assert pipelineInfo.getChildren()[0].getName() == "software_versions.csv"
+        assert pipelineInfo.getChildren()[0] instanceof DataFile
+
+        assert pipelineInfo.getChildren()[1].getRelativePath() == "execution_report.txt"
+        assert pipelineInfo.getChildren()[1].getName() == "execution_report.txt"
+        assert pipelineInfo.getChildren()[1] instanceof DataFile
+
+        assert pipelineInfo.getChildren()[2].getRelativePath() == "pipeline_report.txt"
+        assert pipelineInfo.getChildren()[2].getName() == "pipeline_report.txt"
+        assert pipelineInfo.getChildren()[2] instanceof DataFile
+
+
+        assert processFolders[0].getChildren()[0].getRelativePath() == "./salmon/salmon.merged.gene_tpm.tsv"
+        assert processFolders[0].getChildren()[0].getName() == "salmon.merged.gene_tpm.tsv"
+        assert processFolders[0].getChildren()[0] instanceof DataFile
     }
 
     def "parsing an empty directory throws ParseException"() {
@@ -37,7 +86,8 @@ class BioInformaticAnalysisSpec extends Specification {
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        thrown(ParseException)
+        ParseException parseException = thrown(ParseException)
+        assert parseException.message.equals("Specified directory is empty")
         // Remove new created folder after testing
         directory.delete()
     }
