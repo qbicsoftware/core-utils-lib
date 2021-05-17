@@ -17,7 +17,7 @@ class BioInformaticAnalysisSpec extends Specification {
     def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/bioinformatic-analysis-output").getPath()
     BioinformaticAnalysisParser bioinformaticAnalysisParser = new BioinformaticAnalysisParser()
 
-    def "parsing a valid file structure returns a Json String"() {
+    def "parsing a valid file structure returns a NfCorePipelineResult object"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates")
         when:
