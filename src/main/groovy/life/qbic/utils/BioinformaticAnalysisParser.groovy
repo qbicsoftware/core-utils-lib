@@ -31,9 +31,9 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
      * @since 1.8.0
      */
     enum RequiredRootFolderKeys {
-        QUALITYCONTROL("qualityControl"),
-        PIPELINEINFORMATION("pipelineInformation"),
-        PROCESSFOLDERS("processFolders")
+        QUALITY_CONTROL("qualityControl"),
+        PIPELINE_INFORMATION("pipelineInformation"),
+        PROCESS_FOLDERS("processFolders")
 
         private String keyName
 
