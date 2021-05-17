@@ -115,7 +115,7 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
 
     /**
      * Method which adapts the parsed map of the root directory in place to the expected file structure.
-     * @see {<a href="https://github.com/qbicsoftware/data-model-lib/blob/development/src/test/resources/examples/resultset/valid-resultset-example.json">valid datastructure example</a>
+     * @see {<a href="https://github.com/qbicsoftware/data-model-lib/blob/master/src/test/resources/examples/resultset/valid-resultset-example.json">valid datastructure example</a>
      *
      * After parsing all directories and files of the provided filestructure are contained in the children property of the root directory map entry.
      * The underlying datastructure however expects a mapping of the expected folders and files to specific keys in the map outside of the children property such as
@@ -168,7 +168,7 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
 
     /**
      * Method which adapts the parsed content of the pipeline_info directory in place to the expected file structure.
-     * @see {<a href="https://github.com/qbicsoftware/data-model-lib/blob/development/src/test/resources/examples/resultset/valid-resultset-example.json">valid datastructure example</a>
+     * @see {<a href="https://github.com/qbicsoftware/data-model-lib/blob/master/src/test/resources/examples/resultset/valid-resultset-example.json">valid datastructure example</a>
      *
      * After parsing the files of the pipeline_info directory are contained in in the children property of the root directory.
      * The underlying datastructure however expects a mapping of the expected folders and files to a dedicated pipelineInformation Map entry containing the individual files as properties such as:
