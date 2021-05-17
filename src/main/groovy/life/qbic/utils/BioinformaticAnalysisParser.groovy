@@ -21,7 +21,6 @@ import java.text.ParseException
  * @param directory path of nf-core directory whose fileTree should be converted into a JSON String
  *
  */
-
 @Log4j2
 class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>{
 
@@ -32,9 +31,9 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
      * @since 1.8.0
      */
     enum RequiredRootFolderKeys {
-        QUALITYCONTROL("qualityControl"),
-        PIPELINEINFORMATION("pipelineInformation"),
-        PROCESSFOLDERS("processFolders")
+        QUALITY_CONTROL("qualityControl"),
+        PIPELINE_INFORMATION("pipelineInformation"),
+        PROCESS_FOLDERS("processFolders")
 
         private String keyName
 
@@ -54,8 +53,8 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
      * @since 1.8.0
      */
     enum RequiredRootFileKeys {
-        RUNID("runId"),
-        SAMPLEID("sampleIds"),
+        RUN_ID("runId"),
+        SAMPLE_ID("sampleIds"),
 
         private String keyName
 
@@ -75,9 +74,9 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
      * @since 1.8.0
      */
     enum RequiredPipelineFileKeys {
-        SOFTWAREVERSIONS("softwareVersions"),
-        EXECUTIONREPORT("executionReport"),
-        PIPELINEREPORT("pipelineReport")
+        SOFTWARE_VERSIONS("softwareVersions"),
+        EXECUTION_REPORT("executionReport"),
+        PIPELINE_REPORT("pipelineReport")
 
         private String keyName
 
@@ -145,7 +144,6 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                         processFolders.add(currentChild)
                         break
                 }
-
             } else if (currentChild.containsKey("file_type")) {
                 //file
                 switch (currentChild.get("name")) {
@@ -160,7 +158,6 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                         log.warn("Could not recognize file ${currentChild.path}")
                         break
                 }
-
             }
         }
         insertAsProperty(map, processFolders, RequiredRootFolderKeys.PROCESSFOLDERS.getKeyName())
