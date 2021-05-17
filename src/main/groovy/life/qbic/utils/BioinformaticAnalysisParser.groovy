@@ -144,7 +144,6 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                         processFolders.add(currentChild)
                         break
                 }
-
             } else if (currentChild.containsKey("file_type")) {
                 //file
                 switch (currentChild.get("name")) {
