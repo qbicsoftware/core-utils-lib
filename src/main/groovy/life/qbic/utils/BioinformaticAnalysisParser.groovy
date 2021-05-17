@@ -3,9 +3,15 @@ package life.qbic.utils
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.util.logging.Log4j2
 import life.qbic.datamodel.datasets.NfCorePipelineResult
+import life.qbic.datamodel.pipelines.PipelineOutput
 import life.qbic.datasets.parsers.DataParserException
 import life.qbic.datasets.parsers.DatasetParser
 import life.qbic.datasets.parsers.DatasetValidationException
+import org.everit.json.schema.Schema
+import org.everit.json.schema.ValidationException
+import org.everit.json.schema.loader.SchemaLoader
+import org.json.JSONObject
+import org.json.JSONTokener
 
 import java.nio.file.NotDirectoryException
 import java.nio.file.Path
@@ -96,10 +102,18 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
     NfCorePipelineResult parseFrom(Path root) throws DataParserException, DatasetValidationException {
         Map fileTreeMap = parseFileStructureToMap(root)
         adaptMapToDatasetStructure(fileTreeMap)
-        //TODO validate json with schema
+        try {
         String json = mapToJson(fileTreeMap)
+        validateJson(json)
         NfCorePipelineResult nfCorePipelineResult = NfCorePipelineResult.createFrom(fileTreeMap)
         return nfCorePipelineResult
+    }catch (ValidationException validationException) {
+            log.error("Specified directory could not be validated")
+            // we have to fetch all validation exceptions
+            def causes = validationException.getAllMessages().collect{ it }.join("\n")
+            log.error(causes)
+            throw validationException
+        }
     }
 
     /**
@@ -235,6 +249,22 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
         ObjectMapper jsonMapper = new ObjectMapper()
         String json = jsonMapper.writeValueAsString(map)
         return json
+    }
+
+    /**
+     * Method which checks if a given Json String matches a given Json schema
+     * @param json Json String which will be compared to schema
+     * @param  path to Json schema for validation of Json String
+     * @throws org.everit.json.schema.ValidationException
+     */
+    private static void validateJson(String json) throws ValidationException {
+        // Step1: load schema
+        JSONObject jsonObject = new JSONObject(json)
+        InputStream schemaStream = PipelineOutput.getSchemaAsStream()
+        JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream))
+        Schema jsonSchema = SchemaLoader.load(rawSchema)
+        // Step2: validate against schema return if valid, throw exception if invalid
+        jsonSchema.validate(jsonObject)
     }
 
     /*
