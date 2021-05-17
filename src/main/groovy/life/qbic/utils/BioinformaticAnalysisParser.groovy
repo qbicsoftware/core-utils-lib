@@ -53,8 +53,8 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
      * @since 1.8.0
      */
     enum RequiredRootFileKeys {
-        RUNID("runId"),
-        SAMPLEID("sampleIds"),
+        RUN_ID("runId"),
+        SAMPLE_ID("sampleIds"),
 
         private String keyName
 
