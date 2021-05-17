@@ -158,7 +158,6 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                         log.warn("Could not recognize file ${currentChild.path}")
                         break
                 }
-
             }
         }
         insertAsProperty(map, processFolders, RequiredRootFolderKeys.PROCESSFOLDERS.getKeyName())
