@@ -18,11 +18,11 @@ class BioInformaticAnalysisSpec extends Specification {
     BioinformaticAnalysisParser bioinformaticAnalysisParser = new BioinformaticAnalysisParser()
 
     def "parsing a valid file structure returns a NfCorePipelineResult object"() {
-        given:
+        given: "A valid nf-core pipeline output data structure"
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates")
-        when:
+        when: "we parse this valid structure"
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
-        then:
+        then: "we expect no exception should be thrown"
         noExceptionThrown()
     }
 
