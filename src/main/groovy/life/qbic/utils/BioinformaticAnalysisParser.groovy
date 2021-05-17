@@ -74,9 +74,9 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
      * @since 1.8.0
      */
     enum RequiredPipelineFileKeys {
-        SOFTWAREVERSIONS("softwareVersions"),
-        EXECUTIONREPORT("executionReport"),
-        PIPELINEREPORT("pipelineReport")
+        SOFTWARE_VERSIONS("softwareVersions"),
+        EXECUTION_REPORT("executionReport"),
+        PIPELINE_REPORT("pipelineReport")
 
         private String keyName
 
