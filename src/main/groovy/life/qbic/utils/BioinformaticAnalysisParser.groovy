@@ -21,7 +21,6 @@ import java.text.ParseException
  * @param directory path of nf-core directory whose fileTree should be converted into a JSON String
  *
  */
-
 @Log4j2
 class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>{
 
