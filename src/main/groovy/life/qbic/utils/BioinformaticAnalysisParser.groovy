@@ -134,11 +134,11 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                 String folderName = currentChild.get("name")
                 switch (folderName) {
                     case "multiqc":
-                        insertAsProperty(map, currentChild, RequiredRootFolderKeys.QUALITYCONTROL.getKeyName())
+                        insertAsProperty(map, currentChild, RequiredRootFolderKeys.QUALITY_CONTROL.getKeyName())
                         break
                     case "pipeline_info":
                         parsePipelineInformation(currentChild)
-                        insertAsProperty(map, currentChild, RequiredRootFolderKeys.PIPELINEINFORMATION.getKeyName())
+                        insertAsProperty(map, currentChild, RequiredRootFolderKeys.PIPELINE_INFORMATION.getKeyName())
                         break
                     default:
                         processFolders.add(currentChild)
@@ -148,10 +148,10 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                 //file
                 switch (currentChild.get("name")) {
                     case "run_id.txt":
-                        insertAsProperty(map, currentChild, RequiredRootFileKeys.RUNID.getKeyName())
+                        insertAsProperty(map, currentChild, RequiredRootFileKeys.RUN_ID.getKeyName())
                         break
                     case "sample_ids.txt":
-                        insertAsProperty(map, currentChild, RequiredRootFileKeys.SAMPLEID.getKeyName())
+                        insertAsProperty(map, currentChild, RequiredRootFileKeys.SAMPLE_ID.getKeyName())
                         break
                     default:
                         //ignore other files
@@ -160,7 +160,7 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                 }
             }
         }
-        insertAsProperty(map, processFolders, RequiredRootFolderKeys.PROCESSFOLDERS.getKeyName())
+        insertAsProperty(map, processFolders, RequiredRootFolderKeys.PROCESS_FOLDERS.getKeyName())
     }
 
     /**
@@ -199,13 +199,13 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
         pipelineInformation.get("children").each { Map child ->
             switch (child.get("name")) {
                 case "software_versions.csv":
-                    insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.SOFTWAREVERSIONS.getKeyName())
+                    insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.SOFTWARE_VERSIONS.getKeyName())
                     break
                 case "execution_report.txt":
-                    insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.EXECUTIONREPORT.getKeyName())
+                    insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.EXECUTION_REPORT.getKeyName())
                     break
                 case "pipeline_report.txt":
-                    insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.PIPELINEREPORT.getKeyName())
+                    insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.PIPELINE_REPORT.getKeyName())
                     break
                 default:
                     //ignoring other children
