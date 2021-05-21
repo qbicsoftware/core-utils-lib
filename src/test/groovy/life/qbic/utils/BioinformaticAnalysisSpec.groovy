@@ -1,7 +1,6 @@
 package life.qbic.utils
 
 import life.qbic.datamodel.datasets.NfCorePipelineResult
-import life.qbic.datamodel.datasets.datastructure.files.DataFile
 import life.qbic.datamodel.datasets.datastructure.files.nfcore.ExecutionReport
 import life.qbic.datamodel.datasets.datastructure.files.nfcore.PipelineReport
 import life.qbic.datamodel.datasets.datastructure.files.nfcore.SoftwareVersions
@@ -59,7 +58,6 @@ class BioInformaticAnalysisSpec extends Specification {
         SoftwareVersions softwareVersions = pipelineInfo.getChildren()[0]
         assert softwareVersions.getRelativePath() == "./pipeline_info/software_versions.csv"
         assert softwareVersions.getName() == "software_versions.csv"
-        assert softwareVersions instanceof DataFile
 
         ExecutionReport executionReport = pipelineInfo.getChildren()[1]
         assert executionReport.getRelativePath() == "./pipeline_info/execution_report.txt"
