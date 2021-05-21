@@ -262,7 +262,16 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
         JSONObject jsonObject = new JSONObject(json)
         InputStream schemaStream = PipelineOutput.getSchemaAsStream()
         JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream))
+
+        SchemaLoader jsonSchemaLoader = SchemaLoader.builder()
+                .schemaJson(rawSchema).resolutionScope("https://github.com/qbicsoftware/data-model-lib/tree/master/src/main/resources/schemas/")
+                .build()
+        Schema jsonSchema = jsonSchemaLoader.load().build()
+
+        /*
         Schema jsonSchema = SchemaLoader.load(rawSchema)
+
+        */
         // Step2: validate against schema return if valid, throw exception if invalid
         jsonSchema.validate(jsonObject)
     }

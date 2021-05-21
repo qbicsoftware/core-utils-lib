@@ -28,6 +28,7 @@ class BioInformaticAnalysisSpec extends Specification {
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates")
         when: "we parse this valid structure"
         NfCorePipelineResult nfCorePipelineResult = bioinformaticAnalysisParser.parseFrom(pathToDirectory)
+        println(nfCorePipelineResult)
         then: "we expect no exception should be thrown"
         assert nfCorePipelineResult instanceof NfCorePipelineResult
         //Root files can be parsed
@@ -54,25 +55,19 @@ class BioInformaticAnalysisSpec extends Specification {
         //Childrens of Root folders can be parsed
         assert multiQc.getChildren()[0].getChildren()[0].getRelativePath() == "./multiqc/star_salmon/multiqc_report.html"
         assert multiQc.getChildren()[0].getChildren()[0].getName() == "multiqc_report.html"
-        assert multiQc.getChildren()[0].getChildren() instanceof DataFile
 
-
-        assert pipelineInfo.getChildren()[0].getRelativePath() == "software_versions.csv"
+        assert pipelineInfo.getChildren()[0].getRelativePath() == "./pipeline_info/software_versions.csv"
         assert pipelineInfo.getChildren()[0].getName() == "software_versions.csv"
         assert pipelineInfo.getChildren()[0] instanceof DataFile
 
-        assert pipelineInfo.getChildren()[1].getRelativePath() == "execution_report.txt"
+        assert pipelineInfo.getChildren()[1].getRelativePath() == "./pipeline_info/execution_report.txt"
         assert pipelineInfo.getChildren()[1].getName() == "execution_report.txt"
         assert pipelineInfo.getChildren()[1] instanceof DataFile
 
-        assert pipelineInfo.getChildren()[2].getRelativePath() == "pipeline_report.txt"
+        assert pipelineInfo.getChildren()[2].getRelativePath() == "./pipeline_info/pipeline_report.txt"
         assert pipelineInfo.getChildren()[2].getName() == "pipeline_report.txt"
         assert pipelineInfo.getChildren()[2] instanceof DataFile
 
-
-        assert processFolders[0].getChildren()[0].getRelativePath() == "./salmon/salmon.merged.gene_tpm.tsv"
-        assert processFolders[0].getChildren()[0].getName() == "salmon.merged.gene_tpm.tsv"
-        assert processFolders[0].getChildren()[0] instanceof DataFile
     }
 
     def "parsing an invalid file structure throws ValidationError"() {
