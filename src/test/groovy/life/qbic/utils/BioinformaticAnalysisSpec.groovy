@@ -2,6 +2,9 @@ package life.qbic.utils
 
 import life.qbic.datamodel.datasets.NfCorePipelineResult
 import life.qbic.datamodel.datasets.datastructure.files.DataFile
+import life.qbic.datamodel.datasets.datastructure.files.nfcore.ExecutionReport
+import life.qbic.datamodel.datasets.datastructure.files.nfcore.PipelineReport
+import life.qbic.datamodel.datasets.datastructure.files.nfcore.SoftwareVersions
 import life.qbic.datamodel.datasets.datastructure.folders.DataFolder
 import life.qbic.datamodel.datasets.datastructure.folders.nfcore.PipelineInformationFolder
 import life.qbic.datamodel.datasets.datastructure.folders.nfcore.QualityControlFolder
@@ -51,20 +54,20 @@ class BioInformaticAnalysisSpec extends Specification {
         assert processFolders[0].getName() == "salmon"
         assert processFolders[0] instanceof DataFolder
 
-        //Childrens of Root folders can be parsed
+        //Files in Root folders can be parsed
 
-        assert pipelineInfo.getChildren()[0].getRelativePath() == "./pipeline_info/software_versions.csv"
-        assert pipelineInfo.getChildren()[0].getName() == "software_versions.csv"
-        assert pipelineInfo.getChildren()[0] instanceof DataFile
+        SoftwareVersions softwareVersions = pipelineInfo.getChildren()[0]
+        assert softwareVersions.getRelativePath() == "./pipeline_info/software_versions.csv"
+        assert softwareVersions.getName() == "software_versions.csv"
+        assert softwareVersions instanceof DataFile
 
-        assert pipelineInfo.getChildren()[1].getRelativePath() == "./pipeline_info/execution_report.txt"
-        assert pipelineInfo.getChildren()[1].getName() == "execution_report.txt"
-        assert pipelineInfo.getChildren()[1] instanceof DataFile
+        ExecutionReport executionReport = pipelineInfo.getChildren()[1]
+        assert executionReport.getRelativePath() == "./pipeline_info/execution_report.txt"
+        assert executionReport.getName() == "execution_report.txt"
 
-        assert pipelineInfo.getChildren()[2].getRelativePath() == "./pipeline_info/pipeline_report.txt"
-        assert pipelineInfo.getChildren()[2].getName() == "pipeline_report.txt"
-        assert pipelineInfo.getChildren()[2] instanceof DataFile
-
+        PipelineReport pipelineReport = pipelineInfo.getChildren()[2]
+        assert pipelineReport.getRelativePath() == "./pipeline_info/pipeline_report.txt"
+        assert pipelineReport.getName() == "pipeline_report.txt"
     }
 
     def "parsing an invalid file structure throws ValidationError"() {
