@@ -28,7 +28,6 @@ class BioInformaticAnalysisSpec extends Specification {
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates")
         when: "we parse this valid structure"
         NfCorePipelineResult nfCorePipelineResult = bioinformaticAnalysisParser.parseFrom(pathToDirectory)
-        println(nfCorePipelineResult)
         then: "we expect no exception should be thrown"
         assert nfCorePipelineResult instanceof NfCorePipelineResult
         //Root files can be parsed
@@ -53,8 +52,6 @@ class BioInformaticAnalysisSpec extends Specification {
         assert processFolders[0] instanceof DataFolder
 
         //Childrens of Root folders can be parsed
-        assert multiQc.getChildren()[0].getChildren()[0].getRelativePath() == "./multiqc/star_salmon/multiqc_report.html"
-        assert multiQc.getChildren()[0].getChildren()[0].getName() == "multiqc_report.html"
 
         assert pipelineInfo.getChildren()[0].getRelativePath() == "./pipeline_info/software_versions.csv"
         assert pipelineInfo.getChildren()[0].getName() == "software_versions.csv"

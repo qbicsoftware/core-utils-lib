@@ -9,6 +9,7 @@ import life.qbic.datasets.parsers.DatasetParser
 import life.qbic.datasets.parsers.DatasetValidationException
 import org.everit.json.schema.Schema
 import org.everit.json.schema.ValidationException
+import org.everit.json.schema.loader.SchemaClient
 import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONObject
 import org.json.JSONTokener
@@ -158,7 +159,7 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                         processFolders.add(currentChild)
                         break
                 }
-            } else if (currentChild.containsKey("file_type")) {
+            } else if (currentChild.containsKey("fileType")) {
                 //file
                 switch (currentChild.get("name")) {
                     case "run_id.txt":
@@ -262,16 +263,13 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
         JSONObject jsonObject = new JSONObject(json)
         InputStream schemaStream = PipelineOutput.getSchemaAsStream()
         JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream))
-
         SchemaLoader jsonSchemaLoader = SchemaLoader.builder()
-                .schemaJson(rawSchema).resolutionScope("https://github.com/qbicsoftware/data-model-lib/tree/master/src/main/resources/schemas/")
+                .schemaClient(SchemaClient.classPathAwareClient())
+                .schemaJson(rawSchema)
+                .resolutionScope("classpath://schemas/")
                 .build()
         Schema jsonSchema = jsonSchemaLoader.load().build()
 
-        /*
-        Schema jsonSchema = SchemaLoader.load(rawSchema)
-
-        */
         // Step2: validate against schema return if valid, throw exception if invalid
         jsonSchema.validate(jsonObject)
     }
@@ -378,7 +376,7 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
             def convertedFile = [
                     "name"     : name,
                     "path"     : path,
-                    "file_type": fileType
+                    "fileType": fileType
             ]
             return convertedFile
         }
