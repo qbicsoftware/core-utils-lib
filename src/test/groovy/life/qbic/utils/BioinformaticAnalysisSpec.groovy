@@ -55,17 +55,19 @@ class BioInformaticAnalysisSpec extends Specification {
 
         //Files in Root folders can be parsed
 
-        SoftwareVersions softwareVersions = pipelineInfo.getChildren()[0]
+        SoftwareVersions softwareVersions = pipelineInfo.getSoftwareVersions()
         assert softwareVersions.getRelativePath() == "./pipeline_info/software_versions.csv"
         assert softwareVersions.getName() == "software_versions.csv"
 
-        ExecutionReport executionReport = pipelineInfo.getChildren()[1]
+        PipelineReport pipelineReport = pipelineInfo.getPipelineReport()
+        assert pipelineReport.getRelativePath() == "./pipeline_info/pipeline_report.txt"
+        assert pipelineReport.getName() == "pipeline_report.txt"
+
+        ExecutionReport executionReport = pipelineInfo.getExecutionReport()
         assert executionReport.getRelativePath() == "./pipeline_info/execution_report.txt"
         assert executionReport.getName() == "execution_report.txt"
 
-        PipelineReport pipelineReport = pipelineInfo.getChildren()[2]
-        assert pipelineReport.getRelativePath() == "./pipeline_info/pipeline_report.txt"
-        assert pipelineReport.getName() == "pipeline_report.txt"
+
     }
 
     def "parsing an invalid file structure throws ValidationError"() {
