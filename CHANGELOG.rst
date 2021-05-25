@@ -18,6 +18,8 @@ Introduce life.qbic.utils.BioinformaticAnalysisParser class to parse and validat
 
 Update data-model-lib to 2.7.0 (`#51 <https://github.com/qbicsoftware/core-utils-lib/pull/51>`_)
 
+Re-introduce org.apache.commons.commons-lang3 dependency with version 3.7.0
+
 **Deprecated**
 
 
