@@ -10,13 +10,13 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Added**
 
-* Add qube support
+* Add qube support (`#39 <https://github.com/qbicsoftware/core-utils-lib/pull/39>`_)
 
-* Add DatasetParser as interface for parsing datasets ``life/qbic/datasets/parsers/DatasetParser.groovy``
+* Add DatasetParser as interface for parsing datasets ``life/qbic/datasets/parsers/DatasetParser.groovy`` (`#49 <https://github.com/qbicsoftware/core-utils-lib/pull/49>`_)
 
-* Add ImagingMetadataValidator for validating json files containing imaging metadata ``life/qbic/utils/ImagingMetadataValidator.groovy``, with test ``life/qbic/utils/ImagingMetadataValidatorSpec.groovy``
+* Add ImagingMetadataValidator for validating json files containing imaging metadata ``life/qbic/utils/ImagingMetadataValidator.groovy``, with test ``life/qbic/utils/ImagingMetadataValidatorSpec.groovy`` (`#48 <https://github.com/qbicsoftware/core-utils-lib/pull/48>`_)
 
-* Introduce life.qbic.utils.BioinformaticAnalysisParser class to parse and validate the filestructure resulting from Nfcore pipeline output (`#51 <https://github.com/qbicsoftware/core-utils-lib/pull/51>`_)
+* Add BioinformaticAnalaysisParser to validate the filestructure resulting from Nfcore pipeline output ``life.qbic.utils.BioinformaticAnalysisParser`` (`#51 <https://github.com/qbicsoftware/core-utils-lib/pull/51>`_)
 
 **Fixed**
 
