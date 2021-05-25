@@ -16,14 +16,17 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 * Add ImagingMetadataValidator for validating json files containing imaging metadata ``life/qbic/utils/ImagingMetadataValidator.groovy``, with test ``life/qbic/utils/ImagingMetadataValidatorSpec.groovy``
 
+* Introduce life.qbic.utils.BioinformaticAnalysisParser class to parse and validate the filestructure resulting from Nfcore pipeline output (`#51 <https://github.com/qbicsoftware/core-utils-lib/pull/51>`_)
 
 **Fixed**
 
 **Dependencies**
 
-* Upgrade ``life.qbic:groovy:data-model-lib:jar:2.4.0`` -> ``2.6.0-SNAPSHOT``
+* Upgrade ``life.qbic:groovy:data-model-lib:jar:2.4.0`` -> ``2.7.0``
 
 * Downgrade java 11 -> java 8
+
+* Re-introduce ``org.apache.commons.commons-lang3`` dependency with version ``3.7.0``
 
 **Deprecated**
 
