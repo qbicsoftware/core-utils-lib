@@ -16,6 +16,8 @@ Introduce life.qbic.utils.BioinformaticAnalysisParser class to parse and validat
 
 **Dependencies**
 
+Update data-model-lib to 2.7.0 (`#51 <https://github.com/qbicsoftware/core-utils-lib/pull/51>`_)
+
 **Deprecated**
 
 
