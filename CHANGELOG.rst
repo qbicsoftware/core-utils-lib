@@ -26,6 +26,8 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 * Downgrade java 11 -> java 8
 
+* Remove parent-pom and introduce a slim own definition of dependencies.
+
 * Re-introduce ``org.apache.commons.commons-lang3`` dependency with version ``3.7.0``
 
 **Deprecated**
