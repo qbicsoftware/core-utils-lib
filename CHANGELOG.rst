@@ -10,6 +10,8 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Added**
 
+Introduce life.qbic.utils.BioinformaticAnalysisParser class to parse and validate the filestructure resulting from Nfcore pipeline output (`#2 <https://github.com/qbicsoftware/data-model-lib/pull/>`_)
+
 **Fixed**
 
 **Dependencies**

@@ -1,11 +1,13 @@
 package life.qbic.utils
 
 import life.qbic.datamodel.datasets.NfCorePipelineResult
-import life.qbic.datamodel.datasets.datastructure.files.DataFile
+import life.qbic.datamodel.datasets.datastructure.files.nfcore.ExecutionReport
+import life.qbic.datamodel.datasets.datastructure.files.nfcore.PipelineReport
+import life.qbic.datamodel.datasets.datastructure.files.nfcore.SoftwareVersions
 import life.qbic.datamodel.datasets.datastructure.folders.DataFolder
 import life.qbic.datamodel.datasets.datastructure.folders.nfcore.PipelineInformationFolder
-import life.qbic.datamodel.datasets.datastructure.folders.nfcore.ProcessFolder
 import life.qbic.datamodel.datasets.datastructure.folders.nfcore.QualityControlFolder
+import org.everit.json.schema.ValidationException
 import spock.lang.Specification
 import java.nio.file.NotDirectoryException
 import java.nio.file.Paths
@@ -51,28 +53,30 @@ class BioInformaticAnalysisSpec extends Specification {
         assert processFolders[0].getName() == "salmon"
         assert processFolders[0] instanceof DataFolder
 
-        //Childrens of Root folders can be parsed
-        assert multiQc.getChildren()[0].getChildren()[0].getRelativePath() == "./multiqc/star_salmon/multiqc_report.html"
-        assert multiQc.getChildren()[0].getChildren()[0].getName() == "multiqc_report.html"
-        assert multiQc.getChildren()[0].getChildren() instanceof DataFile
+        //Files in Root folders can be parsed
+
+        SoftwareVersions softwareVersions = pipelineInfo.getSoftwareVersions()
+        assert softwareVersions.getRelativePath() == "./pipeline_info/software_versions.csv"
+        assert softwareVersions.getName() == "software_versions.csv"
+
+        PipelineReport pipelineReport = pipelineInfo.getPipelineReport()
+        assert pipelineReport.getRelativePath() == "./pipeline_info/pipeline_report.txt"
+        assert pipelineReport.getName() == "pipeline_report.txt"
+
+        ExecutionReport executionReport = pipelineInfo.getExecutionReport()
+        assert executionReport.getRelativePath() == "./pipeline_info/execution_report.txt"
+        assert executionReport.getName() == "execution_report.txt"
 
 
-        assert pipelineInfo.getChildren()[0].getRelativePath() == "software_versions.csv"
-        assert pipelineInfo.getChildren()[0].getName() == "software_versions.csv"
-        assert pipelineInfo.getChildren()[0] instanceof DataFile
+    }
 
-        assert pipelineInfo.getChildren()[1].getRelativePath() == "execution_report.txt"
-        assert pipelineInfo.getChildren()[1].getName() == "execution_report.txt"
-        assert pipelineInfo.getChildren()[1] instanceof DataFile
-
-        assert pipelineInfo.getChildren()[2].getRelativePath() == "pipeline_report.txt"
-        assert pipelineInfo.getChildren()[2].getName() == "pipeline_report.txt"
-        assert pipelineInfo.getChildren()[2] instanceof DataFile
-
-
-        assert processFolders[0].getChildren()[0].getRelativePath() == "./salmon/salmon.merged.gene_tpm.tsv"
-        assert processFolders[0].getChildren()[0].getName() == "salmon.merged.gene_tpm.tsv"
-        assert processFolders[0].getChildren()[0] instanceof DataFile
+    def "parsing an invalid file structure throws ValidationError"() {
+        given:
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails")
+        when:
+        bioinformaticAnalysisParser.parseFrom(pathToDirectory)
+        then:
+        thrown(ValidationException)
     }
 
     def "parsing an empty directory throws ParseException"() {
