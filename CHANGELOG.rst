@@ -10,15 +10,25 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Added**
 
-Introduce life.qbic.utils.BioinformaticAnalysisParser class to parse and validate the filestructure resulting from Nfcore pipeline output (`#51 <https://github.com/qbicsoftware/core-utils-lib/pull/51>`_)
+* Add qube support (`#39 <https://github.com/qbicsoftware/core-utils-lib/pull/39>`_)
+
+* Add DatasetParser as interface for parsing datasets ``life/qbic/datasets/parsers/DatasetParser.groovy`` (`#49 <https://github.com/qbicsoftware/core-utils-lib/pull/49>`_)
+
+* Add ImagingMetadataValidator for validating json files containing imaging metadata ``life/qbic/utils/ImagingMetadataValidator.groovy``, with test ``life/qbic/utils/ImagingMetadataValidatorSpec.groovy`` (`#48 <https://github.com/qbicsoftware/core-utils-lib/pull/48>`_)
+
+* Add BioinformaticAnalaysisParser to validate the filestructure resulting from Nfcore pipeline output ``life.qbic.utils.BioinformaticAnalysisParser`` (`#51 <https://github.com/qbicsoftware/core-utils-lib/pull/51>`_)
 
 **Fixed**
 
 **Dependencies**
 
-Update data-model-lib to 2.7.0 (`#51 <https://github.com/qbicsoftware/core-utils-lib/pull/51>`_)
+* Upgrade ``life.qbic:groovy:data-model-lib:jar:2.4.0`` -> ``2.7.0``
 
-Re-introduce org.apache.commons.commons-lang3 dependency with version 3.7.0
+* Downgrade java 11 -> java 8
+
+* Remove parent-pom and introduce a slim own definition of dependencies.
+
+* Re-introduce ``org.apache.commons.commons-lang3`` dependency with version ``3.7.0``
 
 **Deprecated**
 
@@ -27,6 +37,10 @@ Re-introduce org.apache.commons.commons-lang3 dependency with version 3.7.0
 ------------------
 
 **Added**
+
+* Use data-model-lib version 2.4.0
+
+* Introduce secure connection to new nexus repository
 
 **Fixed**
 
