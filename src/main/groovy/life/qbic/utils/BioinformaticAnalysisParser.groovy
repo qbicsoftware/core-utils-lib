@@ -104,14 +104,14 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
         Map fileTreeMap = parseFileStructureToMap(root)
         adaptMapToDatasetStructure(fileTreeMap)
         try {
-        String json = mapToJson(fileTreeMap)
-        validateJson(json)
-        NfCorePipelineResult nfCorePipelineResult = NfCorePipelineResult.createFrom(fileTreeMap)
-        return nfCorePipelineResult
-    }catch (ValidationException validationException) {
+            String json = mapToJson(fileTreeMap)
+            validateJson(json)
+            NfCorePipelineResult nfCorePipelineResult = NfCorePipelineResult.createFrom(fileTreeMap)
+            return nfCorePipelineResult
+        } catch (ValidationException validationException) {
             log.error("Specified directory could not be validated")
             // we have to fetch all validation exceptions
-            def causes = validationException.getAllMessages().collect{ it }.join("\n")
+            def causes = validationException.getAllMessages().collect { it }.join("\n")
             log.error(causes)
             throw validationException
         }
