@@ -1,8 +1,10 @@
 package life.qbic.services.connectors
 
 import groovy.json.JsonSlurper
+
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.uri.UriBuilder
+
 import life.qbic.services.Service
 import life.qbic.services.ServiceConnector
 import life.qbic.services.ServiceType
@@ -32,10 +34,11 @@ class ConsulConnector implements ServiceConnector, AutoCloseable {
 
     private List<Map> queryRegistryForService(String name) {
         String uri = UriBuilder.of("${registryUrl.toExternalForm()}/catalog/service/{name}")
-                               .expand(Collections.singletonMap("name", name))
-                               .toString()
+                .expand(Collections.singletonMap("name", name))
+                .toString()
         def result = this.httpClient.toBlocking().retrieve(uri)
         def serviceMap = new JsonSlurper().parseText(result) as List<Map>
+
         return serviceMap
     }
 
