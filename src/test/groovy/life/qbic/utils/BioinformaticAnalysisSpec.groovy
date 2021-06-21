@@ -9,6 +9,7 @@ import life.qbic.datamodel.datasets.datastructure.folders.nfcore.PipelineInforma
 import life.qbic.datamodel.datasets.datastructure.folders.nfcore.QualityControlFolder
 import life.qbic.datasets.parsers.DataParserException
 import life.qbic.datasets.parsers.DatasetValidationException
+import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 import java.nio.file.Paths
 
@@ -91,7 +92,7 @@ class BioInformaticAnalysisSpec extends Specification {
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
         DataParserException parseException = thrown(DataParserException)
-        assert parseException.message.equals("Specified directory '${pathToDirectory.toString()}' is empty")
+        assert parseException.message == ("Specified directory '${pathToDirectory.toString()}' is empty")
         // Remove new created folder after testing
         directory.delete()
     }
@@ -103,7 +104,7 @@ class BioInformaticAnalysisSpec extends Specification {
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
         DataParserException parseException = thrown(DataParserException)
-        assert parseException.message.equals("The given path '${pathToDirectory.toString()}' does not exist.")
+        assert parseException.message == ("The given path '${pathToDirectory.toString()}' does not exist.")
     }
 
     def "parsing a file throws a DataParserException"() {
@@ -113,6 +114,6 @@ class BioInformaticAnalysisSpec extends Specification {
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
         DataParserException parseException = thrown(DataParserException)
-        assert parseException.message.equals("Expected a directory. Got a file instead.")
+        assert parseException.message == ("Expected a directory. Got a file instead.")
     }
 }
