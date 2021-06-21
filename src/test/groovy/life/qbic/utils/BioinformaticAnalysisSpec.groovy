@@ -9,7 +9,6 @@ import life.qbic.datamodel.datasets.datastructure.folders.nfcore.PipelineInforma
 import life.qbic.datamodel.datasets.datastructure.folders.nfcore.QualityControlFolder
 import life.qbic.datasets.parsers.DataParserException
 import life.qbic.datasets.parsers.DatasetValidationException
-import org.apache.commons.lang3.StringUtils
 import spock.lang.Specification
 import java.nio.file.Paths
 
