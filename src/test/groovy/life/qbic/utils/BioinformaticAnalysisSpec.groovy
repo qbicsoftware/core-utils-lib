@@ -99,7 +99,7 @@ class BioInformaticAnalysisSpec extends Specification {
         directory.delete()
     }
 
-    def "parsing a non-existing directory throws DataParserException"() {
+    def "parsing a non-existing directory throws FileNotFoundException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_directory")
         when:
