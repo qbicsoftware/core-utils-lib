@@ -288,7 +288,7 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
         static Map fileTreeToMap(Path path) throws FileNotFoundException, IOException, ParseException {
             File rootLocation = new File(path.toString())
             if (rootLocation.isFile()) {
-                throw new NotDirectoryException("Expected a directory. Got a file instead.")
+                throw new DataParserException("Expected a directory. Got a file instead.")
             } else if (rootLocation.isDirectory()) {
                 //Check if existing Directory is empty
                 if (rootLocation.list().length > 0) {
@@ -296,13 +296,13 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                     Map folderStructure = convertDirectory(rootLocation.toPath())
                     return convertToRelativePaths(folderStructure, rootLocation.toPath())
                 } else {
-                    throw new ParseException("Specified directory is empty", -1)
+                    throw new DataParserException("Specified directory is empty")
                 }
             } else {
                 if (!rootLocation.exists()) {
-                    throw new FileNotFoundException("The given path does not exist.")
+                    throw new DataParserException("The given path does not exist.")
                 } else {
-                    throw new IOException("")
+                    throw new DataParserException("The given path could not be recognized")
                 }
             }
 

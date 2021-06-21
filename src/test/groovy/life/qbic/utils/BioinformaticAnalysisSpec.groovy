@@ -90,27 +90,29 @@ class BioInformaticAnalysisSpec extends Specification {
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        ParseException parseException = thrown(ParseException)
+        DataParserException parseException = thrown(DataParserException)
         assert parseException.message.equals("Specified directory is empty")
         // Remove new created folder after testing
         directory.delete()
     }
 
-    def "parsing a non-existing directory throws FileNotFoundException"() {
+    def "parsing a non-existing directory throws DataParserException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_directory")
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        thrown(DataParserException)
+        DataParserException parseException = thrown(DataParserException)
+        assert parseException.message.equals("The given path does not exist.")
     }
 
-    def "parsing a file throws NotDirectoryException "() {
+    def "parsing a file throws a DataParserException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/pipeline_info/execution_report.txt")
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        thrown(DataParserException)
+        DataParserException parseException = thrown(DataParserException)
+        assert parseException.message.equals("Expected a directory. Got a file instead.")
     }
 }
