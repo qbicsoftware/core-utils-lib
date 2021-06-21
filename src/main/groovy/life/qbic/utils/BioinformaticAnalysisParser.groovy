@@ -296,13 +296,13 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                     Map folderStructure = convertDirectory(rootLocation.toPath())
                     return convertToRelativePaths(folderStructure, rootLocation.toPath())
                 } else {
-                    throw new DataParserException("Specified directory is empty")
+                    throw new DataParserException("Specified directory '${path.toString()}' is empty")
                 }
             } else {
                 if (!rootLocation.exists()) {
-                    throw new DataParserException("The given path does not exist.")
+                    throw new DataParserException("The given path '${path.toString()}' does not exist.")
                 } else {
-                    throw new DataParserException("The given path could not be recognized")
+                    throw new DataParserException("The given path '${path.toString()}' could not be recognized")
                 }
             }
 

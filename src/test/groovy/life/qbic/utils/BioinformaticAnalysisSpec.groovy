@@ -11,7 +11,6 @@ import life.qbic.datasets.parsers.DataParserException
 import life.qbic.datasets.parsers.DatasetValidationException
 import spock.lang.Specification
 import java.nio.file.Paths
-import java.text.ParseException
 
 /**
  *  Tests for the BioinformaticAnalysisParser
@@ -20,6 +19,7 @@ import java.text.ParseException
  * @see BioinformaticAnalysisParser
  *
  */
+
 class BioInformaticAnalysisSpec extends Specification {
 
     def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/bioinformatic-analysis-output").getPath()
@@ -91,7 +91,7 @@ class BioInformaticAnalysisSpec extends Specification {
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
         DataParserException parseException = thrown(DataParserException)
-        assert parseException.message.equals("Specified directory is empty")
+        assert parseException.message.equals("Specified directory '${pathToDirectory.toString()}' is empty")
         // Remove new created folder after testing
         directory.delete()
     }
@@ -103,7 +103,7 @@ class BioInformaticAnalysisSpec extends Specification {
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
         DataParserException parseException = thrown(DataParserException)
-        assert parseException.message.equals("The given path does not exist.")
+        assert parseException.message.equals("The given path '${pathToDirectory.toString()}' does not exist.")
     }
 
     def "parsing a file throws a DataParserException"() {
