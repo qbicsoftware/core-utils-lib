@@ -300,7 +300,7 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                 }
             } else {
                 if (!rootLocation.exists()) {
-                    throw new FileNotFoundException("The given path does not exist.")
+                    throw new FileNotFoundException("The given path '${path.toString()}' does not exist.")
                 } else {
                     throw new IOException("")
                 }
