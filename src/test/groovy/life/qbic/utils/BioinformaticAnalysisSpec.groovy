@@ -7,9 +7,9 @@ import life.qbic.datamodel.datasets.datastructure.files.nfcore.SoftwareVersions
 import life.qbic.datamodel.datasets.datastructure.folders.DataFolder
 import life.qbic.datamodel.datasets.datastructure.folders.nfcore.PipelineInformationFolder
 import life.qbic.datamodel.datasets.datastructure.folders.nfcore.QualityControlFolder
-import org.everit.json.schema.ValidationException
+import life.qbic.datasets.parsers.DataParserException
+import life.qbic.datasets.parsers.DatasetValidationException
 import spock.lang.Specification
-import java.nio.file.NotDirectoryException
 import java.nio.file.Paths
 import java.text.ParseException
 
@@ -70,13 +70,13 @@ class BioInformaticAnalysisSpec extends Specification {
 
     }
 
-    def "parsing an invalid file structure throws ValidationError"() {
+    def "parsing an invalid file structure throws DatasetValidationException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails")
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        thrown(ValidationException)
+        thrown(DatasetValidationException)
     }
 
     def "parsing an empty directory throws ParseException"() {
@@ -102,7 +102,7 @@ class BioInformaticAnalysisSpec extends Specification {
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        thrown(FileNotFoundException)
+        thrown(DataParserException)
     }
 
     def "parsing a file throws NotDirectoryException "() {
@@ -111,6 +111,6 @@ class BioInformaticAnalysisSpec extends Specification {
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        thrown(NotDirectoryException)
+        thrown(DataParserException)
     }
 }
