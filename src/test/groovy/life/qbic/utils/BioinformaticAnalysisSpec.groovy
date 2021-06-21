@@ -10,7 +10,10 @@ import life.qbic.datamodel.datasets.datastructure.folders.nfcore.QualityControlF
 import life.qbic.datasets.parsers.DataParserException
 import life.qbic.datasets.parsers.DatasetValidationException
 import spock.lang.Specification
+
+import java.nio.file.NotDirectoryException
 import java.nio.file.Paths
+import java.text.ParseException
 
 /**
  *  Tests for the BioinformaticAnalysisParser
@@ -90,8 +93,8 @@ class BioInformaticAnalysisSpec extends Specification {
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        DataParserException parseException = thrown(DataParserException)
-        assert parseException.message == ("Specified directory '${pathToDirectory.toString()}' is empty")
+        ParseException parseException = thrown(ParseException)
+        assert parseException.message == ("Specified directory ${pathToDirectory.toString()} is empty")
         // Remove new created folder after testing
         directory.delete()
     }
@@ -102,17 +105,17 @@ class BioInformaticAnalysisSpec extends Specification {
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        DataParserException parseException = thrown(DataParserException)
+        FileNotFoundException parseException = thrown(FileNotFoundException)
         assert parseException.message == ("The given path '${pathToDirectory.toString()}' does not exist.")
     }
 
-    def "parsing a file throws a DataParserException"() {
+    def "parsing a file throws a NotDirectoryException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/pipeline_info/execution_report.txt")
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        DataParserException parseException = thrown(DataParserException)
+        NotDirectoryException parseException = thrown(NotDirectoryException)
         assert parseException.message == ("Expected a directory. Got a file instead.")
     }
 }
