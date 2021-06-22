@@ -100,9 +100,9 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
     /** {@InheritDoc} */
     @Override
     NfCorePipelineResult parseFrom(Path root) throws DataParserException, DatasetValidationException {
-        Map fileTreeMap = parseFileStructureToMap(root)
-        adaptMapToDatasetStructure(fileTreeMap)
         try {
+            Map fileTreeMap = parseFileStructureToMap(root)
+            adaptMapToDatasetStructure(fileTreeMap)
             String json = mapToJson(fileTreeMap)
             validateJson(json)
             NfCorePipelineResult nfCorePipelineResult = NfCorePipelineResult.createFrom(fileTreeMap)
@@ -296,7 +296,7 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                     Map folderStructure = convertDirectory(rootLocation.toPath())
                     return convertToRelativePaths(folderStructure, rootLocation.toPath())
                 } else {
-                    throw new ParseException("Specified directory is empty", -1)
+                    throw new ParseException("Specified directory ${path.toString()} is empty", -1)
                 }
             } else {
                 if (!rootLocation.exists()) {
