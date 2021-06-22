@@ -80,7 +80,7 @@ class BioinformaticAnalysisSpec extends Specification {
         thrown(DatasetValidationException)
     }
 
-    def "parsing an empty directory throws ParseException"() {
+    def "parsing an empty directory throws DataParserException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "empty_directory/")
         // Maven doesn't include empty folders in build process so it has to be generated explicitly
@@ -97,7 +97,7 @@ class BioinformaticAnalysisSpec extends Specification {
         directory.delete()
     }
 
-    def "parsing a non-existing directory throws FileNotFoundException"() {
+    def "parsing a non-existing directory throws DataParserException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_directory")
         when:
