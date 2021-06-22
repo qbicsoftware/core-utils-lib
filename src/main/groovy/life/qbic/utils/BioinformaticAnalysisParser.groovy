@@ -100,9 +100,9 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
     /** {@InheritDoc} */
     @Override
     NfCorePipelineResult parseFrom(Path root) throws DataParserException, DatasetValidationException {
-        Map fileTreeMap = parseFileStructureToMap(root)
-        adaptMapToDatasetStructure(fileTreeMap)
         try {
+            Map fileTreeMap = parseFileStructureToMap(root)
+            adaptMapToDatasetStructure(fileTreeMap)
             String json = mapToJson(fileTreeMap)
             validateJson(json)
             NfCorePipelineResult nfCorePipelineResult = NfCorePipelineResult.createFrom(fileTreeMap)

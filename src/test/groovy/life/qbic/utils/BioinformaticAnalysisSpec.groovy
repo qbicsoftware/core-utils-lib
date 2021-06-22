@@ -93,7 +93,7 @@ class BioInformaticAnalysisSpec extends Specification {
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        ParseException parseException = thrown(ParseException)
+        DataParserException parseException = thrown(DataParserException)
         assert parseException.message == ("Specified directory ${pathToDirectory.toString()} is empty")
         // Remove new created folder after testing
         directory.delete()
@@ -105,7 +105,7 @@ class BioInformaticAnalysisSpec extends Specification {
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        FileNotFoundException parseException = thrown(FileNotFoundException)
+        DataParserException parseException = thrown(DataParserException)
         assert parseException.message == ("The given path '${pathToDirectory.toString()}' does not exist.")
     }
 
@@ -115,7 +115,7 @@ class BioInformaticAnalysisSpec extends Specification {
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        NotDirectoryException parseException = thrown(NotDirectoryException)
+        DataParserException parseException = thrown(DataParserException)
         assert parseException.message == ("Expected a directory. Got a file instead.")
     }
 }
