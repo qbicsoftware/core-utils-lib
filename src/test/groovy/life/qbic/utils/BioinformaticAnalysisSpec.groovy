@@ -107,7 +107,7 @@ class BioinformaticAnalysisSpec extends Specification {
         assert parseException.message == ("The given path '${pathToDirectory.toString()}' does not exist.")
     }
 
-    def "parsing a file throws a NotDirectoryException"() {
+    def "parsing a file throws a DataParserException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/pipeline_info/execution_report.txt")
         when:
