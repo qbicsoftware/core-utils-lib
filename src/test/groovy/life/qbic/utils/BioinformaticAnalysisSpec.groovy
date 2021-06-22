@@ -10,10 +10,8 @@ import life.qbic.datamodel.datasets.datastructure.folders.nfcore.QualityControlF
 import life.qbic.datasets.parsers.DataParserException
 import life.qbic.datasets.parsers.DatasetValidationException
 import spock.lang.Specification
-
-import java.nio.file.NotDirectoryException
 import java.nio.file.Paths
-import java.text.ParseException
+
 
 /**
  *  Tests for the BioinformaticAnalysisParser
@@ -23,7 +21,7 @@ import java.text.ParseException
  *
  */
 
-class BioInformaticAnalysisSpec extends Specification {
+class BioinformaticAnalysisSpec extends Specification {
 
     def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/bioinformatic-analysis-output").getPath()
     BioinformaticAnalysisParser bioinformaticAnalysisParser = new BioinformaticAnalysisParser()
