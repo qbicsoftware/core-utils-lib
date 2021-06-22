@@ -7,11 +7,11 @@ import life.qbic.datamodel.datasets.datastructure.files.nfcore.SoftwareVersions
 import life.qbic.datamodel.datasets.datastructure.folders.DataFolder
 import life.qbic.datamodel.datasets.datastructure.folders.nfcore.PipelineInformationFolder
 import life.qbic.datamodel.datasets.datastructure.folders.nfcore.QualityControlFolder
-import org.everit.json.schema.ValidationException
+import life.qbic.datasets.parsers.DataParserException
+import life.qbic.datasets.parsers.DatasetValidationException
 import spock.lang.Specification
-import java.nio.file.NotDirectoryException
 import java.nio.file.Paths
-import java.text.ParseException
+
 
 /**
  *  Tests for the BioinformaticAnalysisParser
@@ -20,7 +20,8 @@ import java.text.ParseException
  * @see BioinformaticAnalysisParser
  *
  */
-class BioInformaticAnalysisSpec extends Specification {
+
+class BioinformaticAnalysisSpec extends Specification {
 
     def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/bioinformatic-analysis-output").getPath()
     BioinformaticAnalysisParser bioinformaticAnalysisParser = new BioinformaticAnalysisParser()
@@ -70,16 +71,16 @@ class BioInformaticAnalysisSpec extends Specification {
 
     }
 
-    def "parsing an invalid file structure throws ValidationError"() {
+    def "parsing an invalid file structure throws DatasetValidationException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails")
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        thrown(ValidationException)
+        thrown(DatasetValidationException)
     }
 
-    def "parsing an empty directory throws ParseException"() {
+    def "parsing an empty directory throws DataParserException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "empty_directory/")
         // Maven doesn't include empty folders in build process so it has to be generated explicitly
@@ -90,27 +91,29 @@ class BioInformaticAnalysisSpec extends Specification {
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        ParseException parseException = thrown(ParseException)
-        assert parseException.message.equals("Specified directory is empty")
+        DataParserException parseException = thrown(DataParserException)
+        assert parseException.message == ("Specified directory ${pathToDirectory.toString()} is empty")
         // Remove new created folder after testing
         directory.delete()
     }
 
-    def "parsing a non-existing directory throws FileNotFoundException"() {
+    def "parsing a non-existing directory throws DataParserException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_directory")
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        thrown(FileNotFoundException)
+        DataParserException parseException = thrown(DataParserException)
+        assert parseException.message == ("The given path '${pathToDirectory.toString()}' does not exist.")
     }
 
-    def "parsing a file throws NotDirectoryException "() {
+    def "parsing a file throws a DataParserException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/pipeline_info/execution_report.txt")
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:
-        thrown(NotDirectoryException)
+        DataParserException parseException = thrown(DataParserException)
+        assert parseException.message == ("Expected a directory. Got a file instead.")
     }
 }
