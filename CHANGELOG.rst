@@ -10,6 +10,8 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Added**
 
+* Introduce ``life.qbic.utils.MaxQuantParser`` to validate the filestructure resulting from a maxQuant run  (`#60 <https://github.com/qbicsoftware/core-utils-lib/pull/60>`_)
+
 **Fixed**
 
 **Dependencies**
