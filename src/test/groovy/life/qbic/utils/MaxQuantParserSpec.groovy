@@ -35,26 +35,26 @@ class MaxQuantParserSpec extends Specification {
         assert maxQuantRunResult.sampleIds.getName()== "sample_ids.txt"
 
         //Files in ./combined/txt/ can be parsed
-        assert maxQuantRunResult.allPeptides.getRelativePath() == "./mqpar.xml"
-        assert maxQuantRunResult.allPeptides.getName()== "mqpar.xml"
+        assert maxQuantRunResult.allPeptides.getRelativePath() == "./combined/txt/allPeptides.txt"
+        assert maxQuantRunResult.allPeptides.getName()== "allPeptides.txt"
 
-        assert maxQuantRunResult.evidence.getRelativePath() == "./sample_ids.txt"
-        assert maxQuantRunResult.evidence.getName()== "sample_ids.txt"
+        assert maxQuantRunResult.evidence.getRelativePath() == "./combined/txt/evidence.txt"
+        assert maxQuantRunResult.evidence.getName()== "evidence.txt"
 
-        assert maxQuantRunResult.experimentalDesignTemplate.getRelativePath() == "./mqpar.xml"
-        assert maxQuantRunResult.experimentalDesignTemplate.getName()== "mqpar.xml"
+        assert maxQuantRunResult.experimentalDesignTemplate.getRelativePath() == "./combined/txt/experimentalDesignTemplate.txt"
+        assert maxQuantRunResult.experimentalDesignTemplate.getName()== "experimentalDesignTemplate.txt"
 
-        assert maxQuantRunResult.parameters.getRelativePath() == "./sample_ids.txt"
-        assert maxQuantRunResult.parameters.getName()== "sample_ids.txt"
+        assert maxQuantRunResult.parameters.getRelativePath() == "./combined/txt/parameters.txt"
+        assert maxQuantRunResult.parameters.getName()== "parameters.txt"
 
-        assert maxQuantRunResult.peptides.getRelativePath() == "./mqpar.xml"
-        assert maxQuantRunResult.peptides.getName()== "mqpar.xml"
+        assert maxQuantRunResult.peptides.getRelativePath() == "./combined/txt/peptides.txt"
+        assert maxQuantRunResult.peptides.getName()== "peptides.txt"
 
-        assert maxQuantRunResult.proteinGroups.getRelativePath() == "./sample_ids.txt"
-        assert maxQuantRunResult.proteinGroups.getName()== "sample_ids.txt"
+        assert maxQuantRunResult.proteinGroups.getRelativePath() == "./combined/txt/proteinGroups.txt"
+        assert maxQuantRunResult.proteinGroups.getName()== "proteinGroups.txt"
 
-        assert maxQuantRunResult.summary.getRelativePath() == "./sample_ids.txt"
-        assert maxQuantRunResult.summary.getName()== "sample_ids.txt"
+        assert maxQuantRunResult.summary.getRelativePath() == "./combined/txt/summary_1234.pdf"
+        assert maxQuantRunResult.summary.getName()== "summary_1234.pdf"
     }
 
     def "parsing an invalid file structure throws ValidationError"() {

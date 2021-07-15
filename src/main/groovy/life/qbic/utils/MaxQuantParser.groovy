@@ -123,7 +123,7 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         rootChildren.each { currentChild ->
             if (currentChild.containsKey("children")) {
                 //folder
-                parseCombinedInformation(currentChild)
+                parseCombinedInformation(map)
             } else if (currentChild.containsKey("fileType")) {
                 //file
                 switch (currentChild.get("name")) {
@@ -150,34 +150,36 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
      * The underlying datastructure however expects a mapping of the expected files as a Map entry in the root directory.
      * @since 1.9.0
      */
-    private static void parseCombinedInformation(Map combinedInformation) {
-        List<Map> txtInformation = combinedInformation.get("children")
-        def txtMap = txtInformation[0] as Map
-        txtMap.get("children").each { Map child ->
-            println(child)
+    private static void parseCombinedInformation(Map maxQuantInformation) {
+        List<Map> rootFolderInformation = maxQuantInformation.get("children") as List<Map>
+        def combinedFolderInformation = rootFolderInformation[0].get("children") as List<Map>
+        def txtFolderInformation = combinedFolderInformation[0] as Map
+        txtFolderInformation.get("children").each { Map child ->
             switch (child.get("name")) {
                 case "allPeptides.txt":
-                    insertAsProperty(txtMap, child, RequiredTxtFileKeys.ALL_PEPTIDES.getKeyName())
+                    insertAsProperty(maxQuantInformation, child, RequiredTxtFileKeys.ALL_PEPTIDES.getKeyName())
                     break
                 case "evidence.txt":
-                    insertAsProperty(txtMap, child, RequiredTxtFileKeys.EVIDENCE.getKeyName())
+                    insertAsProperty(maxQuantInformation, child, RequiredTxtFileKeys.EVIDENCE.getKeyName())
                     break
                 case "experimentalDesignTemplate.txt":
-                    insertAsProperty(txtMap, child, RequiredTxtFileKeys.EXPERIMENTAL_DESIGN_TEMPLATE.getKeyName())
+                    insertAsProperty(maxQuantInformation, child, RequiredTxtFileKeys.EXPERIMENTAL_DESIGN_TEMPLATE.getKeyName())
                     break
                 case "parameters.txt":
-                    insertAsProperty(txtMap, child, RequiredTxtFileKeys.PARAMETERS.getKeyName())
+                    insertAsProperty(maxQuantInformation, child, RequiredTxtFileKeys.PARAMETERS.getKeyName())
                     break
                 case "peptides.txt":
-                    insertAsProperty(txtMap, child, RequiredTxtFileKeys.PEPTIDES.getKeyName())
+                    insertAsProperty(maxQuantInformation, child, RequiredTxtFileKeys.PEPTIDES.getKeyName())
                     break
                 case "proteinGroups.txt":
-                    insertAsProperty(txtMap, child, RequiredTxtFileKeys.PROTEIN_GROUPS.getKeyName())
-                    break
-                case "summary_*.pdf":
-                    insertAsProperty(txtMap, child, RequiredTxtFileKeys.SUMMARY.getKeyName())
+                    insertAsProperty(maxQuantInformation, child, RequiredTxtFileKeys.PROTEIN_GROUPS.getKeyName())
                     break
                 default:
+                    //switch statements can't handle regex so the variable summary name has to be handled here
+                    if (child.get("name").toString().matches("summary_[0-9]{4}.*"))
+                    {
+                        insertAsProperty(maxQuantInformation, child, RequiredTxtFileKeys.SUMMARY.getKeyName())
+                    }
                     //ignoring other children
                     break
             }
