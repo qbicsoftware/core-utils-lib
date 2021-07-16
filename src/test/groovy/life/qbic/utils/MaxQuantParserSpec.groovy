@@ -4,8 +4,8 @@ import life.qbic.datamodel.datasets.MaxQuantRunResult
 import life.qbic.datasets.parsers.DataParserException
 import life.qbic.datasets.parsers.DatasetValidationException
 import spock.lang.Specification
-import java.nio.file.Paths
 
+import java.nio.file.Paths
 
 /**
  *  Tests for the MaxQuantParser
@@ -25,6 +25,8 @@ class MaxQuantParserSpec extends Specification {
         when: "we parse this valid structure"
         MaxQuantRunResult maxQuantRunResult = maxQuantParser.parseFrom(pathToDirectory)
         then: "we expect no exception should be thrown"
+        //TODO remove print
+        println("#### Got $maxQuantRunResult for $pathToDirectory")
         assert maxQuantRunResult instanceof MaxQuantRunResult
         //Root files can be parsed
         assert maxQuantRunResult.runParameters.getRelativePath() == "./mqpar.xml"
@@ -86,10 +88,15 @@ class MaxQuantParserSpec extends Specification {
     def "parsing an empty directory throws DataParserException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "empty_directory/")
+        //FIXME remove println
+        println("Trying to create directory $pathToDirectory")
         // Maven doesn't include empty folders in build process so it has to be generated explicitly
         File directory = new File(pathToDirectory.toString())
+        println("Directory $directory exists? ${directory.exists()}")
         if (!directory.exists()) {
+            println("Creating directory $directory")
             directory.mkdir()
+            println("Created directory $directory")
         }
         when:
         maxQuantParser.parseFrom(pathToDirectory)
