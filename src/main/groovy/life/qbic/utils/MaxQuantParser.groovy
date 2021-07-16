@@ -81,9 +81,13 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
     @Override
     MaxQuantRunResult parseFrom(Path root) throws DataParserException, DatasetValidationException {
         try {
+            //TODO remove println
+            println "Parsing file structure from $root"
             Map fileTreeMap = parseFileStructureToMap(root)
             adaptMapToDatasetStructure(fileTreeMap)
             String json = mapToJson(fileTreeMap)
+            println "Finished parsing."
+            println("Parsed to: $json")
             validateJson(json)
             MaxQuantRunResult maxQuantRunResult = MaxQuantRunResult.createFrom(fileTreeMap)
             return maxQuantRunResult
