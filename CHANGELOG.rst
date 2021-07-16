@@ -12,24 +12,11 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Fixed**
 
-**Dependencies**
-
-**Deprecated**
-
-
-1.8.1 (2021-06-21)
-------------------
-
-**Added**
-
-**Fixed**
-
 * Ensures, that the BioinformaticAnalysisParser throws only exceptions as stated in the DataSetParser interface
 
 **Dependencies**
 
 **Deprecated**
-
 
 1.8.0 (2021-05-07)
 ------------------
