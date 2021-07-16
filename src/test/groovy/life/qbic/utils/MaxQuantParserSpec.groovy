@@ -25,6 +25,8 @@ class MaxQuantParserSpec extends Specification {
         when: "we parse this valid structure"
         MaxQuantRunResult maxQuantRunResult = maxQuantParser.parseFrom(pathToDirectory)
         then: "we expect no exception should be thrown"
+        //TODO remove print
+        println("#### Got $maxQuantRunResult for $pathToDirectory")
         assert maxQuantRunResult instanceof MaxQuantRunResult
         //Root files can be parsed
         assert maxQuantRunResult.runParameters.getRelativePath() == "./mqpar.xml"
