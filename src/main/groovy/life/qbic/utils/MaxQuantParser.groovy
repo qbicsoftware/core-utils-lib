@@ -13,10 +13,10 @@ import org.everit.json.schema.loader.SchemaClient
 import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONObject
 import org.json.JSONTokener
+
 import java.nio.file.NotDirectoryException
 import java.nio.file.Path
 import java.text.ParseException
-
 
 /**
  * <h1>Parser storing the fileTree of a maxQuant run output directory into JSON format</h1>
@@ -160,6 +160,9 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         try {
             combinedFolderInformation = rootFolderInformation[0].get("children") as List<Map>
         } catch (NullPointerException ignored) {
+            //FIXME remove ignored print
+            ignored.printStackTrace()
+
             String errorText = "Combined directory could not be found in provided file tree"
             log.error(errorText)
             throw new ValidationException(errorText)
@@ -168,6 +171,9 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
             txtFolderInformation = combinedFolderInformation[0] as Map
         }
         catch (NullPointerException ignored) {
+            //FIXME remove ignored print
+            ignored.printStackTrace()
+
             String errorText = "Txt directory could not be found in provided file tree"
             log.error(errorText)
             throw new ValidationException(errorText)
