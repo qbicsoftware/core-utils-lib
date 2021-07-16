@@ -59,7 +59,25 @@ class MaxQuantParserSpec extends Specification {
 
     def "parsing an invalid file structure throws ValidationError"() {
         given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails")
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_file_in_txt_directory")
+        when:
+        maxQuantParser.parseFrom(pathToDirectory)
+        then:
+        thrown(ValidationException)
+    }
+
+    def "Missing subdirectory throws ValidationError"() {
+        given:
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_txt_directory")
+        when:
+        maxQuantParser.parseFrom(pathToDirectory)
+        then:
+        thrown(ValidationException)
+    }
+
+    def "Missing root files throws ValidationError"() {
+        given:
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_root_files_directory")
         when:
         maxQuantParser.parseFrom(pathToDirectory)
         then:
