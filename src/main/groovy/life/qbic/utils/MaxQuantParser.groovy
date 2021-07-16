@@ -158,7 +158,7 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         } catch (NullPointerException ignored) {
             String errorText = "Combined directory could not be found in provided file tree"
             log.error(errorText)
-            throw new DatasetValidationException(errorText)
+            throw new ValidationException(errorText)
         }
         try {
             txtFolderInformation = combinedFolderInformation[0] as Map
@@ -166,7 +166,7 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         catch (NullPointerException ignored) {
             String errorText = "Txt directory could not be found in provided file tree"
             log.error(errorText)
-            throw new DatasetValidationException(errorText)
+            throw new ValidationException(errorText)
         }
         txtFolderInformation.get("children").each {
             Map child ->
