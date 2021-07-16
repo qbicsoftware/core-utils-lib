@@ -80,21 +80,18 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
     /** {@InheritDoc} */
     @Override
     MaxQuantRunResult parseFrom(Path root) throws DataParserException, DatasetValidationException {
-        Map fileTreeMap = parseFileStructureToMap(root)
-        adaptMapToDatasetStructure(fileTreeMap)
         try {
+            Map fileTreeMap = parseFileStructureToMap(root)
+            adaptMapToDatasetStructure(fileTreeMap)
             String json = mapToJson(fileTreeMap)
             validateJson(json)
             MaxQuantRunResult maxQuantRunResult = MaxQuantRunResult.createFrom(fileTreeMap)
             return maxQuantRunResult
         } catch (ValidationException validationException) {
-            log.error("Specified directory could not be validated")
-            // we have to fetch all validation exceptions
-            def causes = validationException.getAllMessages().collect { it }.join("\n")
-            log.error(causes)
-            throw validationException
+            throw new DatasetValidationException(validationException)
+        } catch(Exception e) {
+            throw new DataParserException(e.message, e.cause)
         }
-
     }
 
     /**
@@ -150,8 +147,9 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
      * After parsing the files of the txt directory are contained in the children property of the combined directory, which itself is contained in the root directory.
      * The underlying datastructure however expects a mapping of the expected files as a Map entry in the root directory.
      * @since 1.9.0
+     * @throws life.qbic.datasets.parsers.DataParserException
      */
-    private static void parseCombinedInformation(Map maxQuantInformation) {
+    private static void parseCombinedInformation(Map maxQuantInformation) throws DataParserException {
         List<Map> rootFolderInformation = maxQuantInformation.get("children") as List<Map>
         def combinedFolderInformation
         def txtFolderInformation
@@ -160,7 +158,7 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         } catch (NullPointerException ignored) {
             String errorText = "Combined directory could not be found in provided file tree"
             log.error(errorText)
-            throw new ValidationException(errorText)
+            throw new DataParserException(errorText)
         }
         try {
             txtFolderInformation = combinedFolderInformation[0] as Map
@@ -168,7 +166,7 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         catch (NullPointerException ignored) {
             String errorText = "Txt directory could not be found in provided file tree"
             log.error(errorText)
-            throw new ValidationException(errorText)
+            throw new DataParserException(errorText)
         }
         txtFolderInformation.get("children").each {
             Map child ->
@@ -276,15 +274,15 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
                     return convertToRelativePaths(folderStructure, rootLocation.toPath())
                 } else {
                     log.error("Specified directory is empty")
-                    throw new ParseException("Specified directory is empty", -1)
+                    throw new ParseException("Specified directory ${path.toString()} is empty", -1)
                 }
             } else {
                 if (!rootLocation.exists()) {
                     log.error("The given directory does not exist.")
-                    throw new FileNotFoundException("The given path does not exist.")
+                    throw new FileNotFoundException("The given path '${path.toString()}' does not exist.")
                 } else {
                     log.error("Input path could not be processed")
-                    throw new IOException()
+                    throw new IOException("")
                 }
             }
 

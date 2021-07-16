@@ -1,12 +1,11 @@
 package life.qbic.utils
 
 import life.qbic.datamodel.datasets.MaxQuantRunResult
-import org.everit.json.schema.ValidationException
+import life.qbic.datasets.parsers.DataParserException
+import life.qbic.datasets.parsers.DatasetValidationException
 import spock.lang.Specification
-
-import java.nio.file.NotDirectoryException
 import java.nio.file.Paths
-import java.text.ParseException
+
 
 /**
  *  Tests for the MaxQuantParser
@@ -57,34 +56,34 @@ class MaxQuantParserSpec extends Specification {
         assert maxQuantRunResult.summary.getName()== "summary_1234.pdf"
     }
 
-    def "parsing an invalid file structure throws ValidationError"() {
+    def "parsing an invalid file structure throws DatasetValidationException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_combined_directory")
         when:
         maxQuantParser.parseFrom(pathToDirectory)
         then:
-        thrown(ValidationException)
+        thrown(DatasetValidationException)
     }
 
-    def "Missing files in txt directory throws ValidationError"() {
+    def "Missing files in txt directory throws DatasetValidationException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_file_in_txt_directory")
         when:
         maxQuantParser.parseFrom(pathToDirectory)
         then:
-        thrown(ValidationException)
+        thrown(DatasetValidationException)
     }
 
-    def "Missing root files throws ValidationError"() {
+    def "Missing root files throws DatasetValidationException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_root_files_directory")
         when:
         maxQuantParser.parseFrom(pathToDirectory)
         then:
-        thrown(ValidationException)
+        thrown(DatasetValidationException)
     }
 
-    def "parsing an empty directory throws ParseException"() {
+    def "parsing an empty directory throws DataParserException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "empty_directory/")
         // Maven doesn't include empty folders in build process so it has to be generated explicitly
@@ -95,27 +94,29 @@ class MaxQuantParserSpec extends Specification {
         when:
         maxQuantParser.parseFrom(pathToDirectory)
         then:
-        ParseException parseException = thrown(ParseException)
-        assert parseException.message.equals("Specified directory is empty")
+        DataParserException parseException = thrown(DataParserException)
+        assert parseException.message == ("Specified directory ${pathToDirectory.toString()} is empty")
         // Remove new created folder after testing
         directory.delete()
     }
 
-    def "parsing a non-existing directory throws FileNotFoundException"() {
+    def "parsing a non-existing directory throws DataParserException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_directory")
         when:
         maxQuantParser.parseFrom(pathToDirectory)
         then:
-        thrown(FileNotFoundException)
+        DataParserException parseException = thrown(DataParserException)
+        assert parseException.message == ("The given path '${pathToDirectory.toString()}' does not exist.")
     }
 
-    def "parsing a file throws NotDirectoryException"() {
+    def "parsing a file throws DataParserException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/mqpar.xml")
         when:
         maxQuantParser.parseFrom(pathToDirectory)
         then:
-        thrown(NotDirectoryException)
+        DataParserException parseException = thrown(DataParserException)
+        assert parseException.message == ("Expected a directory. Got a file instead.")
     }
 }
