@@ -68,7 +68,7 @@ class MaxQuantParserSpec extends Specification {
 
     def "Missing subdirectory throws ValidationError"() {
         given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_txt_directory")
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_combined_directory")
         when:
         maxQuantParser.parseFrom(pathToDirectory)
         then:
