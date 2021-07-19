@@ -5,6 +5,20 @@ Changelog
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 
+1.9.0-SNAPSHOT (2021-07-14)
+---------------------------
+
+**Added**
+
+* Introduce ``life.qbic.utils.MaxQuantParser`` to validate the filestructure resulting from a maxQuant run  (`#60 <https://github.com/qbicsoftware/core-utils-lib/pull/60>`_)
+
+**Fixed**
+
+**Dependencies**
+
+**Deprecated**
+
+
 1.8.0 (2021-05-07)
 ------------------
 

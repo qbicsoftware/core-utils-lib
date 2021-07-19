@@ -20,7 +20,7 @@ import java.text.ParseException
  * @see BioinformaticAnalysisParser
  *
  */
-class BioInformaticAnalysisSpec extends Specification {
+class BioinformaticAnalysisSpec extends Specification {
 
     def exampleDirectoriesRoot = this.getClass().getResource("/dummyFileSystem/bioinformatic-analysis-output").getPath()
     BioinformaticAnalysisParser bioinformaticAnalysisParser = new BioinformaticAnalysisParser()
