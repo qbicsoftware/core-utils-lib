@@ -97,23 +97,20 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
 
     }
 
-
     /** {@InheritDoc} */
     @Override
     NfCorePipelineResult parseFrom(Path root) throws DataParserException, DatasetValidationException {
-        Map fileTreeMap = parseFileStructureToMap(root)
-        adaptMapToDatasetStructure(fileTreeMap)
         try {
+            Map fileTreeMap = parseFileStructureToMap(root)
+            adaptMapToDatasetStructure(fileTreeMap)
             String json = mapToJson(fileTreeMap)
             validateJson(json)
             NfCorePipelineResult nfCorePipelineResult = NfCorePipelineResult.createFrom(fileTreeMap)
             return nfCorePipelineResult
         } catch (ValidationException validationException) {
-            log.error("Specified directory could not be validated")
-            // we have to fetch all validation exceptions
-            def causes = validationException.getAllMessages().collect { it }.join("\n")
-            log.error(causes)
-            throw validationException
+            throw new DatasetValidationException(validationException)
+        } catch (Exception e) {
+            throw new DataParserException(e.message, e.getCause())
         }
     }
 
@@ -291,7 +288,6 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
         static Map fileTreeToMap(Path path) throws FileNotFoundException, IOException, ParseException {
             File rootLocation = new File(path.toString())
             if (rootLocation.isFile()) {
-                log.error("Expected directory. Got file instead.")
                 throw new NotDirectoryException("Expected a directory. Got a file instead.")
             } else if (rootLocation.isDirectory()) {
                 //Check if existing Directory is empty
@@ -300,16 +296,13 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                     Map folderStructure = convertDirectory(rootLocation.toPath())
                     return convertToRelativePaths(folderStructure, rootLocation.toPath())
                 } else {
-                    log.error("Specified directory is empty")
-                    throw new ParseException("Specified directory is empty", -1)
+                    throw new ParseException("Specified directory ${path.toString()} is empty", -1)
                 }
             } else {
                 if (!rootLocation.exists()) {
-                    log.error("The given directory does not exist.")
-                    throw new FileNotFoundException("The given path does not exist.")
+                    throw new FileNotFoundException("The given path '${path.toString()}' does not exist.")
                 } else {
-                    log.error("Input path could not be processed")
-                    throw new IOException()
+                    throw new IOException("The given path '${path.toString()}' could not be read")
                 }
             }
 

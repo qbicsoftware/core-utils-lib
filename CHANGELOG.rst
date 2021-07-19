@@ -14,6 +14,8 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Fixed**
 
+* Ensures, that the BioinformaticAnalysisParser throws only exceptions as stated in the DataSetParser interface (`#62 <https://github.com/qbicsoftware/core-utils-lib/pull/62>`_)
+
 **Dependencies**
 
 **Deprecated**
