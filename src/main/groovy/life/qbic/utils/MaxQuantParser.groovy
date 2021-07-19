@@ -157,30 +157,21 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         List<Map> rootFolderInformation = maxQuantInformation.get("children") as List<Map>
         def combinedFolderInformation
         def txtFolderInformation
-        try {
-            rootFolderInformation.findAll()
-            combinedFolderInformation = rootFolderInformation[0].get("children") as List<Map>
-        } catch (NullPointerException ignored) {
-            //FIXME remove ignored print
-            ignored.printStackTrace()
-
-            String errorText = "Combined directory could not be found in provided file tree"
-            log.error(errorText)
-            throw new ValidationException(errorText)
+        rootFolderInformation.findAll{map ->
+            if (map.get("name") == "combined") {
+                combinedFolderInformation = map.get("children")
+                }
+            }
+        if (combinedFolderInformation) {
+            combinedFolderInformation.findAll { map ->
+                if (map.get("name") == "txt") {
+                    txtFolderInformation = map.get("children")  as List<Map>
+                    println(txtFolderInformation)
+                }
+            }
         }
-        try {
-            txtFolderInformation = combinedFolderInformation[0] as Map
-        }
-        catch (NullPointerException ignored) {
-            //FIXME remove ignored print
-            ignored.printStackTrace()
-
-            String errorText = "Txt directory could not be found in provided file tree"
-            log.error(errorText)
-            throw new ValidationException(errorText)
-        }
-        txtFolderInformation.get("children").each {
-            Map child ->
+        if (txtFolderInformation) {
+        txtFolderInformation.each { Map child ->
                 switch (child.get("name")) {
                     case "allPeptides.txt":
                         insertAsProperty(maxQuantInformation, child, RequiredTxtFileKeys.ALL_PEPTIDES.getKeyName())
@@ -207,7 +198,8 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
                         }
                         //ignoring other children
                         break
-                }
+                    }
+        }
         }
     }
 
