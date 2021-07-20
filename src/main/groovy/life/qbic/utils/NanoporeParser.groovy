@@ -2,7 +2,6 @@ package life.qbic.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
-import groovy.util.logging.Log4j2
 import groovyjarjarcommonscli.MissingArgumentException
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutput
 import org.everit.json.schema.Schema
@@ -17,7 +16,6 @@ import java.nio.file.Paths
 import java.text.ParseException
 import life.qbic.datamodel.datasets.OxfordNanoporeExperiment
 
-@Log4j2
 class NanoporeParser {
 
     /**
@@ -39,10 +37,8 @@ class NanoporeParser {
             OxfordNanoporeExperiment convertedExperiment = OxfordNanoporeExperiment.create(finalMap)
             return convertedExperiment
         } catch (ValidationException validationException) {
-            log.error("Specified directory could not be validated")
             // we have to fetch all validation exceptions
             def causes = validationException.getAllMessages().collect{ it }.join("\n")
-            log.error(causes)
             throw validationException
         }
     }
@@ -184,7 +180,6 @@ class NanoporeParser {
         static Map fileTreeToMap(Path path) {
             File rootLocation = new File(path.toString())
             if (rootLocation.isFile()) {
-                log.error("Expected directory. Got file instead.")
                 throw new NotDirectoryException("Expected a directory. Got a file instead.")
             } else if (rootLocation.isDirectory()) {
                 //Check if existing Directory is empty
@@ -193,15 +188,12 @@ class NanoporeParser {
                     Map folderStructure = convertDirectory(rootLocation.toPath())
                     return convertToRelativePaths(folderStructure, rootLocation.toPath())
                 } else {
-                    log.error("Specified directory is empty")
                     throw new ParseException("Parsed directory might not be empty", -1)
                 }
             } else {
                 if (!rootLocation.exists()) {
-                    log.error("The given directory does not exist.")
                     throw new FileNotFoundException("The given path does not exist.")
                 } else {
-                    log.error("Input path could not be processed")
                     throw new IOException()
                 }
             }
@@ -218,7 +210,6 @@ class NanoporeParser {
             File currentDirectory = new File(path.toString())
             String name = currentDirectory.getName()
             if (IGNORED_FOLDERNAMES.contains(name)) {
-                log.debug("Skipped " + name)
                 return null
             }
             List children = currentDirectory.listFiles().findAll { file ->
