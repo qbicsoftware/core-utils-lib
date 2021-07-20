@@ -4,6 +4,18 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
+1.9.1
+-----
+
+**Added**
+
+**Fixed**
+
+* Removes unnecessary print and log statements in several parsers (`#65 <https://github.com/qbicsoftware/core-utils-lib/pull/65>`_)
+
+**Dependencies**
+
+**Deprecated**
 
 1.9.0 (2021-07-19)
 ------------------
