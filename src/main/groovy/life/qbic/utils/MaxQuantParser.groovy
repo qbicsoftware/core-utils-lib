@@ -1,7 +1,6 @@
 package life.qbic.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import groovy.util.logging.Log4j2
 import life.qbic.datamodel.datasets.MaxQuantRunResult
 import life.qbic.datamodel.maxquant.MaxQuantOutput
 import life.qbic.datasets.parsers.DataParserException
@@ -25,7 +24,6 @@ import java.text.ParseException
  * @since 1.9.0
  *
  */
-@Log4j2
 class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
 
     /**
@@ -80,13 +78,9 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
     @Override
     MaxQuantRunResult parseFrom(Path root) throws DataParserException, DatasetValidationException {
         try {
-            //TODO remove println
-            println "Parsing file structure from $root"
             Map fileTreeMap = parseFileStructureToMap(root)
             adaptMapToDatasetStructure(fileTreeMap)
             String json = mapToJson(fileTreeMap)
-            println "Finished parsing."
-            println("Parsed to: $json")
             validateJson(json)
             MaxQuantRunResult maxQuantRunResult = MaxQuantRunResult.createFrom(fileTreeMap)
             return maxQuantRunResult
@@ -134,10 +128,6 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
                     case "sample_ids.txt":
                         insertAsProperty(map, currentChild, RequiredRootFileKeys.SAMPLE_ID.getKeyName())
                         break
-                    default:
-                        //ignore other files
-                        log.warn("Could not recognize file ${currentChild.path}")
-                        break
                 }
             }
         }
@@ -166,7 +156,6 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
             combinedFolderInformation.findAll { map ->
                 if (map.get("name") == "txt") {
                     txtFolderInformation = map.get("children")  as List<Map>
-                    println(txtFolderInformation)
                 }
             }
         }
@@ -267,7 +256,6 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         static Map fileTreeToMap(Path path) throws FileNotFoundException, IOException, ParseException {
             File rootLocation = new File(path.toString())
             if (rootLocation.isFile()) {
-                log.error("Expected directory. Got file instead.")
                 throw new NotDirectoryException("Expected a directory. Got a file instead.")
             } else if (rootLocation.isDirectory()) {
                 //Check if existing Directory is empty
@@ -276,15 +264,12 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
                     Map folderStructure = convertDirectory(rootLocation.toPath())
                     return convertToRelativePaths(folderStructure, rootLocation.toPath())
                 } else {
-                    log.error("Specified directory is empty")
                     throw new ParseException("Specified directory ${path.toString()} is empty", -1)
                 }
             } else {
                 if (!rootLocation.exists()) {
-                    log.error("The given directory does not exist.")
                     throw new FileNotFoundException("The given path '${path.toString()}' does not exist.")
                 } else {
-                    log.error("Input path could not be processed")
                     throw new IOException("")
                 }
             }
