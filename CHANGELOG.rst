@@ -4,8 +4,21 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
-1.9.1
------
+1.9.2 (2021-07-20)
+------------------
+
+**Added**
+
+**Fixed**
+
+* Removes orphaned log statement
+
+**Dependencies**
+
+**Deprecated**
+
+1.9.1 (2021-07-20)
+------------------
 
 **Added**
 
