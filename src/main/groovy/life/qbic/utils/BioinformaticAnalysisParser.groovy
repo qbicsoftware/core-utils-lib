@@ -165,7 +165,6 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
                         break
                     default:
                         //ignore other files
-                        log.warn("Could not recognize file ${currentChild.path}")
                         break
                 }
             }
