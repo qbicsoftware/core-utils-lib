@@ -44,7 +44,7 @@ class DatasetValidationException extends RuntimeException {
      */
     List<DatasetValidationException> getCauses() {
         List<DatasetValidationException> convertedExceptions = []
-        for (ValidationException validationException : validationException.causingExceptions) {
+        for (ValidationException validationException : validationException.getCausingExceptions()) {
             convertedExceptions.add(new DatasetValidationException(validationException))
         }
         return convertedExceptions
