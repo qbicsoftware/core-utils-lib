@@ -1,7 +1,6 @@
 package life.qbic.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import groovy.util.logging.Log4j2
 import life.qbic.datamodel.datasets.NfCorePipelineResult
 import life.qbic.datamodel.pipelines.PipelineOutput
 import life.qbic.datasets.parsers.DataParserException
@@ -28,7 +27,6 @@ import java.text.ParseException
  * @param directory path of nf-core directory whose fileTree should be converted into a JSON String
  *
  */
-@Log4j2
 class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>{
 
     /**
