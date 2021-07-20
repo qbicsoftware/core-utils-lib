@@ -14,6 +14,8 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 * Checks ``life.qbic.datasets.parsers.DatasetValidationException`` argument for null, throws an NPE immediately.
 
+* Remove DatasetValidationException signature from ``adaptMapToDatasetStructure`` method in ``life.qbic.utils.MaxQuantParser.groovy``
+
 **Dependencies**
 
 **Deprecated**
