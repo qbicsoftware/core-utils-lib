@@ -147,11 +147,12 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         List<Map> rootFolderInformation = maxQuantInformation.get("children") as List<Map>
         def combinedFolderInformation
         def txtFolderInformation
+        def summaryFolderInformation
         rootFolderInformation.findAll{map ->
             if (map.get("name") == "combined") {
                 combinedFolderInformation = map.get("children")
                 }
-            }
+        }
         if (combinedFolderInformation) {
             combinedFolderInformation.findAll { map ->
                 if (map.get("name") == "txt") {
@@ -181,14 +182,18 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
                         insertAsProperty(maxQuantInformation, child, RequiredTxtFileKeys.PROTEIN_GROUPS.getKeyName())
                         break
                     default:
-                        //switch statements can't handle regex so the variable summary name has to be handled here
-                        if (child.get("name").toString().matches("summary_[0-9]{4}.*")) {
-                            insertAsProperty(maxQuantInformation, child, RequiredTxtFileKeys.SUMMARY.getKeyName())
-                        }
+                        if(child.get("name") == "summary") summaryFolderInformation = child.get("children") as List<Map>
                         //ignoring other children
                         break
                     }
+                }
         }
+        if(summaryFolderInformation){
+            summaryFolderInformation.each{ Map child ->
+                if (child.get("name").toString().matches("summary_[0-9]{4}.*")) {
+                    insertAsProperty(maxQuantInformation, child, RequiredTxtFileKeys.SUMMARY.getKeyName())
+                }
+            }
         }
     }
 
