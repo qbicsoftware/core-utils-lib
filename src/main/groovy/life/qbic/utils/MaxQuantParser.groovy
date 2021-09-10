@@ -141,17 +141,16 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
      * The underlying datastructure however expects a mapping of the expected files as a Map entry in the root directory.
      * @param maxQuantInformation a nested map representing the parsed fileTree structure
      * @since 1.9.0
-     * @throws life.qbic.datasets.parsers.DatasetValidationException
      */
-    private static void parseCombinedInformation(Map maxQuantInformation) throws DatasetValidationException {
+    private static void parseCombinedInformation(Map maxQuantInformation) {
         List<Map> rootFolderInformation = maxQuantInformation.get("children") as List<Map>
         def combinedFolderInformation
         def txtFolderInformation
         def summaryFolderInformation
-        rootFolderInformation.findAll{map ->
+        rootFolderInformation.findAll { map ->
             if (map.get("name") == "combined") {
                 combinedFolderInformation = map.get("children")
-                }
+            }
         }
         if (combinedFolderInformation) {
             combinedFolderInformation.findAll { map ->
@@ -225,7 +224,6 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
      * @param json Json String which will be compared to schema
      * @throws org.everit.json.schema.ValidationException
      */
-
     private static void validateJson(String json) throws ValidationException {
         // Step1: load schema
         JSONObject jsonObject = new JSONObject(json)
@@ -357,11 +355,7 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         private static String determineFileType(String fileName) {
             // defaults to the string following the last '.' in the filename
             String fileType = fileName.tokenize('.').last()
-
             return fileType
         }
-
     }
-
-
 }

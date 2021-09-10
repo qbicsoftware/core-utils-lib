@@ -17,11 +17,14 @@ class DatasetValidationException extends RuntimeException {
     /**
      * Creates a dataset validation exception object wrapping a JSON schema
      * {@link ValidationException}.
+     *
+     * The {@link ValidationException} must not be null, otherwise a NPE is thrown immediately.
+     *
      * @param validationException
      * @since 1.7.0
      */
     DatasetValidationException(ValidationException validationException) {
-        this.validationException = validationException
+        this.validationException = Objects.requireNonNull(validationException, "Validation exception must not be null!")
     }
 
     /**
@@ -41,7 +44,7 @@ class DatasetValidationException extends RuntimeException {
      */
     List<DatasetValidationException> getCauses() {
         List<DatasetValidationException> convertedExceptions = []
-        for (ValidationException validationException : validationException.causingExceptions) {
+        for (ValidationException validationException : validationException.getCausingExceptions()) {
             convertedExceptions.add(new DatasetValidationException(validationException))
         }
         return convertedExceptions
