@@ -5,6 +5,19 @@ Changelog
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 
+1.10.0 (2021-09-10)
+-------------------
+
+**Added**
+
+* Update 'life.qbic.utils.MaxQuantParser', parsing the summary file from a new summary folder (`#74 <https://github.com/qbicsoftware/core-utils-lib/pull/74>`_)
+
+**Fixed**
+
+**Dependencies**
+
+**Deprecated**
+
 1.9.3 (2021-07-20)
 ------------------
 
@@ -20,7 +33,6 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Deprecated**
 
-
 1.9.2 (2021-07-20)
 ------------------
 
@@ -29,8 +41,6 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 **Fixed**
 
 * Removes orphaned log statement
-
-* Update 'life.qbic.utils.MaxQuantParser', parsing the summary file from a new summary folder (`#74 <https://github.com/qbicsoftware/core-utils-lib/pull/74>`_)
 
 **Dependencies**
 
