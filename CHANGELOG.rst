@@ -30,6 +30,8 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 * Removes orphaned log statement
 
+* Update 'life.qbic.utils.MaxQuantParser', parsing the summary file from a new summary folder (`#74 <https://github.com/qbicsoftware/core-utils-lib/pull/74>`_)
+
 **Dependencies**
 
 **Deprecated**
