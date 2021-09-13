@@ -54,7 +54,7 @@ class MaxQuantParserSpec extends Specification {
         assert maxQuantRunResult.proteinGroups.getRelativePath() == "./combined/txt/proteinGroups.txt"
         assert maxQuantRunResult.proteinGroups.getName()== "proteinGroups.txt"
 
-        assert maxQuantRunResult.summary.getRelativePath() == "./combined/txt/summary_1234.pdf"
+        assert maxQuantRunResult.summary.getRelativePath() == "./combined/txt/summary/summary_1234.pdf"
         assert maxQuantRunResult.summary.getName()== "summary_1234.pdf"
     }
 

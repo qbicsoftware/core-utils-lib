@@ -3,7 +3,7 @@ full_name: Jennifer Bödker
 email: jennifer.boedker@qbic.uni-tuebingen.de
 project_name: core-utils-lib
 project_short_description: core-utils-lib. A qube based .
-version: 1.9.0-SNAPSHOT
+version: 1.10.0
 domain: lib
 language: groovy
 project_slug: core-utils-lib
