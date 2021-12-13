@@ -6,7 +6,7 @@
     <artifactId>core-utils-lib-osgi</artifactId>
     <url>http://github.com/qbicsoftware/core-utils-lib</url>
     <groupId>life.qbic</groupId>
-    <version>1.10.0</version> <!-- <<QUBE_FORCE_BUMP>> -->
+    <version>1.10.1</version> <!-- <<QUBE_FORCE_BUMP>> -->
     <description>Collection of non-Vaadin, non-Liferay utilities.</description>
     <modelVersion>4.0.0</modelVersion>
     <name>Core Utilities Library</name>
@@ -15,7 +15,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-
+        <log4j.version>2.15.0</log4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -80,6 +80,16 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
         <dependency>
             <artifactId>micronaut-http-client</artifactId>
             <groupId>io.micronaut</groupId>
