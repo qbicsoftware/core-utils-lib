@@ -6,7 +6,7 @@
     <artifactId>core-utils-lib-osgi</artifactId>
     <url>http://github.com/qbicsoftware/core-utils-lib</url>
     <groupId>life.qbic</groupId>
-    <version>1.10.1</version> <!-- <<QUBE_FORCE_BUMP>> -->
+    <version>1.10.2</version> <!-- <<QUBE_FORCE_BUMP>> -->
     <description>Collection of non-Vaadin, non-Liferay utilities.</description>
     <modelVersion>4.0.0</modelVersion>
     <name>Core Utilities Library</name>
