@@ -12,6 +12,8 @@ This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
 **Fixed**
 
+* CVE-2021-45046
+
 **Dependencies**
 
 * micronaut-http-client:io.micronaut:1.2.11 -> 2.5.13
