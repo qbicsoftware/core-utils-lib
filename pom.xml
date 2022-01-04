@@ -6,13 +6,13 @@
   <description>Collection of non-Vaadin, non-Liferay utilities.</description>
   <modelVersion>4.0.0</modelVersion>
   <name>Core Utilities Library</name>
-  <version>1.10.3</version> <!-- <<QUBE_FORCE_BUMP>> -->
+  <version>1.10.4</version>
   <url>https://github.com/qbicsoftware/core-utils-lib</url>
   <packaging>jar</packaging>
   <properties>
       <maven.compiler.source>1.8</maven.compiler.source>
       <maven.compiler.target>1.8</maven.compiler.target>
-      <log4j.version>2.17.0</log4j.version>
+      <log4j.version>2.17.1</log4j.version>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
