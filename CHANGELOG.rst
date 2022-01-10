@@ -4,6 +4,86 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
+1.11.0-SNAPSHOT (2021-12-23)
+---------------------------
+
+**Added**
+
+**Fixed**
+
+**Dependencies**
+
+**Deprecated**
+
+1.10.3 (2021-12-20)
+-------------------
+
+**Added**
+
+**Fixed**
+
+* CVE-2021-45105
+
+**Dependencies**
+
+* org.apache.logging.log4j:log4j-api:2.16.0 -> 2.17.0
+* org.apache.logging.log4j:log4j-core:2.16.0 -> 2.17.0
+
+**Deprecated**
+
+1.10.2 (2021-12-16)
+-------------------
+
+**Added**
+
+**Fixed**
+
+* CVE-2021-45046
+
+**Dependencies**
+
+* micronaut-http-client:io.micronaut:1.2.11 -> 2.5.13
+* spock-core:org.spockframework:1.3-groovy-2.5 -> 2.0-groovy-2.5
+* org.mockito:mockito-all:1.8.4 -> 1.10.19
+* org.mockito:mockito-core:2.18.3 -> 4.1.0
+* org.powermock:powermock-reflect:1.6.1 -> 2.0.9
+* org.apache.commons:commons-lang3:3.7 -> 3.12.0
+* org.apache.logging.log4j:log4j-api:2.15.0 -> 2.16.0
+* org.apache.logging.log4j:log4j-core:2.15.0 -> 2.16.0
+
+**Deprecated**
+
+
+1.10.1 (2021-12-13)
+-------------------
+
+**Added**
+
+**Fixed**
+
+* CVE-2021-44228
+
+**Dependencies**
+
+* ``org.apache.logging.log4j:log4j-api:2.13.2`` -> ``2.15.0``
+
+* ``org.apache.logging.log4j:log4j-core:2.13.2`` -> ``2.15.0``
+
+**Deprecated**
+
+
+1.10.0 (2021-09-13)
+-------------------
+
+**Added**
+
+* Update 'life.qbic.utils.MaxQuantParser', parsing the summary file from a new summary folder (`#74 <https://github.com/qbicsoftware/core-utils-lib/pull/74>`_)
+
+**Fixed**
+
+**Dependencies**
+
+**Deprecated**
 
 1.9.3 (2021-07-20)
 ------------------
