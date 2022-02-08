@@ -218,4 +218,12 @@
       </plugin>
     </plugins>
   </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>life.qbic</groupId>
+        <artifactId>groovydoc-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
