@@ -50,8 +50,8 @@ This is a library and the most common way to use this library in particular is b
     </dependency>
 
 
-Features
---------
+How to use
+----------
 
 
 Find QBiC services
@@ -82,9 +82,9 @@ Finding QBiC service instances from within an application is as easy as this:
     }
 
 
-Credits
+License
 -------
 
-This project was created with qube_.
+This work is licensed under the `MIT license <https://mit-license.org/>`_.
 
-.. _qube: https://github.com/qbicsoftware/qube
+**Note**: This work uses the `Micronaut Framework <https://github.com/micronaut-projects>`_ and derivatives from the Micronaut framework family, its which are licensed under `Apache 2.0 <https://www.apache.org/licenses/LICENSE-2.0>`_.
