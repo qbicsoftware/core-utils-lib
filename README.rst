@@ -76,23 +76,23 @@ This work is licensed under the `MIT license <https://mit-license.org/>`_.
 
 
 .. |maven-build| image:: https://github.com/qbicsoftware/core-utils-lib/workflows/Build%20Maven%20Package/badge.svg
-    :target: https://github.com/qbicsoftware/core-utils-lib/workflows/Build%20Maven%20Package/badge.svg
+    :target: https://github.com/qbicsoftware/core-utils-lib/actions/workflows/build_package.yml
     :alt: Github Workflow Build Maven Package Status
 
 .. |maven-test| image:: https://github.com/qbicsoftware/core-utils-lib/workflows/Run%20Maven%20Tests/badge.svg
-    :target: https://github.com/qbicsoftware/core-utils-lib/workflows/Run%20Maven%20Tests/badge.svg
+    :target: https://github.com/qbicsoftware/core-utils-lib/actions/workflows/run_tests.yml
     :alt: Github Workflow Tests Status
 
 .. |codeql| image:: https://github.com/qbicsoftware/core-utils-lib/workflows/CodeQL/badge.svg
-    :target: https://github.com/qbicsoftware/core-utils-lib/workflows/CodeQL/badge.svg
+    :target: https://github.com/qbicsoftware/core-utils-lib/actions/workflows/codeql-analysis.yml
     :alt: CodeQl Status
 
 .. |license| image:: https://img.shields.io/github/license/qbicsoftware/core-utils-lib
-    :target: https://img.shields.io/github/license/qbicsoftware/core-utils-lib
+    :target: https://github.com/qbicsoftware/core-utils-lib/blob/master/LICENSE
     :alt: Project Licence
 
 .. |release| image:: https://img.shields.io/github/v/release/qbicsoftware/core-utils-lib.svg?include_prereleases
-    :target: https://github.com/qbicsoftware/core-utils-lib/release
+    :target: https://github.com/qbicsoftware/core-utils-lib/releases
     :alt: Release status
 
 .. |java| image:: https://img.shields.io/badge/language-java-blue.svg
