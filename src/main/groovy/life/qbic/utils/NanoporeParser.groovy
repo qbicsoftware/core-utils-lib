@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
 import groovyjarjarcommonscli.MissingArgumentException
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutput
+import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV2
 import org.everit.json.schema.Schema
 import org.everit.json.schema.ValidationException
 import org.everit.json.schema.loader.SchemaLoader
@@ -39,7 +40,7 @@ class NanoporeParser {
         } catch (ValidationException validationException) {
             // we have to fetch all validation exceptions
             def causes = validationException.getAllMessages().collect{ it }.join("\n")
-            throw validationException
+            throw new ValidationException(causes)
         }
     }
 
@@ -156,13 +157,22 @@ class NanoporeParser {
      * @throws org.everit.json.schema.ValidationException
      */
     private static void validateJson(String json) throws ValidationException {
-        // Step1: load schema
+        // Step 1: load schema
         JSONObject jsonObject = new JSONObject(json)
-        InputStream schemaStream = OxfordNanoporeInstrumentOutput.getSchemaAsStream()
-        JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream))
-        Schema jsonSchema = SchemaLoader.load(rawSchema)
-        // Step2: validate against schema return if valid, throw exception if invalid
-        jsonSchema.validate(jsonObject)
+        try {
+            Schema jsonSchema = loadSchemaFromStream(OxfordNanoporeInstrumentOutput.getSchemaAsStream())
+            // Step 2: validate against schema return if valid, throw exception if invalid
+            jsonSchema.validate(jsonObject)
+        } catch (ValidationException validationException) {
+            // Step 2.5: validate against second schema type
+            Schema jsonSchema2 = loadSchemaFromStream(OxfordNanoporeInstrumentOutputV2.getSchemaAsStream())
+            jsonSchema2.validate(jsonObject)
+        }
+    }
+
+    private static Schema loadSchemaFromStream(InputStream stream) {
+        JSONObject rawSchema = new JSONObject(new JSONTokener(stream))
+        return SchemaLoader.load(rawSchema)
     }
 
     /*
