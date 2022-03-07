@@ -2,7 +2,6 @@ package life.qbic.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
-import groovyjarjarcommonscli.MissingArgumentException
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutput
 import org.everit.json.schema.Schema
 import org.everit.json.schema.ValidationException
@@ -122,19 +121,19 @@ class NanoporeParser {
 
     private static void checkPresenceOfFlowCellPosition(Map metadata, String flowCellEntry) {
         if (!metadata.containsKey(flowCellEntry)) {
-            throw new MissingArgumentException("Could not find metadata information about the flow cell position.")
+            throw new RuntimeException("Could not find metadata information about the flow cell position.")
         }
         if ((metadata[flowCellEntry] as String).isEmpty()) {
-            throw new MissingArgumentException("Flow cell position information was empty.")
+            throw new RuntimeException("Flow cell position information was empty.")
         }
     }
 
     private static void checkPresenceOfBaseCaller(Map metadata, String baseCallerEntry) {
         if (!metadata.containsKey(baseCallerEntry)) {
-            throw new MissingArgumentException("Could not find metadata information about the base caller.")
+            throw new RuntimeException("Could not find metadata information about the base caller.")
         }
         if ((metadata[baseCallerEntry] as String).isEmpty()) {
-            throw new MissingArgumentException("Base caller information was empty.")
+            throw new RuntimeException("Base caller information was empty.")
         }
     }
 

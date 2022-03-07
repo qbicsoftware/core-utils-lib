@@ -10,11 +10,11 @@
   <url>https://github.com/qbicsoftware/core-utils-lib</url>
   <packaging>jar</packaging>
   <properties>
-      <maven.compiler.source>1.8</maven.compiler.source>
-      <maven.compiler.target>1.8</maven.compiler.target>
-      <log4j.version>2.17.1</log4j.version>
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <log4j.version>2.17.1</log4j.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
   <distributionManagement>
     <repository>
@@ -32,6 +32,19 @@
   </distributionManagement>
   <!-- we only need to tell maven where to find our parent pom and other QBiC dependencies -->
   <repositories>
+    <repository>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>always</updatePolicy>
+        <checksumPolicy>fail</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <id>maven-central</id>
+      <name>Maven central</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
     <repository>
       <id>nexus-snapshots</id>
       <name>QBiC Snapshots</name>
@@ -63,8 +76,24 @@
       <url>https://jitpack.io</url>
     </repository>
   </repositories>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-bom</artifactId>
+        <version>3.0.9</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <dependencies>
-
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>3.0.9</version>
+      <type>pom</type>
+    </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
     <dependency>
@@ -90,13 +119,13 @@
     <dependency>
       <artifactId>spock-core</artifactId>
       <groupId>org.spockframework</groupId>
-      <version>2.0-groovy-2.5</version>
+      <version>2.1-groovy-3.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <artifactId>data-model-lib</artifactId>
       <groupId>life.qbic</groupId>
-      <version>2.10.0</version>
+      <version>2.16.1</version>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
@@ -138,7 +167,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.21.0</version>
+        <version>3.0.0-M5</version>
         <configuration>
           <includes>
             <include>**/*Spec</include>
@@ -148,7 +177,7 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.12.0</version>
+        <version>1.13.1</version>
         <executions>
           <execution>
             <goals>
@@ -175,8 +204,10 @@
           </execution>
         </executions>
         <configuration>
-          <groovyDocOutputDirectory>${project.build.directory}/site/gapidocs</groovyDocOutputDirectory>
-          <testGroovyDocOutputDirectory>${project.build.directory}/site/testgapidocs</testGroovyDocOutputDirectory>
+          <groovyDocOutputDirectory>${project.build.directory}/site/gapidocs
+          </groovyDocOutputDirectory>
+          <testGroovyDocOutputDirectory>${project.build.directory}/site/testgapidocs
+          </testGroovyDocOutputDirectory>
         </configuration>
       </plugin>
       <plugin>
