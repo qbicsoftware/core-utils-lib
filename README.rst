@@ -1,43 +1,34 @@
-core-utils-lib
+Core Utilities Library
 -----------------------------------
 
-.. image:: https://github.com/qbicsoftware/core-utils-lib/workflows/Build%20Maven%20Package/badge.svg
-    :target: https://github.com/qbicsoftware/core-utils-lib/workflows/Build%20Maven%20Package/badge.svg
-    :alt: Github Workflow Build Maven Package Status
+A collection of non-Vaadin, non-Liferay utilities.
 
-.. image:: https://github.com/qbicsoftware/core-utils-lib/workflows/Run%20Maven%20Tests/badge.svg
-    :target: https://github.com/qbicsoftware/core-utils-lib/workflows/Run%20Maven%20Tests/badge.svg
-    :alt: Github Workflow Tests Status
+|maven-build| |maven-test| |codeql| |release|
+|license| |java| |groovy|
 
-.. image:: https://github.com/qbicsoftware/core-utils-lib/workflows/QUBE%20lint/badge.svg
-    :target: https://github.com/qbicsoftware/core-utils-lib/workflows/QUBE%20lint/badge.svg
-    :alt: qube Lint Status
-
-.. image:: https://readthedocs.org/projects/core-utils-lib/badge/?version=latest
-    :target: https://core-utils-lib.readthedocs.io/en/latest/?badge=latest
-    :alt: Documentation Status
-
-.. image:: https://flat.badgen.net/dependabot/thepracticaldev/dev.to?icon=dependabot
-    :target: https://flat.badgen.net/dependabot/thepracticaldev/dev.to?icon=dependabot
-    :alt: Dependabot Enabled
-
-
-Core Utilities Library - Collection of non-Vaadin, non-Liferay utilities.
-
-* Free software: MIT
-* Documentation: https://core-utils-lib.readthedocs.io.
-
-
-Author
---------
-Created by Luis de la Garza (luis.delagarza@qbic.uni-tuebingen.de), maintained and developed further by the [ITSS team](https://github.com/orgs/qbicsoftware/teams/itss) of QBiC.
-
-Description
-------------
-Contains a collection of classes and utilities that depend neither on Vaadin nor on Liferay.
-
-How to Install
+How to Run
 -----------------
+
+To build this library use Maven and Java 8:
+
+First compile the project and build an executable java archive:
+
+.. code-block:: bash
+
+    mvn clean package
+
+Note that you will need java 8.
+The JAR file will be created in the /target folder:
+
+.. code-block:: bash
+
+    |-target
+    |---core-utils-lib-1.0.0-SNAPSHOT.jar
+    |---...
+
+
+How to Use
+----------
 
 This is a library and the most common way to use this library in particular is by including it in your `pom.xml` as a dependency:
 
@@ -48,11 +39,6 @@ This is a library and the most common way to use this library in particular is b
       <artifactId>core-utils-lib</artifactId>
       <version>X.Y.Z</version>
     </dependency>
-
-
-Features
---------
-
 
 Find QBiC services
 ------------------
@@ -70,7 +56,6 @@ Finding QBiC service instances from within an application is as easy as this:
     }
 
 
-
 .. code-block:: Java
 
     // Example in Java
@@ -82,9 +67,36 @@ Finding QBiC service instances from within an application is as easy as this:
     }
 
 
-Credits
+License
 -------
 
-This project was created with qube_.
+This work is licensed under the `MIT license <https://mit-license.org/>`_.
 
-.. _qube: https://github.com/qbicsoftware/qube
+**Note**: This work uses the `Micronaut Framework <https://github.com/micronaut-projects>`_ and derivatives from the Micronaut framework family, its which are licensed under `Apache 2.0 <https://www.apache.org/licenses/LICENSE-2.0>`_.
+
+
+.. |maven-build| image:: https://github.com/qbicsoftware/core-utils-lib/workflows/Build%20Maven%20Package/badge.svg
+    :target: https://github.com/qbicsoftware/core-utils-lib/actions/workflows/build_package.yml
+    :alt: Github Workflow Build Maven Package Status
+
+.. |maven-test| image:: https://github.com/qbicsoftware/core-utils-lib/workflows/Run%20Maven%20Tests/badge.svg
+    :target: https://github.com/qbicsoftware/core-utils-lib/actions/workflows/run_tests.yml
+    :alt: Github Workflow Tests Status
+
+.. |codeql| image:: https://github.com/qbicsoftware/core-utils-lib/workflows/CodeQL/badge.svg
+    :target: https://github.com/qbicsoftware/core-utils-lib/actions/workflows/codeql-analysis.yml
+    :alt: CodeQl Status
+
+.. |license| image:: https://img.shields.io/github/license/qbicsoftware/core-utils-lib
+    :target: https://github.com/qbicsoftware/core-utils-lib/blob/master/LICENSE
+    :alt: Project Licence
+
+.. |release| image:: https://img.shields.io/github/v/release/qbicsoftware/core-utils-lib.svg?include_prereleases
+    :target: https://github.com/qbicsoftware/core-utils-lib/releases
+    :alt: Release status
+
+.. |java| image:: https://img.shields.io/badge/language-java-blue.svg
+    :alt: Written in Java
+
+.. |groovy| image:: https://img.shields.io/badge/language-groovy-blue.svg
+    :alt: Written in Groovy

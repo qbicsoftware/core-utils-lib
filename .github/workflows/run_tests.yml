@@ -1,11 +1,15 @@
 name: Run Maven Tests
 
-on: 
+on:
   push:
-  workflow_dispatch:
+    branches:
+      - '*'
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ main, master ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
