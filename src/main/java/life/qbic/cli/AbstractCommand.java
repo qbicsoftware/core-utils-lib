@@ -1,11 +1,11 @@
 package life.qbic.cli;
 
+import groovyjarjarpicocli.CommandLine;
+import groovyjarjarpicocli.CommandLine.Option;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import life.qbic.exceptions.ApplicationException;
 import org.apache.commons.lang3.Validate;
-import picocli.CommandLine;
-import picocli.CommandLine.Option;
 
 /**
  * Abstract class that encapsulates all common command-line arguments using {@code picocli} annotations.
@@ -31,7 +31,7 @@ public abstract class AbstractCommand {
   public volatile boolean printHelp;
 
   /**
-   * Utility method to parse the given command-line arguments as a command using the {@link CommandLine#populateCommand(Object, String...)} method.
+   * Utility method to parse the given command-line arguments as a command using the {@link groovyjarjarpicocli.CommandLine#populateCommand(Object, String...)} method.
    *
    * @param commandClass the class of the desired command.
    * @param args the command-line arguments

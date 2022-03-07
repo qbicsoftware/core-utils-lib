@@ -1,7 +1,5 @@
 package life.qbic.utils
 
-import groovyjarjarcommonscli.MissingArgumentException
-import life.qbic.datamodel.datasets.imaging.ImageMetadata
 import org.everit.json.schema.ValidationException
 import spock.lang.Specification
 
