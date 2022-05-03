@@ -1,5 +1,7 @@
 package life.qbic.cli;
 
+import groovyjarjarpicocli.CommandLine;
+import groovyjarjarpicocli.CommandLine.MissingParameterException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -13,13 +15,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import picocli.CommandLine;
-import picocli.CommandLine.MissingParameterException;
 
 /**
  * Class that coordinates execution of generic command-line {@link QBiCTool}s.
- *
- * In order to be able to write "generic" code that can run "any" tool, we have decided to use the Strategy design pattern. This class represents the
+ * <p>
+ * In order to be able to write "generic" code that can run "any" tool, we have decided to use the
+ * Strategy design pattern. This class represents the
  * <i>Context</i> (i.e., command-line tools and services).
  */
 public class ToolExecutor {
@@ -34,15 +35,16 @@ public class ToolExecutor {
   /**
    * Invokes the given {@link QBiCTool}.
    *
-   * @param toolClass the class of the tool to invoke.
+   * @param toolClass    the class of the tool to invoke.
    * @param commandClass the class of the commands that the tool is able to understand.
-   * @param args the provided command-line arguments.
+   * @param args         the provided command-line arguments.
    */
-  public <T extends AbstractCommand> void invoke(final Class<? extends QBiCTool<T>> toolClass, final Class<T> commandClass, final String[] args) {
+  public <T extends AbstractCommand> void invoke(final Class<? extends QBiCTool<T>> toolClass,
+      final Class<T> commandClass, final String[] args) {
     final AbstractCommand command;
 
     try {
-       command = validateParametersAndParseCommandlineArguments(toolClass, commandClass, args);
+      command = validateParametersAndParseCommandlineArguments(toolClass, commandClass, args);
     } catch (MissingParameterException e) {
       LOG.error(e.getMessage());
       CommandLine.usage(AbstractCommand.createDummyCommand(commandClass), System.err);
@@ -57,14 +59,16 @@ public class ToolExecutor {
   }
 
   /**
-   * Validates that the passed parameters are not null and parses the given {@code args} as a command of the class {@code commandClass}.
+   * Validates that the passed parameters are not null and parses the given {@code args} as a
+   * command of the class {@code commandClass}.
    *
-   * @param toolClass the class of the tool that will be executed.
+   * @param toolClass    the class of the tool that will be executed.
    * @param commandClass the class of the commands that will be parsed.
-   * @param args the command-line arguments.
+   * @param args         the command-line arguments.
    * @return the parsed command.
    */
-  protected AbstractCommand validateParametersAndParseCommandlineArguments(final Class<?> toolClass, final Class<? extends AbstractCommand> commandClass,
+  protected AbstractCommand validateParametersAndParseCommandlineArguments(final Class<?> toolClass,
+      final Class<? extends AbstractCommand> commandClass,
       final String[] args) {
     Validate.notNull(toolClass, "toolClass is required and cannot be null");
     Validate.notNull(commandClass, "commandClass is required and cannot be null");
@@ -73,7 +77,8 @@ public class ToolExecutor {
     return AbstractCommand.parseArguments(commandClass, args);
   }
 
-  private Tool instantiateTool(final Class<? extends QBiCTool> toolClass, final AbstractCommand command) {
+  private Tool instantiateTool(final Class<? extends QBiCTool> toolClass,
+      final AbstractCommand command) {
     final Tool tool;
     final Constructor<? extends QBiCTool> constructor;
 
@@ -81,32 +86,40 @@ public class ToolExecutor {
       constructor = toolClass.getConstructor(command.getClass());
     } catch (final NoSuchMethodException e) {
       throw new ApplicationException(String
-          .format("Could not find a suitable public constructor for the given tool with class name %s. Check QBiCTool class' documentation.", toolClass),
+          .format(
+              "Could not find a suitable public constructor for the given tool with class name %s. Check QBiCTool class' documentation.",
+              toolClass),
           e);
     }
 
     try {
       tool = constructor.newInstance(command);
     } catch (final InstantiationException | IllegalAccessException | InvocationTargetException e) {
-      throw new ApplicationException(String.format("Could not create a new instance for the given tool with class name %s", toolClass), e);
+      throw new ApplicationException(
+          String.format("Could not create a new instance for the given tool with class name %s",
+              toolClass), e);
     }
 
     return tool;
   }
 
   /**
-   * Handles the standard {@ code --help} and {@code --version} parameters which all {@link QBiCTool} are able to handle.
+   * Handles the standard {@ code --help} and {@code --version} parameters which all {@link
+   * QBiCTool} are able to handle.
    *
    * @param toolMetadata the metadata of the tool.
-   * @param command the command.
-   * @return {@code true} if either help or version (or both!) were requested, {@code false} otherwise.
+   * @param command      the command.
+   * @return {@code true} if either help or version (or both!) were requested, {@code false}
+   * otherwise.
    */
-  protected boolean handleCommonParameters(final ToolMetadata toolMetadata, final AbstractCommand command) {
+  protected boolean handleCommonParameters(final ToolMetadata toolMetadata,
+      final AbstractCommand command) {
     // this is the only thing that is the same across all tools: --help and --version
     if (command.printVersion || command.printHelp) {
       if (command.printVersion) {
         LOG.debug("Version requested.");
-        LOG.info("{}, version {} ({})", toolMetadata.getToolName(), toolMetadata.getToolVersion(), toolMetadata.getToolRepoUrl());
+        LOG.info("{}, version {} ({})", toolMetadata.getToolName(), toolMetadata.getToolVersion(),
+            toolMetadata.getToolRepoUrl());
       }
       if (command.printHelp) {
         LOG.debug("Help requested.");
@@ -118,8 +131,9 @@ public class ToolExecutor {
   }
 
   /**
-   * Extracts tool name, version and repository URL from {@link #TOOL_PROPERTIES_PATH}. If the file does not exist, is corrupt or properties are missing, this
-   * method will only generate warnings in the log file and use the following default values:
+   * Extracts tool name, version and repository URL from {@link #TOOL_PROPERTIES_PATH}. If the file
+   * does not exist, is corrupt or properties are missing, this method will only generate warnings
+   * in the log file and use the following default values:
    * <ul>
    * <li>Default name if property {@code tool.name} is missing: {@link #DEFAULT_NAME}</li>
    * <li>Default version if property {@code tool.version} is missing: {@link #DEFAULT_VERSION}</li>
@@ -130,19 +144,23 @@ public class ToolExecutor {
    */
   protected ToolMetadata extractToolMetadata() {
     final Properties properties = new Properties();
-    try (final InputStream inputStream = ToolExecutor.class.getClassLoader().getResourceAsStream(TOOL_PROPERTIES_PATH)) {
+    try (final InputStream inputStream = ToolExecutor.class.getClassLoader()
+        .getResourceAsStream(TOOL_PROPERTIES_PATH)) {
       if (inputStream == null) {
-        LOG.warn("Missing tool descriptor file. Make sure the file {} is located in the classpath", TOOL_PROPERTIES_PATH);
+        LOG.warn("Missing tool descriptor file. Make sure the file {} is located in the classpath",
+            TOOL_PROPERTIES_PATH);
       } else {
         properties.load(inputStream);
       }
     } catch (final IOException e) {
       throw new ApplicationException(
-          "Could not load required file tool.properties. Make sure tool.properties can be found in the classpath and that it is properly formatted.", e);
+          "Could not load required file tool.properties. Make sure tool.properties can be found in the classpath and that it is properly formatted.",
+          e);
     }
     // optional properties
     final String toolVersion = extractAndWarnIfMissing(properties, "tool.version", DEFAULT_VERSION);
-    final String toolRepositoryUrl = extractAndWarnIfMissing(properties, "tool.repo.url", DEFAULT_REPO);
+    final String toolRepositoryUrl = extractAndWarnIfMissing(properties, "tool.repo.url",
+        DEFAULT_REPO);
     final String toolName = extractAndWarnIfMissing(properties, "tool.name", DEFAULT_NAME);
 
     return new ToolMetadata(toolName, toolVersion, toolRepositoryUrl);
@@ -174,7 +192,8 @@ public class ToolExecutor {
     // let the JVM handle exiting normally, the tool could be a daemon
   }
 
-  private void shutdownHook(final Tool tool, final Lock shutdownAccessLock, final AtomicBoolean cleanShutdown) {
+  private void shutdownHook(final Tool tool, final Lock shutdownAccessLock,
+      final AtomicBoolean cleanShutdown) {
     shutdownAccessLock.lock();
     try {
       if (!cleanShutdown.get()) {
@@ -199,10 +218,12 @@ public class ToolExecutor {
   }
 
 
-  private static String extractAndWarnIfMissing(final Properties properties, final String key, final String defaultValue) {
+  private static String extractAndWarnIfMissing(final Properties properties, final String key,
+      final String defaultValue) {
     String value = StringUtils.trimToEmpty(properties.getProperty(key));
     if (StringUtils.isBlank(value)) {
-      LOG.warn("Missing value in tool.properties file for property '{}', using default value '{}'", key, defaultValue);
+      LOG.warn("Missing value in tool.properties file for property '{}', using default value '{}'",
+          key, defaultValue);
       value = defaultValue;
     }
     return value;
