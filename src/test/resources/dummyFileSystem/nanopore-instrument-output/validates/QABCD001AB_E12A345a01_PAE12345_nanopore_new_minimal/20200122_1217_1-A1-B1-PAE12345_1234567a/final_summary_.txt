@@ -1,0 +1,17 @@
+instrument=
+position=1-A3-D3
+flow_cell_id=flow_cell_from_summary
+sample_id=QNANO027AE_E19D023a01_200211
+protocol_group_id=
+protocol=sequencing/sequencing_PRO002_DNA:FLO-PRO002:SQK-LSK109-XL
+protocol_run_id=
+acquisition_run_id=
+started=
+acquisition_stopped=2020-02-14T08:39:54.688916+01:00
+processing_stopped=2020-02-14T08:39:58.804639+01:00
+basecalling_enabled=
+sequencing_summary_file=sequencing_summary_PAE24142_c6028297.txt
+fast5_files_in_final_dest=2189
+fast5_files_in_fallback=0
+fastq_files_in_final_dest=2189
+fastq_files_in_fallback=0
