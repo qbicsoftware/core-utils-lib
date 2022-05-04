@@ -38,7 +38,7 @@ class NanoporeParserSpec extends Specification {
     assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109-XL"
   }
 
-  def "parsing the alternative valid file structure with optional metadata missing returns an OxfordNanoporeExperiment Object"() {
+  def "parsing the alternative valid file structure with metadata missing returns an OxfordNanoporeExperiment Object"() {
     given:
     def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345_nanopore_new_minimal")
     when:
@@ -47,7 +47,7 @@ class NanoporeParserSpec extends Specification {
     assert experiment instanceof OxfordNanoporeExperiment
     // Check that the metadata from the report file is parsed
     assert experiment.getMeasurements().get(0).getFlowCellType() == "FLO-PRO002"
-    // Check that the metadata from the summary file has been retrieved, but optional data can be empty
+    // Check that the metadata from the summary file has been retrieved, but data can also be empty
     assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109-XL"
     assert experiment.getMeasurements().get(0).getFlowcellId() == "flow_cell_from_summary"
     assert experiment.getMeasurements().get(0).getAsicTemp() == ""
