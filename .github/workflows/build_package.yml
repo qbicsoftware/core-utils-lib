@@ -1,6 +1,12 @@
 name: Build Maven Package
 
-on: [push]
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ main, master ]
 
 jobs:
   package:
@@ -20,4 +26,4 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Run mvn package
-        run: mvn clean -B package --file pom.xml
+        run: mvn -B package --file pom.xml
