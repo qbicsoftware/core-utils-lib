@@ -160,14 +160,16 @@ class NanoporeParser {
         // Step 1: load schema
         JSONObject jsonObject = new JSONObject(json)
         try {
-            Schema jsonSchema = loadSchemaFromStream(OxfordNanoporeInstrumentOutput.getSchemaAsStream())
             // Step 2: validate against schema return if valid, throw exception if invalid
-            jsonSchema.validate(jsonObject)
+            validateUsingSchema(OxfordNanoporeInstrumentOutput.getSchemaAsStream(), jsonObject)
         } catch (ValidationException validationException) {
-            // Step 2.5: validate against second schema type
-            Schema jsonSchema2 = loadSchemaFromStream(OxfordNanoporeInstrumentOutputV2.getSchemaAsStream())
-            jsonSchema2.validate(jsonObject)
+            validateUsingSchema(OxfordNanoporeInstrumentOutputV2.getSchemaAsStream(), jsonObject)
         }
+    }
+
+    private static void validateUsingSchema(InputStream schemaAsStream, JSONObject jsonObject) throws ValidationException {
+        Schema jsonSchema = loadSchemaFromStream(schemaAsStream)
+        jsonSchema.validate(jsonObject)
     }
 
     private static Schema loadSchemaFromStream(InputStream stream) {
