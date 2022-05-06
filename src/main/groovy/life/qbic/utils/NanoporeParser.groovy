@@ -3,6 +3,7 @@ package life.qbic.utils
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutput
+import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV2
 import org.everit.json.schema.Schema
 import org.everit.json.schema.ValidationException
 import org.everit.json.schema.loader.SchemaLoader
@@ -38,7 +39,7 @@ class NanoporeParser {
         } catch (ValidationException validationException) {
             // we have to fetch all validation exceptions
             def causes = validationException.getAllMessages().collect{ it }.join("\n")
-            throw validationException
+            throw new ValidationException(causes)
         }
     }
 
@@ -87,12 +88,13 @@ class NanoporeParser {
                 jsonEnded = true
             }
         }
-        def finalMetaData = (Map) jsonSlurper.parseText(buffer.toString())
 
+        def finalMetaData = (Map) jsonSlurper.parseText(buffer.toString())
         new File(Paths.get(root.toString(), summaryFile["path"].toString()) as String)
                 .readLines().each { line ->
             def split = line.split("=")
-            finalMetaData[split[0]] = split[1]
+            def value = split.size() > 1 ? split[1] : ""
+            finalMetaData[split[0]] = value
         }
 
         return finalMetaData
@@ -155,13 +157,24 @@ class NanoporeParser {
      * @throws org.everit.json.schema.ValidationException
      */
     private static void validateJson(String json) throws ValidationException {
-        // Step1: load schema
+        // Step 1: load schema
         JSONObject jsonObject = new JSONObject(json)
-        InputStream schemaStream = OxfordNanoporeInstrumentOutput.getSchemaAsStream()
-        JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream))
-        Schema jsonSchema = SchemaLoader.load(rawSchema)
-        // Step2: validate against schema return if valid, throw exception if invalid
+        try {
+            // Step 2: validate against schema return if valid, throw exception if invalid
+            validateUsingSchema(OxfordNanoporeInstrumentOutput.getSchemaAsStream(), jsonObject)
+        } catch (ValidationException validationException) {
+            validateUsingSchema(OxfordNanoporeInstrumentOutputV2.getSchemaAsStream(), jsonObject)
+        }
+    }
+
+    private static void validateUsingSchema(InputStream schemaAsStream, JSONObject jsonObject) throws ValidationException {
+        Schema jsonSchema = loadSchemaFromStream(schemaAsStream)
         jsonSchema.validate(jsonObject)
+    }
+
+    private static Schema loadSchemaFromStream(InputStream stream) {
+        JSONObject rawSchema = new JSONObject(new JSONTokener(stream))
+        return SchemaLoader.load(rawSchema)
     }
 
     /*
