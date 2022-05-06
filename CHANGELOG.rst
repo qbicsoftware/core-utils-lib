@@ -4,16 +4,7 @@ Changelog
 
 This project adheres to `Semantic Versioning <https://semver.org/>`_.
 
-1.11.0-SNAPSHOT (2022-01-07)
-----------------------------
-
-**Added**
-
-**Fixed**
-
-**Dependencies**
-
-**Deprecated**
+For information about newer versions please refer to `our GitHub releases <https://github.com/qbicsoftware/core-utils-lib/releases>`_
 
 1.10.4 (2022-01-04)
 ------------------
