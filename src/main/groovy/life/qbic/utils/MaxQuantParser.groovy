@@ -85,8 +85,6 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
             MaxQuantRunResult maxQuantRunResult = MaxQuantRunResult.createFrom(fileTreeMap)
             return maxQuantRunResult
         } catch (ValidationException validationException) {
-            println root
-            println validationException.getAllMessages()
             throw new DatasetValidationException(validationException)
         } catch(Exception e) {
             throw new DataParserException(e.message, e.cause)
@@ -120,16 +118,14 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         rootChildren.each { currentChild ->
             if (currentChild.containsKey("children")) {
                 //folder
-                parseCombinedInformation(map)
+                parseSubfolderInformation(map)
             } else if (currentChild.containsKey("fileType")) {
                 //file
-                switch (currentChild.get("name")) {
-                    case "mqpar.xml":
-                        insertAsProperty(map, currentChild, RequiredRootFileKeys.RUN_PARAMETERS.getKeyName())
-                        break
-                    case "sample_ids.txt":
-                        insertAsProperty(map, currentChild, RequiredRootFileKeys.SAMPLE_ID.getKeyName())
-                        break
+                String name = currentChild.get("name")
+                if(name.equals("mqpar.xml")) {
+                    insertAsProperty(map, currentChild, RequiredRootFileKeys.RUN_PARAMETERS.getKeyName())
+                } else if(name.endsWith("sample_ids.txt")) {
+                    insertAsProperty(map, currentChild, RequiredRootFileKeys.SAMPLE_ID.getKeyName())
                 }
             }
         }
@@ -139,12 +135,12 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
      * Method which adapts the parsed content of the txt directory in place to the expected file structure.
      * @see {<a href="https://github.com/qbicsoftware/data-model-lib/blob/master/src/test/resources/examples/resultset/maxquant/valid-resultset-example.json">valid datastructure example</a>}
      *
-     * After parsing the files of the txt directory are contained in the children property of the combined directory, which itself is contained in the root directory.
+     * After parsing the files of the txt directory and a potential intermediate directory, which itself is contained in the root directory.
      * The underlying datastructure however expects a mapping of the expected files as a Map entry in the root directory.
      * @param maxQuantInformation a nested map representing the parsed fileTree structure
      * @since 1.9.0
      */
-    private static void parseCombinedInformation(Map maxQuantInformation) {
+    private static void parseSubfolderInformation(Map maxQuantInformation) {
         List<Map> rootFolderInformation = maxQuantInformation.get("children") as List<Map>
         def combinedFolderInformation
         def txtFolderInformation
@@ -152,6 +148,9 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         rootFolderInformation.findAll { map ->
             if (map.get("name") == "combined") {
                 combinedFolderInformation = map.get("children")
+            }
+            if (map.get("name") == "txt") {
+                txtFolderInformation = map.get("children")  as List<Map>
             }
         }
         if (combinedFolderInformation) {
@@ -228,11 +227,9 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
      */
     private static void validateJson(String json) throws ValidationException {
         // Step1: load schema
-        println json
         JSONObject jsonObject = new JSONObject(json)
         InputStream schemaStream = MaxQuantOutput.getSchemaAsStream()
         JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream))
-        println rawSchema
         SchemaLoader jsonSchemaLoader = SchemaLoader.builder()
                 .schemaClient(SchemaClient.classPathAwareClient())
                 .schemaJson(rawSchema)
