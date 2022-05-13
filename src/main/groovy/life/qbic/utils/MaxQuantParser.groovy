@@ -85,6 +85,8 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
             MaxQuantRunResult maxQuantRunResult = MaxQuantRunResult.createFrom(fileTreeMap)
             return maxQuantRunResult
         } catch (ValidationException validationException) {
+            println root
+            println validationException.getAllMessages()
             throw new DatasetValidationException(validationException)
         } catch(Exception e) {
             throw new DataParserException(e.message, e.cause)
@@ -226,9 +228,11 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
      */
     private static void validateJson(String json) throws ValidationException {
         // Step1: load schema
+        println json
         JSONObject jsonObject = new JSONObject(json)
         InputStream schemaStream = MaxQuantOutput.getSchemaAsStream()
         JSONObject rawSchema = new JSONObject(new JSONTokener(schemaStream))
+        println rawSchema
         SchemaLoader jsonSchemaLoader = SchemaLoader.builder()
                 .schemaClient(SchemaClient.classPathAwareClient())
                 .schemaJson(rawSchema)

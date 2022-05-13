@@ -32,35 +32,29 @@ class MaxQuantParserSpec extends Specification {
         assert maxQuantRunResult.runParameters.getRelativePath() == "./mqpar.xml"
         assert maxQuantRunResult.runParameters.getName()== "mqpar.xml"
 
-        assert maxQuantRunResult.sampleIds.getRelativePath() == "./sample_ids.txt"
-        assert maxQuantRunResult.sampleIds.getName()== "sample_ids.txt"
+        assert maxQuantRunResult.sampleIds.getRelativePath() == "./QABCD_sample_ids.txt"
+        assert maxQuantRunResult.sampleIds.getName()== "QABCD_sample_ids.txt"
 
-        //Files in ./combined/txt/ can be parsed
-        assert maxQuantRunResult.allPeptides.getRelativePath() == "./combined/txt/allPeptides.txt"
+        //Files in ./txt/ can be parsed
+        assert maxQuantRunResult.allPeptides.getRelativePath() == "./txt/allPeptides.txt"
         assert maxQuantRunResult.allPeptides.getName()== "allPeptides.txt"
 
-        assert maxQuantRunResult.evidence.getRelativePath() == "./combined/txt/evidence.txt"
+        assert maxQuantRunResult.evidence.getRelativePath() == "./txt/evidence.txt"
         assert maxQuantRunResult.evidence.getName()== "evidence.txt"
 
-        assert maxQuantRunResult.experimentalDesignTemplate.getRelativePath() == "./combined/txt/experimentalDesignTemplate.txt"
-        assert maxQuantRunResult.experimentalDesignTemplate.getName()== "experimentalDesignTemplate.txt"
-
-        assert maxQuantRunResult.parameters.getRelativePath() == "./combined/txt/parameters.txt"
+        assert maxQuantRunResult.parameters.getRelativePath() == "./txt/parameters.txt"
         assert maxQuantRunResult.parameters.getName()== "parameters.txt"
 
-        assert maxQuantRunResult.peptides.getRelativePath() == "./combined/txt/peptides.txt"
+        assert maxQuantRunResult.peptides.getRelativePath() == "./txt/peptides.txt"
         assert maxQuantRunResult.peptides.getName()== "peptides.txt"
 
-        assert maxQuantRunResult.proteinGroups.getRelativePath() == "./combined/txt/proteinGroups.txt"
+        assert maxQuantRunResult.proteinGroups.getRelativePath() == "./txt/proteinGroups.txt"
         assert maxQuantRunResult.proteinGroups.getName()== "proteinGroups.txt"
-
-        assert maxQuantRunResult.summary.getRelativePath() == "./combined/txt/summary/summary_1234.pdf"
-        assert maxQuantRunResult.summary.getName()== "summary_1234.pdf"
     }
 
     def "parsing an invalid file structure throws DatasetValidationException"() {
         given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_combined_directory")
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_txt_directory")
         when:
         maxQuantParser.parseFrom(pathToDirectory)
         then:
