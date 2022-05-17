@@ -118,7 +118,7 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         rootChildren.each { currentChild ->
             if (currentChild.containsKey("children")) {
                 //folder
-                parseSubfolderInformation(map)
+                parseTxtFolder(map)
             } else if (currentChild.containsKey("fileType")) {
                 //file
                 String name = currentChild.get("name")
