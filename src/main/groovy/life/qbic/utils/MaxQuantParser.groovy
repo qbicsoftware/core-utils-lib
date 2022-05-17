@@ -135,29 +135,17 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
      * Method which adapts the parsed content of the txt directory in place to the expected file structure.
      * @see {<a href="https://github.com/qbicsoftware/data-model-lib/blob/master/src/test/resources/examples/resultset/maxquant/valid-resultset-example.json">valid datastructure example</a>}
      *
-     * After parsing the files of the txt directory and a potential intermediate directory, which itself is contained in the root directory.
+     * After parsing, the files of the txt directory are contained in the children property of the root directory.
      * The underlying datastructure however expects a mapping of the expected files as a Map entry in the root directory.
      * @param maxQuantInformation a nested map representing the parsed fileTree structure
      * @since 1.9.0
      */
-    private static void parseSubfolderInformation(Map maxQuantInformation) {
+    private static void parseTxtFolder(Map maxQuantInformation) {
         List<Map> rootFolderInformation = maxQuantInformation.get("children") as List<Map>
-        def combinedFolderInformation
         def txtFolderInformation
-        def summaryFolderInformation
         rootFolderInformation.findAll { map ->
-            if (map.get("name") == "combined") {
-                combinedFolderInformation = map.get("children")
-            }
             if (map.get("name") == "txt") {
                 txtFolderInformation = map.get("children")  as List<Map>
-            }
-        }
-        if (combinedFolderInformation) {
-            combinedFolderInformation.findAll { map ->
-                if (map.get("name") == "txt") {
-                    txtFolderInformation = map.get("children")  as List<Map>
-                }
             }
         }
         if (txtFolderInformation) {
@@ -182,18 +170,10 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
                         insertAsProperty(maxQuantInformation, child, RequiredTxtFileKeys.PROTEIN_GROUPS.getKeyName())
                         break
                     default:
-                        if(child.get("name") == "summary") summaryFolderInformation = child.get("children") as List<Map>
                         //ignoring other children
                         break
                     }
                 }
-        }
-        if(summaryFolderInformation){
-            summaryFolderInformation.each{ Map child ->
-                if (child.get("name").toString().matches("summary_[0-9]{4}.*")) {
-                    insertAsProperty(maxQuantInformation, child, RequiredTxtFileKeys.SUMMARY.getKeyName())
-                }
-            }
         }
     }
 
