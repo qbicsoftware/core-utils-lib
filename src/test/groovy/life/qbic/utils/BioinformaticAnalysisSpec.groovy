@@ -2,7 +2,6 @@ package life.qbic.utils
 
 import life.qbic.datamodel.datasets.NfCorePipelineResult
 import life.qbic.datamodel.datasets.datastructure.files.nfcore.ExecutionReport
-import life.qbic.datamodel.datasets.datastructure.files.nfcore.PipelineReport
 import life.qbic.datamodel.datasets.datastructure.files.nfcore.SoftwareVersions
 import life.qbic.datamodel.datasets.datastructure.folders.DataFolder
 import life.qbic.datamodel.datasets.datastructure.folders.nfcore.PipelineInformationFolder
@@ -57,16 +56,12 @@ class BioinformaticAnalysisSpec extends Specification {
         //Files in Root folders can be parsed
 
         SoftwareVersions softwareVersions = pipelineInfo.getSoftwareVersions()
-        assert softwareVersions.getRelativePath() == "./pipeline_info/software_versions.csv"
-        assert softwareVersions.getName() == "software_versions.csv"
-
-        PipelineReport pipelineReport = pipelineInfo.getPipelineReport()
-        assert pipelineReport.getRelativePath() == "./pipeline_info/pipeline_report.txt"
-        assert pipelineReport.getName() == "pipeline_report.txt"
+        assert softwareVersions.getRelativePath() == "./pipeline_info/software_versions.yml"
+        assert softwareVersions.getName() == "software_versions.yml"
 
         ExecutionReport executionReport = pipelineInfo.getExecutionReport()
-        assert executionReport.getRelativePath() == "./pipeline_info/execution_report.txt"
-        assert executionReport.getName() == "execution_report.txt"
+        assert executionReport.getRelativePath() == "./pipeline_info/execution_report.html"
+        assert executionReport.getName() == "execution_report.html"
 
 
     }
@@ -109,7 +104,7 @@ class BioinformaticAnalysisSpec extends Specification {
 
     def "parsing a file throws a DataParserException"() {
         given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/pipeline_info/execution_report.txt")
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/pipeline_info/execution_report.html")
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:

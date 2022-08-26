@@ -81,7 +81,6 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
     enum RequiredPipelineFileKeys {
         SOFTWARE_VERSIONS("softwareVersions"),
         EXECUTION_REPORT("executionReport"),
-        PIPELINE_REPORT("pipelineReport")
 
         private String keyName
 
@@ -184,19 +183,14 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
      *     "path": "./pipeline_info",
      *     "children": [],
      *     "softwareVersions": {
-     *       "name": "software_versions.csv",
-     *       "fileType": "csv",
-     *       "path": "./pipeline_info/software_versions.csv"
+     *       "name": "software_versions.yml",
+     *       "fileType": "yml",
+     *       "path": "./pipeline_info/software_versions.yml"
      *     },
-     *     "pipelineReport": {
-     *       "name": "pipeline_report.txt",
-     *       "fileType": "txt",
-     *       "path": "./pipeline_info/pipeline_report.txt"*
-     *       },
      *     "executionReport": {
-     *       "name": "execution_report.txt",
-     *       "fileType": "txt",
-     *       "path": "./pipeline_info/execution_report.txt"
+     *       "name": "execution_report.html",
+     *       "fileType": "html",
+     *       "path": "./pipeline_info/execution_report.html"
      *     }
      *   }
      * @param pipelineInformation the folder containing the pipeline information
@@ -207,14 +201,11 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
 
         pipelineInformation.get("children").each { Map child ->
             switch (child.get("name")) {
-                case "software_versions.csv":
+                case "software_versions.yml":
                     insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.SOFTWARE_VERSIONS.getKeyName())
                     break
-                case "execution_report.txt":
+                case "execution_report.html":
                     insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.EXECUTION_REPORT.getKeyName())
-                    break
-                case "pipeline_report.txt":
-                    insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.PIPELINE_REPORT.getKeyName())
                     break
                 default:
                     //ignoring other children
