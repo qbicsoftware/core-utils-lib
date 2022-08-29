@@ -60,8 +60,8 @@ class BioinformaticAnalysisSpec extends Specification {
         assert softwareVersions.getName() == "software_versions.yml"
 
         ExecutionReport executionReport = pipelineInfo.getExecutionReport()
-        assert executionReport.getRelativePath() == "./pipeline_info/execution_report.html"
-        assert executionReport.getName() == "execution_report.html"
+        assert executionReport.getRelativePath() == "./pipeline_info/execution_report_1234-56-78_90-12-34.html"
+        assert executionReport.getName() == "execution_report_1234-56-78_90-12-34.html"
 
 
     }
@@ -104,7 +104,7 @@ class BioinformaticAnalysisSpec extends Specification {
 
     def "parsing a file throws a DataParserException"() {
         given:
-        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/pipeline_info/execution_report.html")
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/pipeline_info/execution_report_1234-56-78_90-12-34.html")
         when:
         bioinformaticAnalysisParser.parseFrom(pathToDirectory)
         then:

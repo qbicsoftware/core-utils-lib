@@ -200,16 +200,12 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
     private static void parsePipelineInformation(Map pipelineInformation) {
 
         pipelineInformation.get("children").each { Map child ->
-            switch (child.get("name")) {
-                case "software_versions.yml":
-                    insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.SOFTWARE_VERSIONS.getKeyName())
-                    break
-                case "execution_report.html":
-                    insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.EXECUTION_REPORT.getKeyName())
-                    break
-                default:
-                    //ignoring other children
-                    break
+            String filename = child.get("name")
+            if(filename.equals("software_versions.yml")){
+                insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.SOFTWARE_VERSIONS.getKeyName())
+            }
+            else if(filename.matches("^execution_report.*")) {
+                insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.EXECUTION_REPORT.getKeyName())
             }
         }
     }
