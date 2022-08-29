@@ -377,8 +377,4 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
         }
 
     }
-
-
-
-
 }
