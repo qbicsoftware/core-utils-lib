@@ -18,8 +18,10 @@ import life.qbic.datamodel.datasets.OxfordNanoporeExperiment
 
 class NanoporeParser {
 
+    private static Set<File> hiddenFiles = new HashSet<>()
     /**
-     * Generates a map representing the folder structure
+     * Generates a map representing the folder structure, if it is a correct structure
+     * Deletes any hidden files, if the structure fits one of the Nanopore models
      * @param directory path of directory whose fileTree should be converted into map
      */
     static OxfordNanoporeExperiment parseFileStructure(Path directory) {
@@ -35,6 +37,10 @@ class NanoporeParser {
             def finalMap = parseMetaData(convertedDirectory, directory)
             // Step5: Create the final OxfordNanoporeExperiment from the map
             OxfordNanoporeExperiment convertedExperiment = OxfordNanoporeExperiment.create(finalMap)
+            // Step6: This is a valid experiment, we can now delete the hidden files
+            for (File hiddenFile : hiddenFiles) {
+                hiddenFile.delete();
+            }
             return convertedExperiment
         } catch (ValidationException validationException) {
             // we have to fetch all validation exceptions
@@ -214,6 +220,8 @@ class NanoporeParser {
 
         /**
          * Convert a directory structure to a map, following the Nanopore schema.
+         * Ignores hidden files in the structure and adds them to a global set to be
+         * dealt with later.
          * @param a path to the current location in recursion
          * @return a map representing a directory with name, path and children as keys
          */
@@ -230,7 +238,11 @@ class NanoporeParser {
             }.collect {
                 file ->
                     if (file.isFile()) {
-                        convertFile(file.toPath())
+                        if (file.isHidden()) {
+                            hiddenFiles.add(file)
+                        } else {
+                            convertFile(file.toPath())
+                        }
                     } else if (file.isDirectory()) {
                         convertDirectory(file.toPath())
                     }
