@@ -16,6 +16,8 @@ import java.nio.file.Paths
 import java.text.ParseException
 import life.qbic.datamodel.datasets.OxfordNanoporeExperiment
 
+import java.util.stream.Collectors
+
 class NanoporeParser {
 
     private static Set<File> hiddenFiles = new HashSet<>()
@@ -39,7 +41,7 @@ class NanoporeParser {
             OxfordNanoporeExperiment convertedExperiment = OxfordNanoporeExperiment.create(finalMap)
             // Step6: This is a valid experiment, we can now delete the hidden files
             for (File hiddenFile : hiddenFiles) {
-                hiddenFile.delete();
+                deleteFile(hiddenFile)
             }
             return convertedExperiment
         } catch (ValidationException validationException) {
@@ -47,6 +49,15 @@ class NanoporeParser {
             def causes = validationException.getAllMessages().collect{ it }.join("\n")
             throw new ValidationException(causes)
         }
+    }
+
+    private static void deleteFile(File file) {
+        if(file.isDirectory()) {
+            for(File child : file.listFiles()) {
+                deleteFile(child)
+            }
+        }
+        file.delete()
     }
 
     /**
@@ -232,26 +243,33 @@ class NanoporeParser {
             if (IGNORED_FOLDERNAMES.contains(name)) {
                 return null
             }
-            List children = currentDirectory.listFiles().findAll { file ->
+            List<File> children = currentDirectory.listFiles()
+
+            List<File> visibleChildren = children.stream()
+                    .filter(file -> !file.isHidden()).collect(Collectors.toList());
+
+            for (File file : children) {
+                if (!visibleChildren.contains(file)) {
+                    hiddenFiles.add(file);
+                }
+            }
+
+            visibleChildren = visibleChildren.findAll { file ->
                 String currentFolderName = file.getName()
                 return !IGNORED_FOLDERNAMES.contains(currentFolderName)
             }.collect {
                 file ->
-                    if (file.isFile()) {
-                        if (file.isHidden()) {
-                            hiddenFiles.add(file)
-                        } else {
+                        if (file.isFile()) {
                             convertFile(file.toPath())
+                        } else if (file.isDirectory()) {
+                            convertDirectory(file.toPath())
                         }
-                    } else if (file.isDirectory()) {
-                        convertDirectory(file.toPath())
-                    }
             }
 
             def convertedDirectory = [
                     "name"    : name,
                     "path"    : path,
-                    "children": children
+                    "children": visibleChildren
             ]
 
             return convertedDirectory
