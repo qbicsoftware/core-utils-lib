@@ -38,6 +38,19 @@ class NanoporeParserSpec extends Specification {
     assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109-XL"
   }
 
+  def "parsing the newest valid file structure returns an OxfordNanoporeExperiment Object"() {
+    given:
+    def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345_nanopore_v3")
+    when:
+    def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
+    then:
+    assert experiment instanceof OxfordNanoporeExperiment
+    // Check that the metadata from the report file has been retrieved
+    assert experiment.getMeasurements().get(0).getMachineHost() == "PCT0094"
+    // Check that the metadata from the summary file has been retrieved
+    assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109-XL"
+  }
+
   def "parsing the alternative valid file structure with metadata missing returns an OxfordNanoporeExperiment Object"() {
     given:
     def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345_nanopore_new_minimal")

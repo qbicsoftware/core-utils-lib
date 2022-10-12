@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutput
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV2
+import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV3
 import org.everit.json.schema.Schema
 import org.everit.json.schema.ValidationException
 import org.everit.json.schema.loader.SchemaLoader
@@ -180,7 +181,11 @@ class NanoporeParser {
             // Step 2: validate against schema return if valid, throw exception if invalid
             validateUsingSchema(OxfordNanoporeInstrumentOutput.getSchemaAsStream(), jsonObject)
         } catch (ValidationException validationException) {
-            validateUsingSchema(OxfordNanoporeInstrumentOutputV2.getSchemaAsStream(), jsonObject)
+            try {
+                validateUsingSchema(OxfordNanoporeInstrumentOutputV2.getSchemaAsStream(), jsonObject)
+            } catch (ValidationException validationExceptionV2) {
+                validateUsingSchema(OxfordNanoporeInstrumentOutputV3.getSchemaAsStream(), jsonObject)
+            }
         }
     }
 
