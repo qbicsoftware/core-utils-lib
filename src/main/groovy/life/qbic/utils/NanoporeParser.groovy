@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutput
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV2
+import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV3
 import org.everit.json.schema.Schema
 import org.everit.json.schema.ValidationException
 import org.everit.json.schema.loader.SchemaLoader
@@ -16,10 +17,14 @@ import java.nio.file.Paths
 import java.text.ParseException
 import life.qbic.datamodel.datasets.OxfordNanoporeExperiment
 
+import java.util.stream.Collectors
+
 class NanoporeParser {
 
+    private static Set<File> hiddenFiles = new HashSet<>()
     /**
-     * Generates a map representing the folder structure
+     * Generates a map representing the folder structure, if it is a correct structure
+     * Deletes any hidden files, if the structure fits one of the Nanopore models
      * @param directory path of directory whose fileTree should be converted into map
      */
     static OxfordNanoporeExperiment parseFileStructure(Path directory) {
@@ -35,12 +40,25 @@ class NanoporeParser {
             def finalMap = parseMetaData(convertedDirectory, directory)
             // Step5: Create the final OxfordNanoporeExperiment from the map
             OxfordNanoporeExperiment convertedExperiment = OxfordNanoporeExperiment.create(finalMap)
+            // Step6: This is a valid experiment, we can now delete the hidden files
+            for (File hiddenFile : hiddenFiles) {
+                deleteFile(hiddenFile)
+            }
             return convertedExperiment
         } catch (ValidationException validationException) {
             // we have to fetch all validation exceptions
             def causes = validationException.getAllMessages().collect{ it }.join("\n")
             throw new ValidationException(causes)
         }
+    }
+
+    private static void deleteFile(File file) {
+        if(file.isDirectory()) {
+            for(File child : file.listFiles()) {
+                deleteFile(child)
+            }
+        }
+        file.delete()
     }
 
     /**
@@ -163,7 +181,11 @@ class NanoporeParser {
             // Step 2: validate against schema return if valid, throw exception if invalid
             validateUsingSchema(OxfordNanoporeInstrumentOutput.getSchemaAsStream(), jsonObject)
         } catch (ValidationException validationException) {
-            validateUsingSchema(OxfordNanoporeInstrumentOutputV2.getSchemaAsStream(), jsonObject)
+            try {
+                validateUsingSchema(OxfordNanoporeInstrumentOutputV2.getSchemaAsStream(), jsonObject)
+            } catch (ValidationException validationExceptionV2) {
+                validateUsingSchema(OxfordNanoporeInstrumentOutputV3.getSchemaAsStream(), jsonObject)
+            }
         }
     }
 
@@ -214,6 +236,8 @@ class NanoporeParser {
 
         /**
          * Convert a directory structure to a map, following the Nanopore schema.
+         * Ignores hidden files in the structure and adds them to a global set to be
+         * dealt with later.
          * @param a path to the current location in recursion
          * @return a map representing a directory with name, path and children as keys
          */
@@ -224,22 +248,33 @@ class NanoporeParser {
             if (IGNORED_FOLDERNAMES.contains(name)) {
                 return null
             }
-            List children = currentDirectory.listFiles().findAll { file ->
+            List<File> children = currentDirectory.listFiles()
+
+            List<File> visibleChildren = children.stream()
+                    .filter(file -> !file.isHidden()).collect(Collectors.toList());
+
+            for (File file : children) {
+                if (!visibleChildren.contains(file)) {
+                    hiddenFiles.add(file);
+                }
+            }
+
+            visibleChildren = visibleChildren.findAll { file ->
                 String currentFolderName = file.getName()
                 return !IGNORED_FOLDERNAMES.contains(currentFolderName)
             }.collect {
                 file ->
-                    if (file.isFile()) {
-                        convertFile(file.toPath())
-                    } else if (file.isDirectory()) {
-                        convertDirectory(file.toPath())
-                    }
+                        if (file.isFile()) {
+                            convertFile(file.toPath())
+                        } else if (file.isDirectory()) {
+                            convertDirectory(file.toPath())
+                        }
             }
 
             def convertedDirectory = [
                     "name"    : name,
                     "path"    : path,
-                    "children": children
+                    "children": visibleChildren
             ]
 
             return convertedDirectory
