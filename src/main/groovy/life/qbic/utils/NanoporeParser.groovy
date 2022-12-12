@@ -5,8 +5,10 @@ import groovy.json.JsonSlurper
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutput
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV2
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV3
+import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV4
 import org.everit.json.schema.Schema
 import org.everit.json.schema.ValidationException
+import org.everit.json.schema.Validator
 import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONObject
 import org.json.JSONTokener
@@ -184,14 +186,21 @@ class NanoporeParser {
             try {
                 validateUsingSchema(OxfordNanoporeInstrumentOutputV2.getSchemaAsStream(), jsonObject)
             } catch (ValidationException validationExceptionV2) {
-                validateUsingSchema(OxfordNanoporeInstrumentOutputV3.getSchemaAsStream(), jsonObject)
+                try{
+                  validateUsingSchema(OxfordNanoporeInstrumentOutputV3.getSchemaAsStream(), jsonObject)
+                }
+                catch(ValidationException validationExceptionV3){
+                    validateUsingSchema(OxfordNanoporeInstrumentOutputV4.getSchemaAsStream(), jsonObject)
+                }
             }
         }
     }
 
     private static void validateUsingSchema(InputStream schemaAsStream, JSONObject jsonObject) throws ValidationException {
+        //Since we validate multiple schemas we want to fail as early as possible
+        Validator validator = Validator.builder().failEarly().build()
         Schema jsonSchema = loadSchemaFromStream(schemaAsStream)
-        jsonSchema.validate(jsonObject)
+        validator.performValidation(jsonSchema, jsonObject)
     }
 
     private static Schema loadSchemaFromStream(InputStream stream) {
