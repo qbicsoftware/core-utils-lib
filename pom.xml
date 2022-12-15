@@ -33,7 +33,7 @@
       <url>https://qbic-repo.qbic.uni-tuebingen.de/repository/maven-snapshots</url>
     </snapshotRepository>
   </distributionManagement>
-  <!-- we only need to tell maven where to find our parent pom and other QBiC dependencies -->
+  <!-- we only need to tell maven where to find our parent pom and other QBiC dependencies  -->
   <repositories>
     <repository>
       <releases>
