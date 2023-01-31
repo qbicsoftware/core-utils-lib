@@ -2,7 +2,9 @@ package life.qbic.utils
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
+import groovy.util.logging.Log4j2
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutput
+import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputMinimal
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV2
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV3
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV4
@@ -21,6 +23,7 @@ import life.qbic.datamodel.datasets.OxfordNanoporeExperiment
 
 import java.util.stream.Collectors
 
+@Log4j2
 class NanoporeParser {
 
     private static Set<File> hiddenFiles = new HashSet<>()
@@ -189,8 +192,14 @@ class NanoporeParser {
                 try{
                   validateUsingSchema(OxfordNanoporeInstrumentOutputV3.getSchemaAsStream(), jsonObject)
                 }
-                catch(ValidationException validationExceptionV3){
-                    validateUsingSchema(OxfordNanoporeInstrumentOutputV4.getSchemaAsStream(), jsonObject)
+                catch (ValidationException validationExceptionV3){
+                    try{
+                        validateUsingSchema(OxfordNanoporeInstrumentOutputV4.getSchemaAsStream(), jsonObject)
+                    }
+                    catch(ValidationException validationExceptionV4){
+                        log.warn("Checking if provided nanopore datastructure fits minimal requirements")
+                        validateUsingSchema(OxfordNanoporeInstrumentOutputMinimal.getSchemaAsStream(), jsonObject)
+                    }
                 }
             }
         }
@@ -198,7 +207,7 @@ class NanoporeParser {
 
     private static void validateUsingSchema(InputStream schemaAsStream, JSONObject jsonObject) throws ValidationException {
         //Since we validate multiple schemas we want to fail as early as possible
-        Validator validator = Validator.builder().failEarly().build()
+        Validator validator = Validator.builder().withListener(new QValidationListener()).failEarly().build()
         Schema jsonSchema = loadSchemaFromStream(schemaAsStream)
         validator.performValidation(jsonSchema, jsonObject)
     }
