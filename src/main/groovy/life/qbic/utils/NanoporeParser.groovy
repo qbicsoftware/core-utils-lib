@@ -189,16 +189,23 @@ class NanoporeParser {
             try {
                 validateUsingSchema(OxfordNanoporeInstrumentOutputV2.getSchemaAsStream(), jsonObject)
             } catch (ValidationException validationExceptionV2) {
-                try{
-                  validateUsingSchema(OxfordNanoporeInstrumentOutputV3.getSchemaAsStream(), jsonObject)
+                try {
+                    validateUsingSchema(OxfordNanoporeInstrumentOutputV3.getSchemaAsStream(), jsonObject)
                 }
-                catch (ValidationException validationExceptionV3){
-                    try{
+                catch (ValidationException validationExceptionV3) {
+                    try {
                         validateUsingSchema(OxfordNanoporeInstrumentOutputV4.getSchemaAsStream(), jsonObject)
                     }
-                    catch(ValidationException validationExceptionV4){
-                        log.warn("Checking if provided nanopore datastructure fits minimal requirements")
-                        validateUsingSchema(OxfordNanoporeInstrumentOutputMinimal.getSchemaAsStream(), jsonObject)
+                    catch (ValidationException validationExceptionV4) {
+                        try {
+                            validateUsingSchema(OxfordNanoporeInstrumentOutputMinimal.getSchemaAsStream(), jsonObject)
+                        } catch (ValidationException minimalValidException) {
+                            log.info("Schema ${validationException.getViolatedSchema().getId()} was violated at ${validationException.getAllMessages()}")
+                            log.info("Schema ${validationExceptionV2.getViolatedSchema().getId()} was violated at ${validationExceptionV2.getAllMessages()}")
+                            log.info("Schema ${validationExceptionV3.getViolatedSchema().getId()} was violated at ${validationExceptionV3.getAllMessages()}")
+                            log.info("Schema ${validationExceptionV4.getViolatedSchema().getId()} was violated at ${validationExceptionV4.getAllMessages()}")
+                            ValidationException.throwFor(minimalValidException.getViolatedSchema(), minimalValidException.getCausingExceptions())
+                        }
                     }
                 }
             }
@@ -207,7 +214,7 @@ class NanoporeParser {
 
     private static void validateUsingSchema(InputStream schemaAsStream, JSONObject jsonObject) throws ValidationException {
         //Since we validate multiple schemas we want to fail as early as possible
-        Validator validator = Validator.builder().withListener(new QValidationListener()).failEarly().build()
+        Validator validator = Validator.builder().failEarly().build()
         Schema jsonSchema = loadSchemaFromStream(schemaAsStream)
         validator.performValidation(jsonSchema, jsonObject)
     }
