@@ -3,17 +3,11 @@ package life.qbic.utils
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
-import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutput
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputMinimal
-import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV2
-import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV3
-import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputV4
-import org.everit.json.schema.Schema
-import org.everit.json.schema.ValidationException
-import org.everit.json.schema.Validator
-import org.everit.json.schema.loader.SchemaLoader
-import org.json.JSONObject
-import org.json.JSONTokener
+import net.jimblackler.jsonschemafriend.Schema
+import net.jimblackler.jsonschemafriend.SchemaStore
+import net.jimblackler.jsonschemafriend.ValidationException
+import net.jimblackler.jsonschemafriend.Validator
 
 import java.nio.file.NotDirectoryException
 import java.nio.file.Path
@@ -37,29 +31,25 @@ class NanoporeParser {
         Map convertedDirectory = DirectoryConverter.fileTreeToMap(directory)
 
         String json = mapToJson(convertedDirectory)
-        try {
-        // Step2: Validate created Json against schema 
-            validateJson(json)
-            //Step3: convert valid json to OxfordNanoporeExperiment Object
-            // Step4: Parse meta data out of report files and extend the map
-            def finalMap = parseMetaData(convertedDirectory, directory)
-            // Step5: Create the final OxfordNanoporeExperiment from the map
-            OxfordNanoporeExperiment convertedExperiment = OxfordNanoporeExperiment.create(finalMap)
-            // Step6: This is a valid experiment, we can now delete the hidden files
-            for (File hiddenFile : hiddenFiles) {
-                deleteFile(hiddenFile)
-            }
-            return convertedExperiment
-        } catch (ValidationException validationException) {
-            // we have to fetch all validation exceptions
-            def causes = validationException.getAllMessages().collect{ it }.join("\n")
-            throw new ValidationException(causes)
+        // Step2: Validate created Json against schema
+        validateJson(json)
+        //Step3: convert valid json to OxfordNanoporeExperiment Object
+        // Step4: Parse meta data out of report files and extend the map
+        def finalMap = parseMetaData(convertedDirectory, directory)
+        // Step5: Create the final OxfordNanoporeExperiment from the map
+        OxfordNanoporeExperiment convertedExperiment = OxfordNanoporeExperiment.create(finalMap)
+        // Step6: This is a valid experiment, we can now delete the hidden files
+        for (File hiddenFile : hiddenFiles) {
+            deleteFile(hiddenFile)
         }
+
+        return convertedExperiment
+
     }
 
     private static void deleteFile(File file) {
-        if(file.isDirectory()) {
-            for(File child : file.listFiles()) {
+        if (file.isDirectory()) {
+            for (File child : file.listFiles()) {
                 deleteFile(child)
             }
         }
@@ -105,6 +95,10 @@ class NanoporeParser {
                 jsonStarted = true
             }
             if (jsonStarted) {
+                def split = line.replaceAll("\\s+","").split(":")
+                if(split.size() == 2 && split[1].replaceAll('"',"").size() <= 1){
+                    log.info("Metadata value ${split[0]} missing in ${reportFile["path"]}")
+                }
                 buffer.append(line)
             }
             if (line.startsWith("}")) {
@@ -116,10 +110,14 @@ class NanoporeParser {
         new File(Paths.get(root.toString(), summaryFile["path"].toString()) as String)
                 .readLines().each { line ->
             def split = line.split("=")
-            def value = split.size() > 1 ? split[1] : ""
-            finalMetaData[split[0]] = value
+            if(split.size() > 1){
+                finalMetaData[split[0]] = split[1]
+            }
+            else {
+                log.info("Metadata value ${split[0]} missing in ${summaryFile["path"]}, defaulting to empty value")
+                finalMetaData[split[0]] =  ""
+            }
         }
-
         return finalMetaData
     }
 
@@ -176,52 +174,17 @@ class NanoporeParser {
     /**
      * Method which checks if a given Json String matches a given Json schema
      * @param json Json String which will be compared to schema
-     * @param  path to Json schema for validation of Json String
-     * @throws org.everit.json.schema.ValidationException
+     * @param path to Json schema for validation of Json String
+     * @throws net.jimblackler.jsonschemafriend.ValidationException
      */
     private static void validateJson(String json) throws ValidationException {
         // Step 1: load schema
-        JSONObject jsonObject = new JSONObject(json)
-        try {
-            // Step 2: validate against schema return if valid, throw exception if invalid
-            validateUsingSchema(OxfordNanoporeInstrumentOutput.getSchemaAsStream(), jsonObject)
-        } catch (ValidationException validationException) {
-            try {
-                validateUsingSchema(OxfordNanoporeInstrumentOutputV2.getSchemaAsStream(), jsonObject)
-            } catch (ValidationException validationExceptionV2) {
-                try {
-                    validateUsingSchema(OxfordNanoporeInstrumentOutputV3.getSchemaAsStream(), jsonObject)
-                }
-                catch (ValidationException validationExceptionV3) {
-                    try {
-                        validateUsingSchema(OxfordNanoporeInstrumentOutputV4.getSchemaAsStream(), jsonObject)
-                    }
-                    catch (ValidationException validationExceptionV4) {
-                        try {
-                            validateUsingSchema(OxfordNanoporeInstrumentOutputMinimal.getSchemaAsStream(), jsonObject)
-                        } catch (ValidationException minimalValidException) {
-                            log.info("Schema ${validationException.getViolatedSchema().getId()} was violated at ${validationException.getAllMessages()}")
-                            log.info("Schema ${validationExceptionV2.getViolatedSchema().getId()} was violated at ${validationExceptionV2.getAllMessages()}")
-                            log.info("Schema ${validationExceptionV3.getViolatedSchema().getId()} was violated at ${validationExceptionV3.getAllMessages()}")
-                            log.info("Schema ${validationExceptionV4.getViolatedSchema().getId()} was violated at ${validationExceptionV4.getAllMessages()}")
-                            ValidationException.throwFor(minimalValidException.getViolatedSchema(), minimalValidException.getCausingExceptions())
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private static void validateUsingSchema(InputStream schemaAsStream, JSONObject jsonObject) throws ValidationException {
-        //Since we validate multiple schemas we want to fail as early as possible
-        Validator validator = Validator.builder().failEarly().build()
-        Schema jsonSchema = loadSchemaFromStream(schemaAsStream)
-        validator.performValidation(jsonSchema, jsonObject)
-    }
-
-    private static Schema loadSchemaFromStream(InputStream stream) {
-        JSONObject rawSchema = new JSONObject(new JSONTokener(stream))
-        return SchemaLoader.load(rawSchema)
+        ObjectMapper objectMapper = new ObjectMapper()
+        Object jsonObject = objectMapper.readValue(json, Object)
+        SchemaStore schemaStore = new SchemaStore()
+        Schema schema = schemaStore.loadSchema(OxfordNanoporeInstrumentOutputMinimal.getSchemaAsStream())
+        Validator validator = new Validator()
+        validator.validate(schema, jsonObject)
     }
 
     /*
