@@ -1,7 +1,7 @@
 package life.qbic.utils
 
 import life.qbic.datamodel.datasets.OxfordNanoporeExperiment
-import org.everit.json.schema.ValidationException
+import net.jimblackler.jsonschemafriend.ValidationException
 import spock.lang.Specification
 
 import java.nio.file.NotDirectoryException
@@ -90,6 +90,41 @@ class NanoporeParserSpec extends Specification {
     assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109-XL"
   }
 
+  def "parsing a valid minimal file structure containing additional unknown files and folder still returns an OxfordNanoporeExperiment Object"() {
+    given:
+    def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345_nanopore_valid_minimal")
+    when:
+    def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
+    then:
+    assert experiment instanceof OxfordNanoporeExperiment
+    // Check that the metadata from the report file has been retrieved
+    assert experiment.getMeasurements().get(0).getMachineHost() == "PCT0094"
+    // Check that the metadata from the summary file has been retrieved
+    assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109-XL"
+  }
+
+  def "parsing a valid minimal pooled file structure containing additional unknown files and folder still returns an OxfordNanoporeExperiment Object"() {
+    given:
+    def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345_nanopore_valid_minimal_pooled")
+    when:
+    def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
+    then:
+    assert experiment instanceof OxfordNanoporeExperiment
+    // Check that the metadata from the report file has been retrieved
+    assert experiment.getMeasurements().get(0).getMachineHost() == "PCT0094"
+    // Check that the metadata from the summary file has been retrieved
+    assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109-XL"
+  }
+
+  def "parsing an invalid minimal file structure leads to a ValidationException"() {
+    given:
+    def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/QABCD001AB_E12A345a01_PAE12345_missing_minimal_information")
+    when:
+    def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
+    then:
+    thrown(ValidationException)
+  }
+
   def "parsing the alternative valid file structure with metadata missing returns an OxfordNanoporeExperiment Object"() {
     given:
     def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345_nanopore_new_minimal")
@@ -114,15 +149,6 @@ class NanoporeParserSpec extends Specification {
     def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
     then:
     assert experiment instanceof OxfordNanoporeExperiment
-  }
-
-  def "parsing an invalid file structure throws ValidationError"() {
-    given:
-    def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_entries/QABCD001AB_E12A345a01_PAE12345/20200122_1217_1-A1-B1-PAE12345_1234567a")
-    when:
-    NanoporeParser.parseFileStructure(pathToDirectory)
-    then:
-    thrown(ValidationException)
   }
 
   def "parsing a pooled file structure returns an OxfordNanoporeExperiment Object"() {
@@ -179,15 +205,15 @@ class NanoporeParserSpec extends Specification {
     thrown(NotDirectoryException)
   }
 
-  def "missing base caller information shall throw a ValidationException"() {
+  def "missing base caller information shall throw a Runtime Exception"() {
     given:
     def pathToDirectory = Paths.get(exampleDirectoriesRoot,
-        "fails/missing_metadata/20200605_1435_1-E3-H3_PAE42978")
+        "fails/QABCD001AB_E12A345a01_PAE12345_missing_metadata")
     when:
     def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
 
     then:
-    thrown(ValidationException)
+    thrown(RuntimeException)
 
   }
 }
