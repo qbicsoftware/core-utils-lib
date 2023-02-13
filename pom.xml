@@ -8,7 +8,7 @@
   <description>Collection of non-Vaadin, non-Liferay utilities.</description>
   <modelVersion>4.0.0</modelVersion>
   <name>Core Utilities Library</name>
-  <version>1.14.1</version>
+  <version>1.15.0</version>
   <url>https://github.com/qbicsoftware/core-utils-lib</url>
   <packaging>jar</packaging>
   <properties>
