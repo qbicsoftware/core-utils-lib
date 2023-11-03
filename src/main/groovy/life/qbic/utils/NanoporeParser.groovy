@@ -184,9 +184,11 @@ class NanoporeParser {
         SchemaStore schemaStore = new SchemaStore()
         Validator validator = new Validator()
         try {
+            //Validate against Fast5 Based Oxford Measurement
             Schema schema = schemaStore.loadSchema(OxfordNanoporeInstrumentOutputMinimal.getSchemaAsStream())
             validator.validate(schema, jsonObject)
         } catch (ValidationException ignored) {
+            //Validate against Pod5 Based Oxford Measurement
             Schema schema = schemaStore.loadSchema(OxfordNanoporeInstrumentOutputDoradoMinimal.getSchemaAsStream())
             validator.validate(schema, jsonObject)
         }
