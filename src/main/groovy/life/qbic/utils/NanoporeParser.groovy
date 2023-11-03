@@ -3,6 +3,7 @@ package life.qbic.utils
 import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonSlurper
 import groovy.util.logging.Log4j2
+import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputDoradoMinimal
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputMinimal
 import net.jimblackler.jsonschemafriend.Schema
 import net.jimblackler.jsonschemafriend.SchemaStore
@@ -14,7 +15,6 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.text.ParseException
 import life.qbic.datamodel.datasets.OxfordNanoporeExperiment
-
 import java.util.stream.Collectors
 
 @Log4j2
@@ -95,8 +95,8 @@ class NanoporeParser {
                 jsonStarted = true
             }
             if (jsonStarted) {
-                def split = line.replaceAll("\\s+","").split(":")
-                if(split.size() == 2 && split[1].replaceAll('"',"").size() <= 1){
+                def split = line.replaceAll("\\s+", "").split(":")
+                if (split.size() == 2 && split[1].replaceAll('"', "").size() <= 1) {
                     log.info("Metadata value ${split[0]} missing in ${reportFile["path"]}")
                 }
                 buffer.append(line)
@@ -110,12 +110,11 @@ class NanoporeParser {
         new File(Paths.get(root.toString(), summaryFile["path"].toString()) as String)
                 .readLines().each { line ->
             def split = line.split("=")
-            if(split.size() > 1){
+            if (split.size() > 1) {
                 finalMetaData[split[0]] = split[1]
-            }
-            else {
+            } else {
                 log.info("Metadata value ${split[0]} missing in ${summaryFile["path"]}, defaulting to empty value")
-                finalMetaData[split[0]] =  ""
+                finalMetaData[split[0]] = ""
             }
         }
         return finalMetaData
@@ -178,18 +177,27 @@ class NanoporeParser {
      * @throws net.jimblackler.jsonschemafriend.ValidationException
      */
     private static void validateJson(String json) throws ValidationException {
-        // Step 1: load schema
+        // Step 1: load json
         ObjectMapper objectMapper = new ObjectMapper()
         Object jsonObject = objectMapper.readValue(json, Object)
+
         SchemaStore schemaStore = new SchemaStore()
-        Schema schema = schemaStore.loadSchema(OxfordNanoporeInstrumentOutputMinimal.getSchemaAsStream())
         Validator validator = new Validator()
-        validator.validate(schema, jsonObject)
+        try {
+            //Validate against Fast5 Based Oxford Measurement
+            Schema schema = schemaStore.loadSchema(OxfordNanoporeInstrumentOutputMinimal.getSchemaAsStream())
+            validator.validate(schema, jsonObject)
+        } catch (ValidationException ignored) {
+            //Validate against Pod5 Based Oxford Measurement
+            Schema schema = schemaStore.loadSchema(OxfordNanoporeInstrumentOutputDoradoMinimal.getSchemaAsStream())
+            validator.validate(schema, jsonObject)
+        }
     }
 
     /*
      * Converts a file tree into a json object.
      */
+
     private static class DirectoryConverter {
         private static final PREDEFINED_EXTENSIONS = ["fastq.gz"]
         private static final IGNORED_FOLDERNAMES = ["qc"]
@@ -239,11 +247,11 @@ class NanoporeParser {
             List<File> children = currentDirectory.listFiles()
 
             List<File> visibleChildren = children.stream()
-                    .filter(file -> !file.isHidden()).collect(Collectors.toList());
+                    .filter(file -> !file.isHidden()).collect(Collectors.toList())
 
             for (File file : children) {
                 if (!visibleChildren.contains(file)) {
-                    hiddenFiles.add(file);
+                    hiddenFiles.add(file)
                 }
             }
 
@@ -252,11 +260,11 @@ class NanoporeParser {
                 return !IGNORED_FOLDERNAMES.contains(currentFolderName)
             }.collect {
                 file ->
-                        if (file.isFile()) {
-                            convertFile(file.toPath())
-                        } else if (file.isDirectory()) {
-                            convertDirectory(file.toPath())
-                        }
+                    if (file.isFile()) {
+                        convertFile(file.toPath())
+                    } else if (file.isDirectory()) {
+                        convertDirectory(file.toPath())
+                    }
             }
 
             def convertedDirectory = [
