@@ -87,7 +87,7 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         } catch (ValidationException validationException) {
             throw new DatasetValidationException(validationException)
         } catch(Exception e) {
-           throw new DataParserException(e.message, e.cause)
+            throw new DataParserException(e.message, e.cause)
         }
     }
 
