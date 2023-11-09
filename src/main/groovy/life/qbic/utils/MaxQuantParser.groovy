@@ -118,7 +118,7 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
         rootChildren.each { currentChild ->
             if (currentChild.containsKey("children")) {
                 //folder
-                parseTxtFolder(map)
+                parseSubFolders(map)
             } else if (currentChild.containsKey("fileType")) {
                 //file
                 String name = currentChild.get("name")
@@ -132,7 +132,7 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
     }
 
     /**
-     * Method which adapts the parsed content of the txt directory in place to the expected file structure.
+     * Method which adapts the parsed content of the txt directory in place to the expected file structure. This directory can be inside an optional 'combined' directory
      * @see {<a href="https://github.com/qbicsoftware/data-model-lib/blob/master/src/test/resources/examples/resultset/maxquant/valid-resultset-example.json">valid datastructure example</a>}
      *
      * After parsing, the files of the txt directory are contained in the children property of the root directory.
@@ -140,10 +140,18 @@ class MaxQuantParser implements DatasetParser<MaxQuantRunResult> {
      * @param maxQuantInformation a nested map representing the parsed fileTree structure
      * @since 1.9.0
      */
-    private static void parseTxtFolder(Map maxQuantInformation) {
+    private static void parseSubFolders(Map maxQuantInformation) {
         List<Map> rootFolderInformation = maxQuantInformation.get("children") as List<Map>
         def txtFolderInformation
         rootFolderInformation.findAll { map ->
+            if (map.get("name") == "combined") {
+                def combinedFolderInformation = map.get("children")  as List<Map>
+                combinedFolderInformation.findAll() { innerMap ->
+                    if (innerMap.get("name") == "txt") {
+                        txtFolderInformation = innerMap.get("children") as List<Map>
+                    }
+                }
+            }
             if (map.get("name") == "txt") {
                 txtFolderInformation = map.get("children")  as List<Map>
             }
