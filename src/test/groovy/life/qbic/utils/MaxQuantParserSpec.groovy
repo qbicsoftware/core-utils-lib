@@ -52,6 +52,39 @@ class MaxQuantParserSpec extends Specification {
         assert maxQuantRunResult.proteinGroups.getName()== "proteinGroups.txt"
     }
 
+    def "parsing the old file structure with combined folder returns a maxQuantRunResult object"() {
+        given: "A valid maxQuant run output data structure"
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates2")
+        when: "we parse this valid structure"
+        MaxQuantRunResult maxQuantRunResult = maxQuantParser.parseFrom(pathToDirectory)
+        then: "we expect no exception should be thrown"
+        //TODO remove print
+        println("#### Got $maxQuantRunResult for $pathToDirectory")
+        assert maxQuantRunResult instanceof MaxQuantRunResult
+        //Root files can be parsed
+        assert maxQuantRunResult.runParameters.getRelativePath() == "./mqpar.xml"
+        assert maxQuantRunResult.runParameters.getName()== "mqpar.xml"
+
+        assert maxQuantRunResult.sampleIds.getRelativePath() == "./QABCD_sample_ids.txt"
+        assert maxQuantRunResult.sampleIds.getName()== "QABCD_sample_ids.txt"
+
+        //Files in ./txt/ can be parsed
+        assert maxQuantRunResult.allPeptides.getRelativePath() == "./combined/txt/allPeptides.txt"
+        assert maxQuantRunResult.allPeptides.getName()== "allPeptides.txt"
+
+        assert maxQuantRunResult.evidence.getRelativePath() == "./combined/txt/evidence.txt"
+        assert maxQuantRunResult.evidence.getName()== "evidence.txt"
+
+        assert maxQuantRunResult.parameters.getRelativePath() == "./combined/txt/parameters.txt"
+        assert maxQuantRunResult.parameters.getName()== "parameters.txt"
+
+        assert maxQuantRunResult.peptides.getRelativePath() == "./combined/txt/peptides.txt"
+        assert maxQuantRunResult.peptides.getName()== "peptides.txt"
+
+        assert maxQuantRunResult.proteinGroups.getRelativePath() == "./combined/txt/proteinGroups.txt"
+        assert maxQuantRunResult.proteinGroups.getName()== "proteinGroups.txt"
+    }
+
     def "parsing an invalid file structure throws DatasetValidationException"() {
         given:
         def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/missing_txt_directory")
