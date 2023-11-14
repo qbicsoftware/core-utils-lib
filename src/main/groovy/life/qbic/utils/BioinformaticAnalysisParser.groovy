@@ -17,7 +17,6 @@ import java.nio.file.NotDirectoryException
 import java.nio.file.Path
 import java.text.ParseException
 
-
 /**
  * <h1>Parser storing the fileTree of a nf-core pipeline output directory into JSON format</h1>
  * <br>
@@ -27,7 +26,7 @@ import java.text.ParseException
  * @param directory path of nf-core directory whose fileTree should be converted into a JSON String
  *
  */
-class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>{
+class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult> {
 
     /**
      * Contains the associated keys of the required root directory subFolders
@@ -36,19 +35,28 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
      * @since 1.8.0
      */
     enum RequiredRootFolderKeys {
-        QUALITY_CONTROL("qualityControl"),
-        PIPELINE_INFORMATION("pipelineInformation"),
-        PROCESS_FOLDERS("processFolders")
+        QUALITY_CONTROL("qualityControl", "multiqc"),
+        PIPELINE_INFORMATION("pipelineInformation", "pipeline_info"),
+        //Process_Folder names can vary so no directory name can be assumed for now
+        PROCESS_FOLDERS("processFolders", null)
 
         private String keyName
 
-        RequiredRootFolderKeys(String keyName) {
+        private String folderName
+
+        RequiredRootFolderKeys(String keyName, String folderName) {
             this.keyName = keyName
+            this.folderName = folderName
         }
 
         String getKeyName() {
             return this.keyName
         }
+
+        String getFolderName() {
+            return this.folderName
+        }
+
     }
 
     /**
@@ -58,17 +66,23 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
      * @since 1.8.0
      */
     enum RequiredRootFileKeys {
-        RUN_ID("runId"),
-        SAMPLE_ID("sampleIds"),
+        RUN_ID("runId", "run_id.txt"),
+        SAMPLE_ID("sampleIds", "sample_ids.txt")
 
         private String keyName
+        private String fileName
 
-        RequiredRootFileKeys(String keyName) {
+        RequiredRootFileKeys(String keyName, String fileName) {
             this.keyName = keyName
+            this.fileName = fileName
         }
 
         String getKeyName() {
             return this.keyName
+        }
+
+        String getFileName() {
+            return this.fileName
         }
     }
 
@@ -79,19 +93,25 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
      * @since 1.8.0
      */
     enum RequiredPipelineFileKeys {
-        SOFTWARE_VERSIONS("softwareVersions"),
-        EXECUTION_REPORT("executionReport"),
+        SOFTWARE_VERSIONS("softwareVersions", "software_versions.yml"),
+        EXECUTION_REPORT("executionReport", "execution_report"),
 
         private String keyName
 
-        RequiredPipelineFileKeys(String keyName) {
+        private String fileName
+
+        RequiredPipelineFileKeys(String keyName, String fileName) {
             this.keyName = keyName
+            this.fileName = fileName
         }
 
         String getKeyName() {
             return this.keyName
         }
 
+        String getFileName() {
+            return this.fileName
+        }
     }
 
     /** {@InheritDoc} */
@@ -139,32 +159,23 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
         List<Map> processFolders = []
         rootChildren.each { currentChild ->
             if (currentChild.containsKey("children")) {
-                //folder
+                //directory
                 String folderName = currentChild.get("name")
-                switch (folderName) {
-                    case "multiqc":
-                        insertAsProperty(map, currentChild, RequiredRootFolderKeys.QUALITY_CONTROL.getKeyName())
-                        break
-                    case "pipeline_info":
+                RequiredRootFolderKeys requiredRootFolderKeys = RequiredRootFolderKeys.values().find { rootFolderKeys -> (rootFolderKeys.getFolderName() == folderName) }
+                if (requiredRootFolderKeys) {
+                    if (requiredRootFolderKeys == RequiredRootFolderKeys.PIPELINE_INFORMATION) {
                         parsePipelineInformation(currentChild)
-                        insertAsProperty(map, currentChild, RequiredRootFolderKeys.PIPELINE_INFORMATION.getKeyName())
-                        break
-                    default:
-                        processFolders.add(currentChild)
-                        break
+                    }
+                    insertAsProperty(map, currentChild, requiredRootFolderKeys.getKeyName())
+                } else {
+                    processFolders.add(currentChild)
                 }
             } else if (currentChild.containsKey("fileType")) {
                 //file
-                switch (currentChild.get("name")) {
-                    case "run_id.txt":
-                        insertAsProperty(map, currentChild, RequiredRootFileKeys.RUN_ID.getKeyName())
-                        break
-                    case "sample_ids.txt":
-                        insertAsProperty(map, currentChild, RequiredRootFileKeys.SAMPLE_ID.getKeyName())
-                        break
-                    default:
-                        //ignore other files
-                        break
+                String fileName = currentChild.get("name")
+                RequiredRootFileKeys requiredRootFileKeys = RequiredRootFileKeys.values().find { rootFileKeys -> (rootFileKeys.getFileName() == fileName) }
+                if (requiredRootFileKeys) {
+                    insertAsProperty(map, currentChild, requiredRootFileKeys.getKeyName())
                 }
             }
         }
@@ -200,12 +211,10 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
     private static void parsePipelineInformation(Map pipelineInformation) {
 
         pipelineInformation.get("children").each { Map child ->
-            String filename = child.get("name")
-            if(filename.equals("software_versions.yml")){
-                insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.SOFTWARE_VERSIONS.getKeyName())
-            }
-            else if(filename.matches("^execution_report.*")) {
-                insertAsProperty(pipelineInformation, child, RequiredPipelineFileKeys.EXECUTION_REPORT.getKeyName())
+            String fileName = child.get("name")
+            RequiredPipelineFileKeys requiredPipelineFileKeys = RequiredPipelineFileKeys.values().find { pipelineFileKeys -> (fileName.contains(pipelineFileKeys.fileName)) }
+            if (requiredPipelineFileKeys) {
+                insertAsProperty(pipelineInformation, child, requiredPipelineFileKeys.getKeyName())
             }
         }
     }
@@ -218,7 +227,7 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
      * @since 1.8.0
      */
     private static void insertAsProperty(Map parent, Object content, String propertyName) {
-        parent.put(propertyName,content)
+        parent.put(propertyName, content)
     }
 
     /**
@@ -236,7 +245,7 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
     /**
      * Method which checks if a given Json String matches a given Json schema
      * @param json Json String which will be compared to schema
-     * @param  path to Json schema for validation of Json String
+     * @param path to Json schema for validation of Json String
      * @throws org.everit.json.schema.ValidationException
      */
     private static void validateJson(String json) throws ValidationException {
@@ -258,6 +267,7 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
     /*
      * Converts a file tree into a json object.
      */
+
     private static class DirectoryConverter {
 
         /**
@@ -321,11 +331,11 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
 
         private static Map convertToRelativePaths(Map content, Path root) {
             //Since each value in the root map is a map we need to iterate over each key/value pair
-                content["path"] = toRelativePath(content["path"] as String, root)
-                if (content["children"]) {
-                    // Children always contains a map, so convert recursively
-                    content["children"] = (content["children"] as List).collect { convertToRelativePaths(it as Map, root) }
-                }
+            content["path"] = toRelativePath(content["path"] as String, root)
+            if (content["children"]) {
+                // Children always contains a map, so convert recursively
+                content["children"] = (content["children"] as List).collect { convertToRelativePaths(it as Map, root) }
+            }
             return content
 
         }
@@ -351,8 +361,8 @@ class BioinformaticAnalysisParser implements DatasetParser<NfCorePipelineResult>
 
 
             def convertedFile = [
-                    "name"     : name,
-                    "path"     : path,
+                    "name"    : name,
+                    "path"    : path,
                     "fileType": fileType
             ]
             return convertedFile
