@@ -42,9 +42,7 @@ class NanoporeParser {
         for (File hiddenFile : hiddenFiles) {
             deleteFile(hiddenFile)
         }
-
         return convertedExperiment
-
     }
 
     private static void deleteFile(File file) {

@@ -62,8 +62,45 @@ class BioinformaticAnalysisSpec extends Specification {
         ExecutionReport executionReport = pipelineInfo.getExecutionReport()
         assert executionReport.getRelativePath() == "./pipeline_info/execution_report_1234-56-78_90-12-34.html"
         assert executionReport.getName() == "execution_report_1234-56-78_90-12-34.html"
+    }
 
+    def "parsing a valid file structure without a run_id also returns a NfCorePipelineResult object"() {
+        given: "A valid nf-core pipeline output data structure"
+        def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates-no-run-id")
+        when: "we parse this valid structure"
+        NfCorePipelineResult nfCorePipelineResult = bioinformaticAnalysisParser.parseFrom(pathToDirectory)
+        then: "we expect no exception should be thrown"
+        assert nfCorePipelineResult instanceof NfCorePipelineResult
+        //Root files can be parsed
+        assert !nfCorePipelineResult.runId
+        assert !nfCorePipelineResult.runId
+        assert nfCorePipelineResult.sampleIds.getRelativePath() == "./sample_ids.txt"
+        assert nfCorePipelineResult.sampleIds.getName()== "sample_ids.txt"
+        //Root Folder can be parsed
+        QualityControlFolder multiQc = nfCorePipelineResult.getQualityControlFolder()
+        assert multiQc.getRelativePath() == "./multiqc"
+        assert multiQc.getName() == "multiqc"
+        assert multiQc instanceof DataFolder
 
+        PipelineInformationFolder pipelineInfo = nfCorePipelineResult.getPipelineInformation()
+        assert pipelineInfo.getRelativePath() == "./pipeline_info"
+        assert pipelineInfo.getName() == "pipeline_info"
+        assert pipelineInfo instanceof DataFolder
+
+        List<DataFolder> processFolders = nfCorePipelineResult.getProcessFolders()
+        assert processFolders[0].getRelativePath()== "./salmon"
+        assert processFolders[0].getName() == "salmon"
+        assert processFolders[0] instanceof DataFolder
+
+        //Files in Root folders can be parsed
+
+        SoftwareVersions softwareVersions = pipelineInfo.getSoftwareVersions()
+        assert softwareVersions.getRelativePath() == "./pipeline_info/software_versions.yml"
+        assert softwareVersions.getName() == "software_versions.yml"
+
+        ExecutionReport executionReport = pipelineInfo.getExecutionReport()
+        assert executionReport.getRelativePath() == "./pipeline_info/execution_report_1234-56-78_90-12-34.html"
+        assert executionReport.getName() == "execution_report_1234-56-78_90-12-34.html"
     }
 
     def "parsing an invalid file structure throws DatasetValidationException"() {
