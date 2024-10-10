@@ -7,6 +7,7 @@ import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputDoradoMinim
 import life.qbic.datamodel.instruments.OxfordNanoporeInstrumentOutputMinimal
 import net.jimblackler.jsonschemafriend.Schema
 import net.jimblackler.jsonschemafriend.SchemaStore
+import net.jimblackler.jsonschemafriend.ValidationError
 import net.jimblackler.jsonschemafriend.ValidationException
 import net.jimblackler.jsonschemafriend.Validator
 
@@ -32,7 +33,10 @@ class NanoporeParser {
 
         String json = mapToJson(convertedDirectory)
         // Step2: Validate created Json against schema
-        validateJson(json)
+
+        /*Schema Validation has been deprecated since the nanopore schema changes too much to be handled */
+        //validateJson(json)
+
         //Step3: convert valid json to OxfordNanoporeExperiment Object
         // Step4: Parse meta data out of report files and extend the map
         def finalMap = parseMetaData(convertedDirectory, directory)
@@ -181,14 +185,20 @@ class NanoporeParser {
 
         SchemaStore schemaStore = new SchemaStore()
         Validator validator = new Validator()
-        try {
-            //Validate against Fast5 Based Oxford Measurement
-            Schema schema = schemaStore.loadSchema(OxfordNanoporeInstrumentOutputMinimal.getSchemaAsStream())
-            validator.validate(schema, jsonObject)
-        } catch (ValidationException ignored) {
-            //Validate against Pod5 Based Oxford Measurement
-            Schema schema = schemaStore.loadSchema(OxfordNanoporeInstrumentOutputDoradoMinimal.getSchemaAsStream())
-            validator.validate(schema, jsonObject)
+        GroupedValidationErrorException groupedValidationException = new GroupedValidationErrorException()
+        Schema schema = schemaStore.loadSchema(OxfordNanoporeInstrumentOutputMinimal.getSchemaAsStream())
+        validator.validate(schema, jsonObject, fast5ValidationError -> {
+            groupedValidationException.addValidationErrorMessage(fast5ValidationError)
+        })
+        schema = schemaStore.loadSchema(OxfordNanoporeInstrumentOutputDoradoMinimal.getSchemaAsStream())
+        validator.validate(schema, jsonObject, pod5ValidationError -> {
+            groupedValidationException.addValidationErrorMessage(pod5ValidationError)
+        })
+        if (groupedValidationException.getValidationExceptionErrorMessages().size() == 2) {
+            groupedValidationException.getValidationExceptionErrorMessages().forEach { validationError ->
+                log.debug("Nanopore validation failed for " + validationError.toString())
+            }
+            throw groupedValidationException
         }
     }
 
@@ -331,6 +341,25 @@ class NanoporeParser {
             }
             return fileType
         }
-
     }
+
+    static class GroupedValidationErrorException extends ValidationException {
+
+        private final ArrayList<ValidationError> validationErrors = new ArrayList()
+
+        GroupedValidationErrorException(ValidationError... validationErrors) {
+            for (final validationError in validationErrors) {
+                this.validationErrors.add(validationError)
+            }
+        }
+
+        ArrayList<ValidationError> getValidationExceptionErrorMessages() {
+            return validationErrors
+        }
+
+        void addValidationErrorMessage(ValidationError validationError) {
+            validationExceptionErrorMessages.add(validationError)
+        }
+    }
+
 }
