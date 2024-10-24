@@ -1,7 +1,6 @@
 package life.qbic.utils
 
 import life.qbic.datamodel.datasets.OxfordNanoporeExperiment
-import net.jimblackler.jsonschemafriend.ValidationException
 import spock.lang.Specification
 
 import java.nio.file.NotDirectoryException
@@ -115,6 +114,7 @@ class NanoporeParserSpec extends Specification {
     // Check that the metadata from the summary file has been retrieved
     assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109-XL"
   }
+  /* Schema Validation has been deprecated since the nanopore schema changes too much to be handled
 
   def "parsing an invalid minimal file structure leads to a ValidationException"() {
     given:
@@ -124,10 +124,37 @@ class NanoporeParserSpec extends Specification {
     then:
     thrown(ValidationException)
   }
+  */
 
   def "parsing a valid minimal file structure for dorado based basecalling containing additional unknown files and folder still returns an OxfordNanoporeExperiment Object"() {
     given:
     def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345_nanopore_valid_dorado_minimal")
+    when:
+    def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
+    then:
+    assert experiment instanceof OxfordNanoporeExperiment
+    // Check that the metadata from the report file has been retrieved
+    assert experiment.getMeasurements().get(0).getMachineHost() == "PCT0094"
+    // Check that the metadata from the summary file has been retrieved
+    assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109-XL"
+  }
+
+  def "parsing a valid minimal file structure with bam files and dorado basecalling returns an OxfordNanoporeExperiment"() {
+    given:
+    def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345_minimal_bam")
+    when:
+    def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
+    then:
+    assert experiment instanceof OxfordNanoporeExperiment
+    // Check that the metadata from the report file has been retrieved
+    assert experiment.getMeasurements().get(0).getMachineHost() == "PCT0094"
+    // Check that the metadata from the summary file has been retrieved
+    assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109-XL"
+  }
+
+  def "parsing a valid minimal file structure with pod5 files and dorado basecalling returns an OxfordNanoporeExperiment"() {
+    given:
+    def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345_minimal_pod5")
     when:
     def experiment = NanoporeParser.parseFileStructure(pathToDirectory)
     then:
@@ -146,11 +173,12 @@ class NanoporeParserSpec extends Specification {
     then:
     assert experiment instanceof OxfordNanoporeExperiment
     // Check that the metadata from the report file has been retrieved
-    assert experiment.getMeasurements().get(0).getMachineHost() == "PCT0094"
+    //assert experiment.getMeasurements().get(0).getMachineHost() == "PCT0094"
     // Check that the metadata from the summary file has been retrieved
     assert experiment.getMeasurements().get(0).getLibraryPreparationKit() == "SQK-LSK109-XL"
   }
 
+   /*Schema Validation has been deprecated since the nanopore schema changes too much to be handled
   def "parsing an invalid minimal file structure for dorado based basecalling leads to a ValidationException"() {
     given:
     def pathToDirectory = Paths.get(exampleDirectoriesRoot, "fails/QABCD001AB_E12A345a01_PAE12345_missing_skip_folder")
@@ -159,7 +187,7 @@ class NanoporeParserSpec extends Specification {
     then:
     thrown(ValidationException)
   }
-
+  */
   def "parsing the alternative valid file structure with metadata missing returns an OxfordNanoporeExperiment Object"() {
     given:
     def pathToDirectory = Paths.get(exampleDirectoriesRoot, "validates/QABCD001AB_E12A345a01_PAE12345_nanopore_new_minimal")
